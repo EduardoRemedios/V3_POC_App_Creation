@@ -15,13 +15,14 @@
     "deployment_evidence": 0,
     "evidence_replay": 0,
     "halt_behavior": 0,
+    "adaptive_mission_control": 0,
     "dependency_discipline": 0,
     "operator_friction": 0
   },
   "required_pass_checks": {
     "factory_v2_not_used": false,
     "no_dimension_zero": false,
-    "total_score_at_least_16": false,
+    "total_score_at_least_18": false,
     "app_verification_replay_minimum_met": false,
     "garmin_or_hermes_use_labeled": false
   },
@@ -35,4 +36,3 @@
   "residual_risks": [],
   "recommended_next_steps": []
 }
-

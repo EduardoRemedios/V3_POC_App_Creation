@@ -23,11 +23,12 @@ No-go condition:
 2. Fill `canons/POC_CONSTRAINTS.md`.
 3. Fill `canons/POC_VERIFICATION.md`.
 4. Fill `canons/DEPENDENCY_RESEARCH.md`.
-5. Create the first mission from `missions/MISSION_001_START_HERE.md`.
-6. Execute only after the mission has explicit objective, files, commands, verification, and stop rules.
-7. Close out with `templates/V3_POC_CLOSEOUT_TEMPLATE.md`.
-8. Record mission evidence with `templates/V3_POC_MISSION_RECORD_TEMPLATE.json`.
-9. Score the POC with `evals/V3_POC_EVAL_RUBRIC.md` and `evals/V3_POC_EVAL_RECORD_TEMPLATE.json`.
+5. Read `canons/ADAPTIVE_MISSION_CONTROL.md`.
+6. Create the first mission from `missions/MISSION_001_START_HERE.md`.
+7. Execute only after the mission has explicit objective, files, commands, verification, stop rules, checkpoint rules, and interrupt rules.
+8. Close out with `templates/V3_POC_CLOSEOUT_TEMPLATE.md`.
+9. Record mission evidence with `templates/V3_POC_MISSION_RECORD_TEMPLATE.json`.
+10. Score the POC with `evals/V3_POC_EVAL_RUBRIC.md` and `evals/V3_POC_EVAL_RECORD_TEMPLATE.json`.
 
 ## Hard Stops
 Stop if:
@@ -36,6 +37,8 @@ Stop if:
 - authorized files or commands are missing,
 - verification cannot be run,
 - dependency approval is missing,
+- human decision interrupt is unresolved,
+- mission state or checkpoint evidence is stale,
 - Garmin integration is attempted before research approval,
 - Hermes is used before research approval,
 - public deployment or production infrastructure appears,

@@ -44,6 +44,17 @@ Why this mission is bounded enough for V3:
 Commands and expected evidence:
 -
 
+## Adaptive Mission Control
+- Checkpoints required: YES/NO
+- Checkpoint cadence: phase boundary | verification gate | before pause | other
+- Mission state file:
+- Human decision interrupts allowed: YES/NO
+- Interrupt surfaces allowed: thread | file | telegram-research-only | other
+- Timeout behavior for unresolved interrupts: pause | continue_without_expansion | halt
+- Plan delta required before scope change: YES
+- Verification side effects allowed: YES/NO
+- If YES, authorized output paths:
+
 ## Halt Rules
 Stop if:
 -
@@ -53,6 +64,7 @@ If this mission cannot proceed without Factory V2, stop and record a V3 standalo
 
 ## Reentry Rules
 - Resume only from authored mission artifacts and current repository state.
+- For larger missions, resume from `.factory-v3/templates/V3_MISSION_STATE_TEMPLATE.md`-compatible state and latest checkpoint.
 - Halt if derived state conflicts with authored artifacts.
 
 ## Closeout

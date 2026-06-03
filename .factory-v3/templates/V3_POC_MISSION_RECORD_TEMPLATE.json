@@ -44,6 +44,21 @@
       "description": ""
     }
   },
+  "adaptive_mission_control": {
+    "checkpoints": [],
+    "mission_state_reference": "",
+    "human_decision_interrupts": [],
+    "plan_deltas": [],
+    "verification_side_effects": [],
+    "git": {
+      "allowed": false,
+      "commands": [],
+      "commit_before": "not_recorded",
+      "commit_after": "not_recorded",
+      "remote_policy": "not_recorded",
+      "pushed": false
+    }
+  },
   "dependency_evidence": {
     "garmin": {
       "touched": false,
@@ -64,4 +79,3 @@
     "operator_friction_notes": []
   }
 }
-

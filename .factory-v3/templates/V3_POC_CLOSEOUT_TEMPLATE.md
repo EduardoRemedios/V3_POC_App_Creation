@@ -35,6 +35,15 @@ COMPLETE | HALTED | BLOCKED | STANDALONE_GAP
 - Any halt rule encountered:
 - If yes, action taken:
 
+## Adaptive Mission Control Review
+- Checkpoints recorded:
+- Mission state used:
+- Human decision interrupts created:
+- Human decision interrupts resolved:
+- Plan deltas applied:
+- Verification side effects:
+- Git operations used:
+
 ## Evidence Replay
 - Mission envelope:
 - Mission record:

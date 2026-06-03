@@ -1,0 +1,40 @@
+{
+  "interrupt_id": "HDI-001",
+  "mission_id": "",
+  "status": "draft | asked | answered | timed_out | cancelled | applied",
+  "decision_type": "scope_decision | product_decision | dependency_decision | safety_boundary | verification_recovery | budget_reentry | deployment_authority | credential_authority",
+  "question": "",
+  "context_summary": "",
+  "reason_for_interrupt": "",
+  "options": [
+    {
+      "id": "option_a",
+      "label": "",
+      "effect": "",
+      "risk": ""
+    }
+  ],
+  "recommended_option_id": "",
+  "timeout_behavior": "pause | continue_without_expansion | halt",
+  "asked": {
+    "surface": "thread | file | telegram | other",
+    "asked_at": "not_recorded",
+    "message_reference": ""
+  },
+  "answer": {
+    "answered": false,
+    "answered_at": "not_recorded",
+    "answered_by": "not_recorded",
+    "answer_text": "",
+    "selected_option_id": "",
+    "interpretation": "",
+    "confidence": "not_recorded"
+  },
+  "mission_delta": {
+    "required": false,
+    "delta_reference": "",
+    "summary": ""
+  },
+  "continuation_decision": "not_decided | continue | halt | create_successor_mission"
+}
+

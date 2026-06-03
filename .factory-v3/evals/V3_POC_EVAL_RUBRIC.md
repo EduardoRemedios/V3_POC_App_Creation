@@ -28,6 +28,7 @@ Score each dimension 0-2.
 | Deployment evidence | Missing when required. | Partial/private smoke only. | Approved private target verified. |
 | Evidence replay | Cannot reconstruct. | Reconstructable with gaps. | Mission records and closeouts are replayable. |
 | Halt behavior | Continued after failure. | Halted but evidence weak. | Halted cleanly and recorded decision. |
+| Adaptive mission control | No checkpoints/interrupt evidence when needed. | Checkpoints or interrupts present with gaps. | Checkpoints, state, interrupts, and deltas are replayable when needed. |
 | Dependency discipline | Unapproved dependency use. | Approved but weakly recorded. | Garmin/Hermes/other dependencies properly researched, approved, and labeled. |
 | Operator friction | Too hard to use operationally. | Usable with notable friction. | Usable enough as first baseline. |
 
@@ -35,7 +36,7 @@ Score each dimension 0-2.
 To record `PASS_NAMED_POC`:
 - V3-only compliance must score 2.
 - No dimension may score 0.
-- Total score must be at least 16 of 20.
+- Total score must be at least 18 of 22.
 - App completeness, verification quality, and evidence replay must each score at least 1.
 - Any Garmin or Hermes use must be separately approved and labeled.
 
@@ -48,4 +49,3 @@ A passing POC supports only a first operational baseline for the named scope. It
 - proof or lease enforcement,
 - governance routing,
 - V2 removal from the Factory_V3 repository.
-
