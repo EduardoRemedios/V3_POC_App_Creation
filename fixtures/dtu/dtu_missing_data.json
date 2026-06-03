@@ -1,0 +1,19 @@
+{
+  "fixture_id": "dtu_missing_data",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Sleep and HRV are absent for the target day, so recommendations must reduce confidence.",
+  "sources": ["synthetic_strava_like", "manual_note"],
+  "source_records": [
+    {"id": "missing_ride_1", "source": "synthetic_strava_like", "source_record_id": "strava_activity_1", "domain": "activity", "observed_at": "2026-06-01T18:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 65, "distance_km": 30, "intensity": "moderate", "load": 72}},
+    {"id": "missing_note_1", "source": "manual_note", "source_record_id": "missing_note_1", "domain": "manual_note", "observed_at": "2026-06-02T08:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "I feel okay but forgot to wear the device overnight", "subjective_fatigue": "low"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 72, "sleep_average_hours": null, "recovery_status": "uncertain_missing_data", "missing_domains": ["sleep", "hrv", "resting_heart_rate"]},
+    "workflows": {
+      "recovery_today": {"recommendation_class": "normal_or_easy_with_uncertainty", "confidence": "low", "required_evidence_refs": ["missing_ride_1", "missing_note_1", "derived_missing_data"]},
+      "ride_rest_recommendation": {"recommendation_class": "easy_if_training", "required_evidence_refs": ["missing_note_1", "derived_missing_data"]}
+    },
+    "prohibited_claims": ["exact readiness score", "pretend sleep data exists", "pretend HRV data exists"]
+  }
+}

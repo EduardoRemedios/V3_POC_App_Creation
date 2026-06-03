@@ -1,0 +1,22 @@
+{
+  "fixture_id": "dtu_late_high_fat_dinner_sleep_drop",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A late high-fat dinner is followed by lower sleep efficiency and more wake events than recent comparable nights.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "late_sleep_baseline_1", "source": "synthetic_garmin_like", "source_record_id": "late_sleep_baseline_1", "domain": "sleep", "observed_at": "2026-05-29T23:05:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.7, "efficiency": 0.91, "wake_events": 1}},
+    {"id": "late_sleep_baseline_2", "source": "synthetic_garmin_like", "source_record_id": "late_sleep_baseline_2", "domain": "sleep", "observed_at": "2026-05-30T23:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.5, "efficiency": 0.9, "wake_events": 1}},
+    {"id": "late_meal_1", "source": "manual_note", "source_record_id": "late_meal_1", "domain": "nutrition_log", "observed_at": "2026-06-01T22:15:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "late high-fat dinner: burger, chips, dessert", "timing": "late", "fat_level": "high"}},
+    {"id": "late_sleep_poor_1", "source": "synthetic_garmin_like", "source_record_id": "late_sleep_poor_1", "domain": "sleep", "observed_at": "2026-06-01T23:55:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 5.8, "efficiency": 0.74, "wake_events": 6}},
+    {"id": "late_hrv_1", "source": "synthetic_garmin_like", "source_record_id": "late_hrv_1", "domain": "hrv", "observed_at": "2026-06-02T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 55, "baseline_ms": 60}},
+    {"id": "late_rhr_1", "source": "synthetic_garmin_like", "source_record_id": "late_rhr_1", "domain": "resting_heart_rate", "observed_at": "2026-06-02T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 53, "baseline_bpm": 50}}
+  ],
+  "expected": {
+    "derived": {"sleep_average_hours": 7.0, "late_meal_sleep_association": true, "sleep_drop_hours": 1.8, "recovery_status": "stable"},
+    "workflows": {
+      "sleep_cause_analysis": {"recommendation_class": "late_meal_possible_contributor", "required_evidence_refs": ["late_meal_1", "late_sleep_poor_1", "derived_sleep_cause_signal"]}
+    },
+    "prohibited_claims": ["caused your poor sleep", "exact calorie", "medical diagnosis"]
+  }
+}

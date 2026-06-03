@@ -1,0 +1,57 @@
+{
+  "fixture_id": "dtu_training_ramp_too_fast",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Training load ramps sharply after a quiet week, creating a deload/ramp safety check.",
+  "sources": ["synthetic_garmin_like"],
+  "source_records": [
+    {
+      "id": "src_d009_ramp_prior",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_ramp_prior",
+      "domain": "activity",
+      "observed_at": "2026-05-24T17:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sport": "cycling", "week": "prior", "duration_min": 45, "distance_km": 18, "intensity": "easy", "load": 35}
+    },
+    {
+      "id": "src_d009_ramp_current_a",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_ramp_current_a",
+      "domain": "activity",
+      "observed_at": "2026-06-01T17:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sport": "cycling", "week": "current", "duration_min": 130, "distance_km": 60, "intensity": "hard", "load": 170}
+    },
+    {
+      "id": "src_d009_ramp_current_b",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_ramp_current_b",
+      "domain": "activity",
+      "observed_at": "2026-06-02T17:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sport": "cycling", "week": "current", "duration_min": 100, "distance_km": 44, "intensity": "hard", "load": 145}
+    },
+    {
+      "id": "src_d009_ramp_sleep",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_ramp_sleep",
+      "domain": "sleep",
+      "observed_at": "2026-06-02T23:10:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sleep_hours": 6.8, "efficiency": 0.84, "wake_events": 3}
+    }
+  ],
+  "expected": {
+    "families": ["training_load_and_deload", "safety_edge_cases"],
+    "risk_coverage": ["ramp_too_fast", "load_spike_caution"],
+    "workflows": {
+      "ride_rest_recommendation": {
+        "recommendation_class": "ramp_caution",
+        "required_evidence_refs": ["derived_training_ramp_risk"]
+      }
+    },
+    "api_cases": ["GET /api/workflows/{run_id}/timeline", "GET /api/recommendations"],
+    "prohibited_claims": ["aggressive load increase", "ignore soreness"]
+  }
+}

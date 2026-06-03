@@ -1,0 +1,21 @@
+{
+  "fixture_id": "dtu_hard_session_suppressed_recovery",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A hard session is followed by suppressed HRV, elevated resting heart rate, and poor sleep.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "hard_session_activity", "source": "synthetic_garmin_like", "source_record_id": "hard_session_activity", "domain": "activity", "observed_at": "2026-06-01T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 105, "distance_km": 47, "intensity": "hard", "load": 168}},
+    {"id": "hard_session_sleep", "source": "synthetic_garmin_like", "source_record_id": "hard_session_sleep", "domain": "sleep", "observed_at": "2026-06-01T23:45:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.1, "efficiency": 0.8, "wake_events": 4}},
+    {"id": "hard_session_hrv", "source": "synthetic_garmin_like", "source_record_id": "hard_session_hrv", "domain": "hrv", "observed_at": "2026-06-02T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 43, "baseline_ms": 60}},
+    {"id": "hard_session_rhr", "source": "synthetic_garmin_like", "source_record_id": "hard_session_rhr", "domain": "resting_heart_rate", "observed_at": "2026-06-02T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 58, "baseline_bpm": 50}},
+    {"id": "hard_session_note", "source": "manual_note", "source_record_id": "hard_session_note", "domain": "manual_note", "observed_at": "2026-06-02T08:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "legs heavy after intervals", "subjective_fatigue": "high"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 168, "hard_session_suppression": true, "recovery_status": "stable"},
+    "workflows": {
+      "ride_rest_recommendation": {"recommendation_class": "rest_or_recovery_ride", "required_evidence_refs": ["hard_session_activity", "hard_session_hrv", "hard_session_rhr", "derived_hard_session_suppression"]}
+    },
+    "prohibited_claims": ["overtraining syndrome", "ignore the hard session"]
+  }
+}

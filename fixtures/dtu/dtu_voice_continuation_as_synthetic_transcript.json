@@ -1,0 +1,21 @@
+{
+  "fixture_id": "dtu_voice_continuation_as_synthetic_transcript",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A synthetic voice transcript continues an existing recovery intent without voice transcription execution.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "voice_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "voice_sleep_1", "domain": "sleep", "observed_at": "2026-06-02T23:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.2, "efficiency": 0.88, "wake_events": 2}},
+    {"id": "voice_text_message_1", "source": "manual_note", "source_record_id": "voice_text_message_1", "domain": "conversation_message", "observed_at": "2026-06-03T08:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_voice_001", "surface": "telegram_style", "intent_id": "intent_recovery_voice_001", "text": "How recovered am I today?"}},
+    {"id": "voice_transcript_1", "source": "manual_note", "source_record_id": "voice_transcript_1", "domain": "conversation_message", "observed_at": "2026-06-03T08:05:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_voice_001", "surface": "telegram_style", "intent_id": "intent_recovery_voice_001", "input_mode": "synthetic_voice_transcript", "text": "Actually my legs feel heavier than I expected."}},
+    {"id": "voice_hrv_1", "source": "synthetic_garmin_like", "source_record_id": "voice_hrv_1", "domain": "hrv", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 56, "baseline_ms": 60}},
+    {"id": "voice_rhr_1", "source": "synthetic_garmin_like", "source_record_id": "voice_rhr_1", "domain": "resting_heart_rate", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 52, "baseline_bpm": 50}}
+  ],
+  "expected": {
+    "derived": {"voice_transcript_continuity": true, "conversation_thread_count": 1, "intent_session_count": 1, "surface_count": 1},
+    "workflows": {
+      "voice_transcript_continuity": {"recommendation_class": "continued_same_intent", "required_evidence_refs": ["voice_text_message_1", "voice_transcript_1", "derived_voice_transcript_continuity"]}
+    },
+    "prohibited_claims": ["voice transcription executed", "new separate thread"]
+  }
+}

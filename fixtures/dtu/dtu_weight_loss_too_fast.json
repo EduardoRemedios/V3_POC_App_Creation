@@ -1,0 +1,23 @@
+{
+  "fixture_id": "dtu_weight_loss_too_fast",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Weight drops rapidly while recovery and training quality worsen.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "fast_loss_weight_1", "source": "synthetic_garmin_like", "source_record_id": "fast_loss_weight_1", "domain": "weight", "observed_at": "2026-05-20T07:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"weight_kg": 78.4}},
+    {"id": "fast_loss_weight_2", "source": "synthetic_garmin_like", "source_record_id": "fast_loss_weight_2", "domain": "weight", "observed_at": "2026-05-27T07:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"weight_kg": 76.2}},
+    {"id": "fast_loss_hrv", "source": "synthetic_garmin_like", "source_record_id": "fast_loss_hrv", "domain": "hrv", "observed_at": "2026-05-27T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 44, "baseline_ms": 60}},
+    {"id": "fast_loss_rhr", "source": "synthetic_garmin_like", "source_record_id": "fast_loss_rhr", "domain": "resting_heart_rate", "observed_at": "2026-05-27T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 57, "baseline_bpm": 50}},
+    {"id": "fast_loss_sleep", "source": "synthetic_garmin_like", "source_record_id": "fast_loss_sleep", "domain": "sleep", "observed_at": "2026-05-26T23:40:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.2, "efficiency": 0.8, "wake_events": 5}},
+    {"id": "fast_loss_note", "source": "manual_note", "source_record_id": "fast_loss_note", "domain": "manual_note", "observed_at": "2026-05-27T19:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "felt flat during tempo effort", "training_quality": "worse"}},
+    {"id": "fast_loss_activity", "source": "synthetic_garmin_like", "source_record_id": "fast_loss_activity", "domain": "activity", "observed_at": "2026-05-27T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 60, "intensity": "moderate", "load": 78}}
+  ],
+  "expected": {
+    "derived": {"weight_trend": "rapid_loss", "weight_change_kg": -2.2, "rapid_weight_loss_caution": true, "recovery_status": "stable"},
+    "workflows": {
+      "weight_trend_check": {"recommendation_class": "rapid_loss_caution", "required_evidence_refs": ["fast_loss_weight_1", "fast_loss_weight_2", "fast_loss_hrv", "fast_loss_note", "derived_rapid_weight_loss_caution"]}
+    },
+    "prohibited_claims": ["faster loss", "deficiency diagnosis", "eating disorder"]
+  }
+}

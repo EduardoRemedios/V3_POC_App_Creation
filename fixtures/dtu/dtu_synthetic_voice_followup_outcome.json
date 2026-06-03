@@ -1,0 +1,57 @@
+{
+  "fixture_id": "dtu_synthetic_voice_followup_outcome",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A synthetic voice transcript records whether a prior recommendation was followed and what changed.",
+  "sources": ["manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_voice_prior_rec",
+      "source": "manual_note",
+      "source_record_id": "d009_voice_prior_rec",
+      "domain": "recommendation",
+      "observed_at": "2026-05-31T20:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"recommendation_id": "rec_voice_followup_001", "claim": "Try earlier dinner timing for three nights.", "follow_up_due": true}
+    },
+    {
+      "id": "src_d009_voice_outcome",
+      "source": "manual_note",
+      "source_record_id": "d009_voice_outcome",
+      "domain": "conversation_message",
+      "observed_at": "2026-06-03T07:45:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"thread_id": "thread_voice_outcome_001", "intent_id": "intent_followup_voice_001", "surface": "desktop", "input_mode": "synthetic_voice_transcript", "text": "I did the earlier dinner test and slept a bit better."}
+    },
+    {
+      "id": "src_d009_voice_sleep",
+      "source": "manual_note",
+      "source_record_id": "d009_voice_sleep",
+      "domain": "sleep",
+      "observed_at": "2026-06-03T07:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sleep_hours": 7.4, "efficiency": 0.88, "wake_events": 2}
+    },
+    {
+      "id": "src_d009_voice_sleep_prior",
+      "source": "manual_note",
+      "source_record_id": "d009_voice_sleep_prior",
+      "domain": "sleep",
+      "observed_at": "2026-05-31T07:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sleep_hours": 6.5, "efficiency": 0.82, "wake_events": 4}
+    }
+  ],
+  "expected": {
+    "families": ["recommendation_followup", "voice_transcript_continuation"],
+    "risk_coverage": ["prior_recommendation_outcome", "synthetic_voice_no_transcription"],
+    "workflows": {
+      "prior_recommendation_followup": {
+        "recommendation_class": "follow_up_outcome_recorded",
+        "required_evidence_refs": ["derived_followup_outcome"]
+      }
+    },
+    "api_cases": ["GET /api/follow-up-outcomes", "GET /api/recommendations"],
+    "prohibited_claims": ["voice transcription executed", "caused sleep improvement"]
+  }
+}

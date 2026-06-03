@@ -1,0 +1,75 @@
+{
+  "fixture_id": "dtu_deload_recovery",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A reduced-load deload week improves sleep, HRV, and resting heart rate, supporting a gradual training ramp.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_deload_prior_ride",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_garmin_activity_prior",
+      "domain": "activity",
+      "observed_at": "2026-05-18T18:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sport": "cycling", "week": "prior", "duration_min": 150, "distance_km": 70, "intensity": "hard", "load": 220}
+    },
+    {
+      "id": "src_d009_deload_easy_ride",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_garmin_activity_deload",
+      "domain": "activity",
+      "observed_at": "2026-05-25T18:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sport": "cycling", "week": "deload", "duration_min": 55, "distance_km": 22, "intensity": "easy", "load": 42}
+    },
+    {
+      "id": "src_d009_deload_hrv_low",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_garmin_hrv_low",
+      "domain": "hrv",
+      "observed_at": "2026-05-19T07:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"rmssd_ms": 48, "baseline_ms": 60}
+    },
+    {
+      "id": "src_d009_deload_hrv_high",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_garmin_hrv_high",
+      "domain": "hrv",
+      "observed_at": "2026-05-30T07:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"rmssd_ms": 63, "baseline_ms": 60}
+    },
+    {
+      "id": "src_d009_deload_sleep",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_garmin_sleep",
+      "domain": "sleep",
+      "observed_at": "2026-05-30T23:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sleep_hours": 8.1, "efficiency": 0.92, "wake_events": 1}
+    },
+    {
+      "id": "src_d009_deload_rhr",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_garmin_rhr",
+      "domain": "resting_heart_rate",
+      "observed_at": "2026-05-30T07:05:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"bpm": 49, "baseline_bpm": 50}
+    }
+  ],
+  "expected": {
+    "families": ["training_load_and_deload", "sleep_and_recovery"],
+    "risk_coverage": ["ramp_after_deload", "positive_trend_not_overreach"],
+    "workflows": {
+      "weekly_review_report": {
+        "recommendation_class": "gradual_ramp_after_deload",
+        "required_evidence_refs": ["derived_deload_recovery_trend"]
+      }
+    },
+    "api_cases": ["GET /api/evidence-graph/{fixture_id}", "GET /api/workflows/{run_id}/timeline"],
+    "prohibited_claims": ["maximum load", "medical diagnosis"]
+  }
+}

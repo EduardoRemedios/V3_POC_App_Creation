@@ -1,0 +1,22 @@
+{
+  "fixture_id": "dtu_weight_loss_plateau",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Weight is flat over a multi-week synthetic window despite consistent training and imprecise nutrition notes.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "plateau_weight_1", "source": "synthetic_garmin_like", "source_record_id": "plateau_weight_1", "domain": "weight", "observed_at": "2026-05-01T07:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"weight_kg": 78.2}},
+    {"id": "plateau_weight_2", "source": "synthetic_garmin_like", "source_record_id": "plateau_weight_2", "domain": "weight", "observed_at": "2026-05-15T07:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"weight_kg": 78.0}},
+    {"id": "plateau_weight_3", "source": "synthetic_garmin_like", "source_record_id": "plateau_weight_3", "domain": "weight", "observed_at": "2026-05-29T07:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"weight_kg": 78.1}},
+    {"id": "plateau_activity_1", "source": "synthetic_garmin_like", "source_record_id": "plateau_activity_1", "domain": "activity", "observed_at": "2026-05-29T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 85, "intensity": "moderate", "load": 82}},
+    {"id": "plateau_nutrition_1", "source": "manual_note", "source_record_id": "plateau_nutrition_1", "domain": "nutrition_log", "observed_at": "2026-05-29T20:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "meals consistent but portions not measured", "precision": "low"}},
+    {"id": "plateau_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "plateau_sleep_1", "domain": "sleep", "observed_at": "2026-05-29T23:15:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.4, "efficiency": 0.88, "wake_events": 2}}
+  ],
+  "expected": {
+    "derived": {"weight_trend": "plateau", "weight_change_kg": -0.1, "nutrition_precision": "low"},
+    "workflows": {
+      "weight_trend_check": {"recommendation_class": "plateau_with_low_precision", "required_evidence_refs": ["plateau_weight_1", "plateau_weight_3", "plateau_nutrition_1", "derived_weight_trend"]}
+    },
+    "prohibited_claims": ["severe calorie cut", "exact calorie deficit"]
+  }
+}

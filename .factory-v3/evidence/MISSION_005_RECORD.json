@@ -1,0 +1,131 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "completed_with_v3",
+    "created_date": "2026-06-03",
+    "mission_reference": ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md",
+    "closeout_reference": ".factory-v3/evidence/MISSION_005_CLOSEOUT.md",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "/Users/eduardodosremedios/V3_POC_App_Creation",
+    "branch": "not_recorded",
+    "commit_before": "not_recorded",
+    "commit_after": "not_recorded",
+    "coding_harness": "Codex",
+    "objective": "Frame the Personal Performance OS as a persistent, always-on, ambient agentic partner.",
+    "deployment_target": "not_applicable",
+    "data_mode": "synthetic"
+  },
+  "authority": {
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md",
+      ".factory-v3/canons/POC_VISION.md",
+      ".factory-v3/canons/POC_CONSTRAINTS.md",
+      ".factory-v3/canons/POC_VERIFICATION.md",
+      ".factory-v3/evidence/MISSION_005_AMBIENT_AGENTIC_PARTNER.md",
+      ".factory-v3/evidence/MISSION_005_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_005_RECORD.json"
+    ],
+    "forbidden_scope": [
+      "Factory V2 usage of any kind",
+      "App source code, scaffolding, or dependency manifests",
+      "Package installation",
+      "Git initialization unless separately approved",
+      "Live scheduler, worker, queue, cron, notification, Telegram, webhook, or polling behavior",
+      "Any third-party API call, credential, token, OAuth app, developer app registration, or live traffic",
+      "Real personal health data, real medical PDFs, real nutrition images, or real voice files",
+      "Hermes installation, configuration, execution, or operational use",
+      "Public deployment, production infrastructure, cloud storage, telemetry, analytics, authentication, or payment setup",
+      "Edits outside authorized files"
+    ],
+    "allowed_commands": [
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "sed -n '1,260p' <authorized-file>",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_005_RECORD.json"
+    ],
+    "dependency_policy": "New dependencies allowed: NO",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [
+      ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md",
+      ".factory-v3/canons/POC_VISION.md",
+      ".factory-v3/canons/POC_CONSTRAINTS.md",
+      ".factory-v3/canons/POC_VERIFICATION.md",
+      ".factory-v3/evidence/MISSION_005_AMBIENT_AGENTIC_PARTNER.md",
+      ".factory-v3/evidence/MISSION_005_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_005_RECORD.json"
+    ],
+    "commands_run": [
+      "sed -n '1,220p' .factory-v3/canons/POC_VISION.md",
+      "sed -n '1,240p' .factory-v3/canons/POC_CONSTRAINTS.md",
+      "sed -n '1,160p' .factory-v3/canons/POC_VERIFICATION.md",
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_005_RECORD.json"
+    ],
+    "verification": {
+      "commands": [
+        "pwd",
+        "find . -maxdepth 4 -type f | sort",
+        "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+        "python3 -m json.tool .factory-v3/evidence/MISSION_005_RECORD.json"
+      ],
+      "result": "pass",
+      "summary": "Mission 005 ambient agent framing was recorded, the JSON mission record parses, and V3-only/dependency constraints were maintained."
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "dependency_evidence": {
+    "scheduler": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md"
+    },
+    "notifications": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md"
+    },
+    "telegram": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md"
+    },
+    "third_party_sources": {
+      "touched": false,
+      "mode": "not_used",
+      "approval_reference": ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md"
+    },
+    "hermes": {
+      "touched": false,
+      "mode": "not_used",
+      "approval_reference": ".factory-v3/missions/MISSION_005_AMBIENT_AGENTIC_PARTNER.md"
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass",
+    "verification_quality": "pass",
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "The product should be framed as a persistent ambient partner, not only a reactive chat UI.",
+      "Morning and evening reports are design targets for the next build, but live scheduling and delivery remain unapproved.",
+      "Proactive behavior must use thresholds, cooldowns, quiet hours, opt-outs, evidence, and uncertainty.",
+      "The first build should generate report candidates locally against synthetic fixtures without sending notifications."
+    ]
+  }
+}

@@ -1,0 +1,602 @@
+"""SQLite persistence for the synthetic Personal Performance OS workbench."""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+from .api_contracts import contract_rows
+from .evidence_graph import graph_payload, refresh_evidence_graph
+from .fixture_manifest import api_matrix, family_summary, load_manifest, validate_manifest, workflow_matrix
+from .loader import load_fixture, load_fixtures
+from .primitives import derived_facts
+from .recommendations import (
+    list_follow_up_outcomes,
+    list_recommendations,
+    list_report_settings,
+    persist_fixture_recommendation_state,
+    persist_workflow_recommendation,
+)
+from .reports import evening_report_candidate, morning_report_candidate
+from .safety_audit import list_safety_events, persist_safety_events, safety_summary
+from .schema import Fixture
+from .snapshots import export_snapshot, validate_snapshot_import
+from .timeline import get_timeline, persist_workflow_timeline, replay_audit_summary
+from .workflows import run_workflow
+
+
+MIGRATIONS_DIR = Path(__file__).resolve().parent / "migrations"
+DEFAULT_WORKFLOWS = (
+    "recovery_today",
+    "sleep_cause_analysis",
+    "four_week_training_analysis",
+    "nutrition_label_capture",
+    "ride_rest_recommendation",
+    "nutrition_free_text_handling",
+    "weight_trend_check",
+    "protein_timing_pattern",
+    "weekly_review_report",
+    "proactive_suppression_check",
+    "prior_recommendation_followup",
+    "voice_transcript_continuity",
+)
+
+
+def connect(path: str | Path = ":memory:") -> sqlite3.Connection:
+    conn = sqlite3.connect(str(path), check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
+def migrate(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS schema_migrations (
+          version TEXT PRIMARY KEY,
+          applied_at TEXT NOT NULL
+        )
+        """
+    )
+    for path in sorted(MIGRATIONS_DIR.glob("*.sql")):
+        version = path.stem
+        applied = conn.execute("SELECT 1 FROM schema_migrations WHERE version = ?", (version,)).fetchone()
+        if applied:
+            continue
+        conn.executescript(path.read_text(encoding="utf-8"))
+        conn.execute(
+            "INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES (?, ?)",
+            (version, _now()),
+        )
+    conn.commit()
+
+
+def import_fixture(conn: sqlite3.Connection, fixture_or_path: Fixture | str | Path) -> dict[str, Any]:
+    fixture = fixture_or_path if isinstance(fixture_or_path, Fixture) else load_fixture(fixture_or_path)
+    migrate(conn)
+    with conn:
+        previous = conn.execute(
+            "SELECT import_count FROM fixture_imports WHERE fixture_id = ?", (fixture.fixture_id,)
+        ).fetchone()
+        import_count = int(previous["import_count"]) + 1 if previous else 1
+        _delete_fixture_rows(conn, fixture.fixture_id)
+        _insert_sources(conn, fixture)
+        _insert_normalized_facts(conn, fixture)
+        persisted_derived = derived_facts(fixture)
+        _insert_derived_facts(conn, fixture, persisted_derived)
+        _insert_conversation_state(conn, fixture)
+        _insert_reports(conn, fixture)
+        _sync_manifest_tables(conn)
+        _sync_api_contract_cases(conn)
+        persist_fixture_recommendation_state(conn, fixture)
+        persist_safety_events(conn, fixture)
+        _insert_fixture_import(conn, fixture, import_count, len(persisted_derived))
+        refresh_evidence_graph(conn, fixture.fixture_id)
+    return get_import(conn, fixture.fixture_id)
+
+
+def import_all_fixtures(conn: sqlite3.Connection, directory: str | Path = "fixtures/dtu") -> list[dict[str, Any]]:
+    return [import_fixture(conn, fixture) for fixture in load_fixtures(directory)]
+
+
+def run_and_persist_workflow(conn: sqlite3.Connection, fixture_id: str, workflow: str) -> dict[str, Any]:
+    fixture = load_fixture(Path("fixtures/dtu") / f"{fixture_id}.json")
+    result = run_workflow(workflow, fixture)
+    evidence_id = f"{fixture_id}_{result.evidence_pack.id}_{workflow}"
+    run_id = f"{fixture_id}_{result.id}"
+    with conn:
+        _upsert_evidence_pack(
+            conn,
+            evidence_id,
+            fixture_id,
+            result.evidence_pack.uncertainty,
+            workflow,
+            result.evidence_pack.refs,
+        )
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO workflow_runs
+            (id, fixture_id, workflow, status, recommendation_class, evidence_pack_id, output_json, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                run_id,
+                fixture_id,
+                result.workflow,
+                result.status,
+                result.recommendation_class,
+                evidence_id,
+                _dump(result.output),
+                _now(),
+            ),
+        )
+        persist_workflow_timeline(conn, fixture, run_id, result)
+        persist_workflow_recommendation(conn, fixture, run_id, result)
+        refresh_evidence_graph(conn, fixture_id)
+    return get_workflow_run(conn, run_id)
+
+
+def list_fixture_files(directory: str | Path = "fixtures/dtu") -> list[dict[str, Any]]:
+    fixtures = load_fixtures(directory)
+    return [
+        {
+            "fixture_id": fixture.fixture_id,
+            "scenario": fixture.scenario,
+            "source_record_count": len(fixture.source_records),
+            "workflow_count": len(fixture.expected.get("workflows", {})),
+        }
+        for fixture in fixtures
+    ]
+
+
+def fixture_manifest_payload() -> dict[str, Any]:
+    manifest = load_manifest()
+    return {"manifest": manifest, "validation": validate_manifest(manifest)}
+
+
+def list_fixture_families() -> list[dict[str, Any]]:
+    return family_summary()
+
+
+def list_expected_workflows() -> list[dict[str, Any]]:
+    return workflow_matrix()
+
+
+def list_expected_api_cases() -> list[dict[str, Any]]:
+    return api_matrix()
+
+
+def get_fixture_detail(fixture_id: str, directory: str | Path = "fixtures/dtu") -> dict[str, Any]:
+    fixture = load_fixture(Path(directory) / f"{fixture_id}.json")
+    return {
+        "fixture_id": fixture.fixture_id,
+        "scenario": fixture.scenario,
+        "synthetic_only": fixture.synthetic_only,
+        "timezone": fixture.timezone,
+        "sources": list(fixture.sources),
+        "source_records": [record.__dict__ for record in fixture.source_records],
+        "expected": fixture.expected,
+    }
+
+
+def list_imports(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    rows = conn.execute("SELECT * FROM fixture_imports ORDER BY fixture_id").fetchall()
+    return [_row(row) for row in rows]
+
+
+def import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
+    imports = list_imports(conn)
+    replay = replay_audit_summary(conn)
+    return {
+        "import_count": len(imports),
+        "fixture_ids": [item["fixture_id"] for item in imports],
+        "replay_audit": replay,
+    }
+
+
+def get_import(conn: sqlite3.Connection, fixture_id: str) -> dict[str, Any]:
+    row = conn.execute("SELECT * FROM fixture_imports WHERE fixture_id = ?", (fixture_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"fixture not imported: {fixture_id}")
+    return _row(row)
+
+
+def get_workflow_run(conn: sqlite3.Connection, run_id: str) -> dict[str, Any]:
+    row = conn.execute("SELECT * FROM workflow_runs WHERE id = ?", (run_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"workflow run not found: {run_id}")
+    data = _row(row)
+    data["output"] = json.loads(data.pop("output_json"))
+    return data
+
+
+def get_workflow_timeline(conn: sqlite3.Connection, run_id: str) -> dict[str, Any]:
+    return get_timeline(conn, run_id)
+
+
+def get_evidence_pack(conn: sqlite3.Connection, evidence_pack_id: str) -> dict[str, Any]:
+    row = conn.execute("SELECT * FROM evidence_packs WHERE id = ?", (evidence_pack_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"evidence pack not found: {evidence_pack_id}")
+    refs = conn.execute(
+        "SELECT ref_id, ref_kind FROM evidence_refs WHERE evidence_pack_id = ? ORDER BY ref_id",
+        (evidence_pack_id,),
+    ).fetchall()
+    data = _row(row)
+    data["refs"] = [_row(ref) for ref in refs]
+    return data
+
+
+def list_report_candidates(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    rows = conn.execute("SELECT * FROM report_candidates ORDER BY fixture_id, report_type").fetchall()
+    reports = []
+    for row in rows:
+        data = _row(row)
+        data["sections"] = json.loads(data.pop("sections_json"))
+        data["output"] = json.loads(data.pop("output_json"))
+        reports.append(data)
+    return reports
+
+
+def list_evidence_graph(conn: sqlite3.Connection, fixture_id: str | None = None) -> dict[str, Any]:
+    return graph_payload(conn, fixture_id)
+
+
+def list_api_contracts() -> list[dict[str, Any]]:
+    return contract_rows()
+
+
+def list_snapshot_export(conn: sqlite3.Connection) -> dict[str, Any]:
+    return export_snapshot(conn)
+
+
+def validate_snapshot_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    return validate_snapshot_import(payload)
+
+
+def list_recommendation_history(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    return list_recommendations(conn)
+
+
+def list_followup_history(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    return list_follow_up_outcomes(conn)
+
+
+def list_persisted_report_settings(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    return list_report_settings(conn)
+
+
+def list_safety_audit(conn: sqlite3.Connection) -> dict[str, Any]:
+    return safety_summary(conn)
+
+
+def get_conversation_thread(conn: sqlite3.Connection, thread_id: str) -> dict[str, Any]:
+    row = conn.execute("SELECT * FROM conversation_threads WHERE id = ?", (thread_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"thread not found: {thread_id}")
+    messages = conn.execute(
+        "SELECT * FROM conversation_messages WHERE thread_id = ? ORDER BY observed_at", (thread_id,)
+    ).fetchall()
+    events = conn.execute("SELECT * FROM surface_events WHERE thread_id = ? ORDER BY observed_at", (thread_id,)).fetchall()
+    data = _row(row)
+    data["messages"] = [_row(message) for message in messages]
+    data["surface_events"] = [_row(event) for event in events]
+    return data
+
+
+def list_source_records(conn: sqlite3.Connection, fixture_id: str) -> list[dict[str, Any]]:
+    rows = conn.execute("SELECT * FROM source_records WHERE fixture_id = ? ORDER BY observed_at", (fixture_id,)).fetchall()
+    records = []
+    for row in rows:
+        data = _row(row)
+        data["payload"] = json.loads(data.pop("payload_json"))
+        records.append(data)
+    return records
+
+
+def list_normalized_facts(conn: sqlite3.Connection, fixture_id: str) -> list[dict[str, Any]]:
+    rows = conn.execute("SELECT * FROM normalized_facts WHERE fixture_id = ? ORDER BY observed_at", (fixture_id,)).fetchall()
+    facts = []
+    for row in rows:
+        data = _row(row)
+        data["value"] = json.loads(data.pop("value_json"))
+        provenance = conn.execute(
+            "SELECT source_record_id FROM fact_provenance WHERE fact_id = ? ORDER BY source_record_id", (data["id"],)
+        ).fetchall()
+        data["provenance_refs"] = [item["source_record_id"] for item in provenance]
+        facts.append(data)
+    return facts
+
+
+def list_derived_facts(conn: sqlite3.Connection, fixture_id: str) -> list[dict[str, Any]]:
+    rows = conn.execute("SELECT * FROM derived_facts WHERE fixture_id = ? ORDER BY id", (fixture_id,)).fetchall()
+    facts = []
+    for row in rows:
+        data = _row(row)
+        data["value"] = json.loads(data.pop("value_json"))
+        facts.append(data)
+    return facts
+
+
+def _delete_fixture_rows(conn: sqlite3.Connection, fixture_id: str) -> None:
+    for table in (
+        "safety_boundary_events",
+        "report_settings",
+        "follow_up_outcomes",
+        "recommendations",
+        "evidence_graph_edges",
+        "evidence_graph_nodes",
+        "replay_audit_summaries",
+        "workflow_timeline_steps",
+        "workflow_runs",
+        "report_candidates",
+        "evidence_refs",
+        "evidence_packs",
+        "intent_sessions",
+        "surface_events",
+        "conversation_messages",
+        "conversation_threads",
+        "derived_facts",
+        "fact_provenance",
+        "normalized_facts",
+        "source_records",
+    ):
+        conn.execute(f"DELETE FROM {table} WHERE fixture_id = ?", (fixture_id,))
+
+
+def _insert_sources(conn: sqlite3.Connection, fixture: Fixture) -> None:
+    for record in fixture.source_records:
+        conn.execute(
+            """
+            INSERT INTO source_records
+            (id, fixture_id, source, source_record_id, domain, observed_at, ingested_at, payload_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                record.id,
+                fixture.fixture_id,
+                record.source,
+                record.source_record_id,
+                record.domain,
+                record.observed_at,
+                record.ingested_at,
+                _dump(record.payload),
+            ),
+        )
+
+
+def _insert_normalized_facts(conn: sqlite3.Connection, fixture: Fixture) -> None:
+    for fact in fixture.normalized_facts:
+        conn.execute(
+            """
+            INSERT INTO normalized_facts(id, fixture_id, domain, observed_at, value_json)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (fact.id, fixture.fixture_id, fact.domain, fact.observed_at, _dump(fact.value)),
+        )
+        for ref in fact.provenance_refs:
+            conn.execute(
+                "INSERT INTO fact_provenance(fact_id, source_record_id, fixture_id) VALUES (?, ?, ?)",
+                (fact.id, ref, fixture.fixture_id),
+            )
+
+
+def _insert_derived_facts(conn: sqlite3.Connection, fixture: Fixture, facts) -> None:
+    for fact in facts:
+        conn.execute(
+            "INSERT INTO derived_facts(id, fixture_id, name, value_json) VALUES (?, ?, ?, ?)",
+            (f"{fixture.fixture_id}_{fact.id}", fixture.fixture_id, fact.name, _dump(fact.value)),
+        )
+
+
+def _insert_conversation_state(conn: sqlite3.Connection, fixture: Fixture) -> None:
+    thread_ids: dict[str, str] = {}
+    intent_ids: dict[str, tuple[str, str]] = {}
+    for record in fixture.source_records:
+        payload = record.payload
+        thread_id = payload.get("thread_id")
+        intent_id = payload.get("intent_id")
+        if thread_id:
+            thread_ids[thread_id] = payload.get("text", fixture.scenario)[:80]
+        if thread_id and intent_id:
+            intent_ids[intent_id] = (thread_id, _workflow_from_intent(intent_id))
+        if record.domain == "conversation_message" and thread_id:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO conversation_messages
+                (id, fixture_id, thread_id, surface, observed_at, text, input_mode, source_record_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    record.id,
+                    fixture.fixture_id,
+                    thread_id,
+                    payload.get("surface", "synthetic_surface"),
+                    record.observed_at,
+                    payload.get("text", ""),
+                    payload.get("input_mode", "text"),
+                    record.id,
+                ),
+            )
+        if record.domain == "surface_event" and thread_id:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO surface_events
+                (id, fixture_id, thread_id, surface, observed_at, event_type, source_record_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    record.id,
+                    fixture.fixture_id,
+                    thread_id,
+                    payload.get("surface", "synthetic_surface"),
+                    record.observed_at,
+                    payload.get("event", "surface_event"),
+                    record.id,
+                ),
+            )
+    for thread_id, title in thread_ids.items():
+        conn.execute(
+            "INSERT OR REPLACE INTO conversation_threads(id, fixture_id, title, status) VALUES (?, ?, ?, ?)",
+            (thread_id, fixture.fixture_id, title or fixture.scenario[:80], "open"),
+        )
+    for intent_id, (thread_id, workflow) in intent_ids.items():
+        conn.execute(
+            "INSERT OR REPLACE INTO intent_sessions(id, fixture_id, thread_id, workflow, status) VALUES (?, ?, ?, ?, ?)",
+            (intent_id, fixture.fixture_id, thread_id, workflow, "active_or_completed"),
+        )
+
+
+def _insert_reports(conn: sqlite3.Connection, fixture: Fixture) -> None:
+    for workflow_name in fixture.expected.get("workflows", {}):
+        if workflow_name == "morning_report_candidate":
+            report = morning_report_candidate(fixture)
+        elif workflow_name == "evening_report_candidate":
+            report = evening_report_candidate(fixture)
+        else:
+            continue
+        evidence_id = f"{fixture.fixture_id}_{report.evidence_pack.id}"
+        _upsert_evidence_pack(
+            conn, evidence_id, fixture.fixture_id, report.evidence_pack.uncertainty, workflow_name, report.evidence_pack.refs
+        )
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO report_candidates
+            (id, fixture_id, report_type, sections_json, evidence_pack_id, delivery_status, output_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                f"{fixture.fixture_id}_{report.id}",
+                fixture.fixture_id,
+                report.report_type,
+                _dump(list(report.sections)),
+                evidence_id,
+                report.delivery_status,
+                _dump(report.output),
+            ),
+        )
+
+
+def _insert_fixture_import(conn: sqlite3.Connection, fixture: Fixture, import_count: int, derived_count: int) -> None:
+    conn.execute(
+        """
+        INSERT OR REPLACE INTO fixture_imports
+        (fixture_id, scenario, synthetic_only, timezone, imported_at, import_count, source_record_count, normalized_fact_count, derived_fact_count)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            fixture.fixture_id,
+            fixture.scenario,
+            1,
+            fixture.timezone,
+            _now(),
+            import_count,
+            len(fixture.source_records),
+            len(fixture.normalized_facts),
+            derived_count,
+        ),
+    )
+
+
+def _sync_manifest_tables(conn: sqlite3.Connection) -> None:
+    manifest = load_manifest()
+    conn.execute("DELETE FROM fixture_families")
+    conn.execute("DELETE FROM fixture_manifest_entries")
+    conn.execute("DELETE FROM fixture_risk_coverage")
+    conn.execute("DELETE FROM fixture_expected_workflows")
+    conn.execute("DELETE FROM fixture_expected_api_cases")
+    for family_id, family in manifest["families"].items():
+        conn.execute(
+            "INSERT OR REPLACE INTO fixture_families(family_id, description) VALUES (?, ?)",
+            (family_id, family["description"]),
+        )
+    for fixture_id, entry in manifest["fixtures"].items():
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO fixture_manifest_entries
+            (fixture_id, families_json, risks_json, workflows_json, api_cases_json)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                fixture_id,
+                _dump(entry.get("families", [])),
+                _dump(entry.get("risks", [])),
+                _dump(entry.get("workflows", [])),
+                _dump(entry.get("api_cases", [])),
+            ),
+        )
+        for risk in entry.get("risks", []):
+            conn.execute(
+                "INSERT OR REPLACE INTO fixture_risk_coverage(fixture_id, risk) VALUES (?, ?)", (fixture_id, risk)
+            )
+        for workflow in entry.get("workflows", []):
+            conn.execute(
+                "INSERT OR REPLACE INTO fixture_expected_workflows(fixture_id, workflow) VALUES (?, ?)",
+                (fixture_id, workflow),
+            )
+        for api_case in entry.get("api_cases", []):
+            conn.execute(
+                "INSERT OR REPLACE INTO fixture_expected_api_cases(fixture_id, api_case) VALUES (?, ?)",
+                (fixture_id, api_case),
+            )
+
+
+def _sync_api_contract_cases(conn: sqlite3.Connection) -> None:
+    conn.execute("DELETE FROM api_contract_cases")
+    for row in contract_rows():
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO api_contract_cases
+            (id, method, path_template, category, expected_status, error_shape, description)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                row["id"],
+                row["method"],
+                row["path_template"],
+                row["category"],
+                row["expected_status"],
+                1 if row["error_shape"] else 0,
+                row["description"],
+            ),
+        )
+
+
+def _upsert_evidence_pack(
+    conn: sqlite3.Connection, evidence_id: str, fixture_id: str, uncertainty: str, created_by: str, refs: tuple[str, ...]
+) -> None:
+    conn.execute(
+        "INSERT OR REPLACE INTO evidence_packs(id, fixture_id, uncertainty, created_by) VALUES (?, ?, ?, ?)",
+        (evidence_id, fixture_id, uncertainty, created_by),
+    )
+    conn.execute("DELETE FROM evidence_refs WHERE evidence_pack_id = ?", (evidence_id,))
+    for ref in refs:
+        conn.execute(
+            "INSERT INTO evidence_refs(evidence_pack_id, ref_id, ref_kind, fixture_id) VALUES (?, ?, ?, ?)",
+            (evidence_id, ref, "derived" if ref.startswith("derived_") else "source", fixture_id),
+        )
+
+
+def _workflow_from_intent(intent_id: str) -> str:
+    if "followup" in intent_id:
+        return "prior_recommendation_followup"
+    if "nutrition" in intent_id:
+        return "nutrition_free_text_handling"
+    if "alert" in intent_id:
+        return "proactive_suppression_check"
+    return "recovery_today"
+
+
+def _dump(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"))
+
+
+def _row(row: sqlite3.Row) -> dict[str, Any]:
+    return {key: row[key] for key in row.keys()}
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat()

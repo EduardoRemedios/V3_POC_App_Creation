@@ -1,0 +1,48 @@
+{
+  "fixture_id": "dtu_cross_surface_report_review",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A morning report is reviewed on desktop and continued in Telegram-style text without forking state.",
+  "sources": ["manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_report_msg_desktop",
+      "source": "manual_note",
+      "source_record_id": "d009_report_msg_desktop",
+      "domain": "conversation_message",
+      "observed_at": "2026-06-03T08:10:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"thread_id": "thread_report_review_001", "intent_id": "intent_report_review_001", "surface": "desktop", "input_mode": "text", "text": "Show me the morning report evidence."}
+    },
+    {
+      "id": "src_d009_report_msg_telegram",
+      "source": "manual_note",
+      "source_record_id": "d009_report_msg_telegram",
+      "domain": "conversation_message",
+      "observed_at": "2026-06-03T08:25:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"thread_id": "thread_report_review_001", "intent_id": "intent_report_review_001", "surface": "telegram_style", "input_mode": "text", "text": "Keep it as a short note for later."}
+    },
+    {
+      "id": "src_d009_report_surface",
+      "source": "manual_note",
+      "source_record_id": "d009_report_surface",
+      "domain": "surface_event",
+      "observed_at": "2026-06-03T08:25:30+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"thread_id": "thread_report_review_001", "event": "surface_handoff", "surface": "telegram_style"}
+    }
+  ],
+  "expected": {
+    "families": ["cross_surface_continuity", "reporting"],
+    "risk_coverage": ["surface_independent_report_state"],
+    "workflows": {
+      "recovery_today": {
+        "recommendation_class": "normal_or_easy_with_uncertainty",
+        "required_evidence_refs": ["derived_cross_surface_continuity"]
+      }
+    },
+    "api_cases": ["GET /api/conversation-threads/{thread_id}", "GET /api/evidence-graph/{fixture_id}"],
+    "prohibited_claims": ["Telegram bot active", "live Telegram"]
+  }
+}

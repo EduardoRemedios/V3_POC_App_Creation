@@ -1,0 +1,39 @@
+{
+  "fixture_id": "dtu_weekly_report_suppressed_cooldown",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A weekly proactive report candidate is suppressed because a similar alert is still inside cooldown.",
+  "sources": ["manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_cooldown_pref",
+      "source": "manual_note",
+      "source_record_id": "d009_cooldown_pref",
+      "domain": "report_preferences",
+      "observed_at": "2026-06-02T10:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"quiet_hours_start": "21:30", "quiet_hours_end": "07:30", "cooldown_hours": 72, "proactive_enabled": true}
+    },
+    {
+      "id": "src_d009_cooldown_event",
+      "source": "manual_note",
+      "source_record_id": "d009_cooldown_event",
+      "domain": "surface_event",
+      "observed_at": "2026-06-02T12:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"thread_id": "thread_cooldown_001", "event": "proactive_candidate_detected", "cooldown_state": "inside_window", "surface": "desktop"}
+    }
+  ],
+  "expected": {
+    "families": ["report_settings", "proactive_suppression"],
+    "risk_coverage": ["cooldown_suppression", "no_delivery"],
+    "workflows": {
+      "proactive_suppression_check": {
+        "recommendation_class": "suppressed_cooldown",
+        "required_evidence_refs": ["derived_cooldown_suppressed"]
+      }
+    },
+    "api_cases": ["GET /api/safety-audit", "GET /api/imports/audit-summary"],
+    "prohibited_claims": ["sent notification", "live delivery"]
+  }
+}

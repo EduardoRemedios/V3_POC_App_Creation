@@ -1,0 +1,24 @@
+{
+  "fixture_id": "dtu_protein_distribution_recovery_improves",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Protein shifts from dinner-concentrated to distributed across meals while recovery markers improve with comparable training load.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "protein_week1_note", "source": "manual_note", "source_record_id": "protein_week1_note", "domain": "nutrition_log", "observed_at": "2026-05-20T20:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"protein_distribution": "dinner_concentrated", "note": "most protein at dinner"}},
+    {"id": "protein_week1_hrv", "source": "synthetic_garmin_like", "source_record_id": "protein_week1_hrv", "domain": "hrv", "observed_at": "2026-05-21T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 54, "baseline_ms": 60}},
+    {"id": "protein_week1_rhr", "source": "synthetic_garmin_like", "source_record_id": "protein_week1_rhr", "domain": "resting_heart_rate", "observed_at": "2026-05-21T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 53, "baseline_bpm": 50}},
+    {"id": "protein_week2_note", "source": "manual_note", "source_record_id": "protein_week2_note", "domain": "nutrition_log", "observed_at": "2026-05-28T20:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"protein_distribution": "distributed", "note": "protein at breakfast, lunch, and dinner"}},
+    {"id": "protein_week2_hrv", "source": "synthetic_garmin_like", "source_record_id": "protein_week2_hrv", "domain": "hrv", "observed_at": "2026-05-29T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 62, "baseline_ms": 60}},
+    {"id": "protein_week2_rhr", "source": "synthetic_garmin_like", "source_record_id": "protein_week2_rhr", "domain": "resting_heart_rate", "observed_at": "2026-05-29T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 49, "baseline_bpm": 50}},
+    {"id": "protein_activity_1", "source": "synthetic_garmin_like", "source_record_id": "protein_activity_1", "domain": "activity", "observed_at": "2026-05-28T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 70, "intensity": "moderate", "load": 74}},
+    {"id": "protein_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "protein_sleep_1", "domain": "sleep", "observed_at": "2026-05-28T23:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.8, "efficiency": 0.9, "wake_events": 1}}
+  ],
+  "expected": {
+    "derived": {"protein_distribution_pattern": "distributed_improved", "recovery_status": "stable", "training_load_7d": 74},
+    "workflows": {
+      "protein_timing_pattern": {"recommendation_class": "continue_distributed_protein", "required_evidence_refs": ["protein_week1_note", "protein_week2_note", "protein_week2_hrv", "derived_protein_timing_pattern"]}
+    },
+    "prohibited_claims": ["protein timing alone caused", "medical nutrition therapy"]
+  }
+}

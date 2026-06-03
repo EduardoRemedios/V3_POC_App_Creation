@@ -1,0 +1,149 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "completed_with_v3",
+    "created_date": "2026-06-03",
+    "mission_reference": ".factory-v3/missions/MISSION_002_RESEARCH_AND_ARCHITECTURE.md",
+    "closeout_reference": ".factory-v3/evidence/MISSION_002_CLOSEOUT.md",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "/Users/eduardodosremedios/V3_POC_App_Creation",
+    "branch": "not_recorded",
+    "commit_before": "not_recorded",
+    "commit_after": "not_recorded",
+    "coding_harness": "Codex",
+    "objective": "Research dependency and architecture path for the Personal Performance OS POC.",
+    "deployment_target": "not_applicable",
+    "data_mode": "synthetic"
+  },
+  "authority": {
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_002_RESEARCH_AND_ARCHITECTURE.md",
+      ".factory-v3/canons/POC_VISION.md",
+      ".factory-v3/canons/POC_CONSTRAINTS.md",
+      ".factory-v3/canons/POC_VERIFICATION.md",
+      ".factory-v3/canons/DEPENDENCY_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_002_RESEARCH_NOTES.md",
+      ".factory-v3/evidence/MISSION_002_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_002_RECORD.json"
+    ],
+    "forbidden_scope": [
+      "Factory V2 usage of any kind",
+      "App source code, scaffolding, or dependency manifests",
+      "Package installation",
+      "Git initialization unless separately approved",
+      "Garmin credentials, real account login, API calls, or data retrieval",
+      "Telegram bot creation, tokens, webhook setup, or live Telegram traffic",
+      "Hermes installation, configuration, execution, or operational use",
+      "Real personal health data ingestion",
+      "Public deployment, production infrastructure, cloud storage, telemetry, analytics, authentication, or payment setup",
+      "Edits outside authorized files"
+    ],
+    "allowed_commands": [
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "sed -n '1,260p' <authorized-file>",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_002_RECORD.json",
+      "Public web search and source review through Codex browsing tools for research only"
+    ],
+    "dependency_policy": "New dependencies allowed: NO",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [
+      ".factory-v3/missions/MISSION_002_RESEARCH_AND_ARCHITECTURE.md",
+      ".factory-v3/canons/POC_VISION.md",
+      ".factory-v3/canons/POC_CONSTRAINTS.md",
+      ".factory-v3/canons/POC_VERIFICATION.md",
+      ".factory-v3/canons/DEPENDENCY_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_002_RESEARCH_NOTES.md",
+      ".factory-v3/evidence/MISSION_002_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_002_RECORD.json"
+    ],
+    "commands_run": [
+      "sed -n '1,240p' /Users/eduardodosremedios/.codex/attachments/92fbc22b-4b4c-4242-939f-6dbe7a5970de/pasted-text.txt",
+      "sed -n '1,240p' .factory-v3/README.md",
+      "sed -n '1,260p' .factory-v3/canons/POC_VISION.md",
+      "sed -n '1,260p' .factory-v3/canons/POC_CONSTRAINTS.md",
+      "sed -n '1,260p' .factory-v3/canons/POC_VERIFICATION.md",
+      "sed -n '1,260p' .factory-v3/canons/DEPENDENCY_RESEARCH.md",
+      "sed -n '1,260p' .factory-v3/missions/MISSION_001_START_HERE.md",
+      "sed -n '1,260p' .factory-v3/evidence/BOOTSTRAP_DRY_RUN.md",
+      "sed -n '1,260p' .factory-v3/evals/V3_POC_EVAL_RUBRIC.md",
+      "sed -n '1,260p' .factory-v3/templates/V3_POC_MISSION_TEMPLATE.md",
+      "sed -n '1,260p' .factory-v3/templates/V3_POC_CLOSEOUT_TEMPLATE.md",
+      "sed -n '1,260p' .factory-v3/templates/V3_POC_MISSION_RECORD_TEMPLATE.json",
+      "Codex web research and source review for Garmin, Telegram, SQLite, DuckDB, PostgreSQL, open-source Garmin clients, and Hermes",
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_002_RECORD.json"
+    ],
+    "verification": {
+      "commands": [
+        "pwd",
+        "find . -maxdepth 4 -type f | sort",
+        "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+        "python3 -m json.tool .factory-v3/evidence/MISSION_002_RECORD.json"
+      ],
+      "result": "pass",
+      "summary": "Research evidence was recorded, Mission 002 record parses, and V3-only/dependency constraints were maintained."
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "touched": true,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_002_RESEARCH_AND_ARCHITECTURE.md"
+    },
+    "telegram": {
+      "touched": true,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_002_RESEARCH_AND_ARCHITECTURE.md"
+    },
+    "hermes": {
+      "touched": true,
+      "mode": "research_only",
+      "surfaces": [
+        "CLI/TUI",
+        "desktop",
+        "messaging gateway",
+        "memory",
+        "MCP",
+        "skills",
+        "background sessions"
+      ],
+      "approval_reference": ".factory-v3/missions/MISSION_002_RESEARCH_AND_ARCHITECTURE.md"
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass",
+    "verification_quality": "pass",
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "Official Garmin access may require program approval and possible commercial terms.",
+      "Manual export/import is lower risk but less automated.",
+      "Garmin access matrix recommends synthetic-first for the POC, manual export/import as the first real-data bridge, and official APIs as the long-term automation target.",
+      "Synthetic-first should be formalized as a Digital Twin User fixture strategy, not arbitrary demo data.",
+      "Pre-mortem risks should be mitigated through golden fixtures covering fatigue, sleep, nutrition, weight, missing data, contradictory metrics, duplicate imports, timezone boundaries, and non-diagnostic health handling.",
+      "Perplexity's Search as Code article was used as an architectural analogy for compiling human intent into bounded executable workflows over composable primitives; search is treated as the demonstration domain, not the core insight.",
+      "Conversation and intent state should persist across Telegram and desktop web surfaces; surfaces are adapters over shared conversation, intent, evidence, workflow, and memory records.",
+      "Text and voice should normalize into the same intent pipeline, with voice transcription and artifact retention requiring later dependency and privacy approval.",
+      "Image uploads should also normalize into the intent pipeline; nutrition-label capture should preserve source provenance, extracted fields, confidence, units, quantity ambiguity, correction flow, and retention rules.",
+      "Telegram live operation needs a later bot/token handling mission."
+    ]
+  }
+}

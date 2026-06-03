@@ -1,0 +1,45 @@
+{
+  "fixture_id": "dtu_nutrition_label_basis_ambiguity",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Synthetic nutrition label has per-100g and per-serving values, so consumed quantity must be clarified before final macros.",
+  "sources": ["synthetic_nutrition_image_like", "manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_label_image",
+      "source": "synthetic_nutrition_image_like",
+      "source_record_id": "d009_label_image",
+      "domain": "nutrition_label_image",
+      "observed_at": "2026-06-01T19:30:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"image_ref": "synthetic_label_ambiguous_basis", "retention": "synthetic_metadata_only"}
+    },
+    {
+      "id": "src_d009_label_extraction",
+      "source": "synthetic_nutrition_image_like",
+      "source_record_id": "d009_label_extraction",
+      "domain": "nutrition_extraction",
+      "observed_at": "2026-06-01T19:31:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {
+        "product": "Synthetic recovery yoghurt",
+        "basis": "per_100g_and_per_serving_ambiguous",
+        "quantity_consumed": null,
+        "confidence": 0.72,
+        "nutrients": {"protein_g": 9.5, "carbohydrate_g": 6.0, "fat_g": 3.4}
+      }
+    }
+  ],
+  "expected": {
+    "families": ["nutrition_ambiguity", "evidence_edge_cases"],
+    "risk_coverage": ["label_basis_ambiguity", "no_invented_macros"],
+    "workflows": {
+      "nutrition_label_capture": {
+        "recommendation_class": "pending_quantity_confirmation",
+        "required_evidence_refs": ["src_d009_label_image", "src_d009_label_extraction"]
+      }
+    },
+    "api_cases": ["GET /api/fixture-manifest", "POST /api/snapshot/validate-import"],
+    "prohibited_claims": ["exact consumed calories", "invent hidden nutrients"]
+  }
+}

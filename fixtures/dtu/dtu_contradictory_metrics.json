@@ -1,0 +1,20 @@
+{
+  "fixture_id": "dtu_contradictory_metrics",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "The user feels good but HRV and resting heart rate are both unfavorable.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "contradict_sleep", "source": "synthetic_garmin_like", "source_record_id": "contradict_sleep", "domain": "sleep", "observed_at": "2026-06-02T23:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.3, "efficiency": 0.88, "wake_events": 2}},
+    {"id": "contradict_hrv", "source": "synthetic_garmin_like", "source_record_id": "contradict_hrv", "domain": "hrv", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 45, "baseline_ms": 60}},
+    {"id": "contradict_rhr", "source": "synthetic_garmin_like", "source_record_id": "contradict_rhr", "domain": "resting_heart_rate", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 57, "baseline_bpm": 50}},
+    {"id": "contradict_note", "source": "manual_note", "source_record_id": "contradict_note", "domain": "manual_note", "observed_at": "2026-06-03T08:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "feel surprisingly good today", "subjective_readiness": "good"}}
+  ],
+  "expected": {
+    "derived": {"contradictory_metrics": true, "recovery_status": "conflicted"},
+    "workflows": {
+      "recovery_today": {"recommendation_class": "conflicted_recovery_check", "required_evidence_refs": ["contradict_hrv", "contradict_rhr", "contradict_note", "derived_contradictory_metrics"]}
+    },
+    "prohibited_claims": ["ignore subjective", "ignore metrics", "certainty is high"]
+  }
+}

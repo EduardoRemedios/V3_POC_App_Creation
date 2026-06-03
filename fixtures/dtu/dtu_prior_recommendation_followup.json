@@ -1,0 +1,21 @@
+{
+  "fixture_id": "dtu_prior_recommendation_followup",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A prior recommendation to test earlier dinner timing is due for follow-up and compares before/after sleep cautiously.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "followup_recommendation_1", "source": "manual_note", "source_record_id": "followup_recommendation_1", "domain": "recommendation", "observed_at": "2026-05-30T09:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"recommendation_id": "rec_early_dinner_001", "action": "try earlier lighter dinner for three nights", "follow_up_due": "2026-06-03"}},
+    {"id": "followup_sleep_before", "source": "synthetic_garmin_like", "source_record_id": "followup_sleep_before", "domain": "sleep", "observed_at": "2026-05-29T23:50:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 5.9, "efficiency": 0.76, "wake_events": 6}},
+    {"id": "followup_meal_after", "source": "manual_note", "source_record_id": "followup_meal_after", "domain": "nutrition_log", "observed_at": "2026-06-02T19:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "earlier lighter dinner", "timing": "early", "fat_level": "moderate"}},
+    {"id": "followup_sleep_after", "source": "synthetic_garmin_like", "source_record_id": "followup_sleep_after", "domain": "sleep", "observed_at": "2026-06-02T23:05:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.4, "efficiency": 0.89, "wake_events": 2}},
+    {"id": "followup_message", "source": "manual_note", "source_record_id": "followup_message", "domain": "conversation_message", "observed_at": "2026-06-03T08:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_followup_001", "surface": "telegram_style", "intent_id": "intent_followup_001", "text": "Did earlier dinner help?"}}
+  ],
+  "expected": {
+    "derived": {"prior_recommendation_followup_due": true, "sleep_followup_direction": "improved_with_uncertainty", "conversation_thread_count": 1},
+    "workflows": {
+      "prior_recommendation_followup": {"recommendation_class": "follow_up_due", "required_evidence_refs": ["followup_recommendation_1", "followup_sleep_before", "followup_sleep_after", "derived_prior_recommendation_followup"]}
+    },
+    "prohibited_claims": ["proved causality", "caused your improved sleep"]
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "completed_with_v3",
+    "created_date": "2026-06-03",
+    "mission_reference": ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md",
+    "closeout_reference": ".factory-v3/evidence/MISSION_003_CLOSEOUT.md",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "/Users/eduardodosremedios/V3_POC_App_Creation",
+    "branch": "not_recorded",
+    "commit_before": "not_recorded",
+    "commit_after": "not_recorded",
+    "coding_harness": "Codex",
+    "objective": "Define Digital Twin User golden fixtures, source-agnostic state model, and intent-to-executable workflows for the Personal Performance OS POC.",
+    "deployment_target": "not_applicable",
+    "data_mode": "synthetic"
+  },
+  "authority": {
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md",
+      ".factory-v3/evidence/MISSION_003_DTU_GOLDEN_FIXTURES.md",
+      ".factory-v3/evidence/MISSION_003_ARCHITECTURE_PLAN.md",
+      ".factory-v3/evidence/MISSION_003_VERIFICATION_PLAN.md",
+      ".factory-v3/evidence/MISSION_003_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_003_RECORD.json"
+    ],
+    "forbidden_scope": [
+      "Factory V2 usage of any kind",
+      "App source code, scaffolding, or dependency manifests",
+      "Package installation",
+      "Git initialization unless separately approved",
+      "Garmin credentials, real account login, API calls, scraping, or data retrieval",
+      "Telegram bot creation, tokens, webhook setup, polling, or live Telegram traffic",
+      "OCR/vision package installation, external vision API use, or real nutrition image ingestion",
+      "Voice transcription API use or microphone capture",
+      "Hermes installation, configuration, execution, or operational use",
+      "Real personal health data ingestion",
+      "Public deployment, production infrastructure, cloud storage, telemetry, analytics, authentication, or payment setup",
+      "Edits outside authorized files"
+    ],
+    "allowed_commands": [
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "sed -n '1,260p' <authorized-file>",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_003_RECORD.json"
+    ],
+    "dependency_policy": "New dependencies allowed: NO",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [
+      ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md",
+      ".factory-v3/evidence/MISSION_003_DTU_GOLDEN_FIXTURES.md",
+      ".factory-v3/evidence/MISSION_003_ARCHITECTURE_PLAN.md",
+      ".factory-v3/evidence/MISSION_003_VERIFICATION_PLAN.md",
+      ".factory-v3/evidence/MISSION_003_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_003_RECORD.json"
+    ],
+    "commands_run": [
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_003_RECORD.json"
+    ],
+    "verification": {
+      "commands": [
+        "pwd",
+        "find . -maxdepth 4 -type f | sort",
+        "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+        "python3 -m json.tool .factory-v3/evidence/MISSION_003_RECORD.json"
+      ],
+      "result": "pass",
+      "summary": "Mission 003 design artifacts were recorded, the JSON mission record parses, and V3-only/dependency constraints were maintained."
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "touched": false,
+      "mode": "deferred",
+      "approval_reference": ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md"
+    },
+    "telegram": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md"
+    },
+    "ocr_vision": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md"
+    },
+    "voice": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md"
+    },
+    "hermes": {
+      "touched": false,
+      "mode": "not_used",
+      "surfaces": [],
+      "approval_reference": ".factory-v3/missions/MISSION_003_DTU_AND_INTENT_WORKFLOWS.md"
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass",
+    "verification_quality": "pass",
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "The next build mission should turn fixture behavior into executable fixture files and tests.",
+      "The first implementation should stay synthetic-only and local-first.",
+      "Live Telegram, OCR/vision, voice transcription, Garmin data, and Hermes remain out of scope until later approval.",
+      "Intent-to-executable workflows should start as bounded deterministic primitives, not unbounded generated execution."
+    ]
+  }
+}

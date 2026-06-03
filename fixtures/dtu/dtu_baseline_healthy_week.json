@@ -1,0 +1,168 @@
+{
+  "fixture_id": "dtu_baseline_healthy_week",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Seven days of stable sleep, moderate training, normal HRV, normal resting heart rate, stable weight, and adequate protein notes.",
+  "sources": [
+    "synthetic_garmin_like",
+    "synthetic_apple_health_like",
+    "manual_note"
+  ],
+  "source_records": [
+    {
+      "id": "src_sleep_2026_05_25",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_001",
+      "domain": "sleep",
+      "observed_at": "2026-05-25T23:05:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 7.8, "efficiency": 0.91, "wake_events": 1}
+    },
+    {
+      "id": "src_sleep_2026_05_26",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_002",
+      "domain": "sleep",
+      "observed_at": "2026-05-26T23:10:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 8.0, "efficiency": 0.92, "wake_events": 1}
+    },
+    {
+      "id": "src_sleep_2026_05_27",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_003",
+      "domain": "sleep",
+      "observed_at": "2026-05-27T23:20:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 7.6, "efficiency": 0.9, "wake_events": 2}
+    },
+    {
+      "id": "src_sleep_2026_05_28",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_004",
+      "domain": "sleep",
+      "observed_at": "2026-05-28T23:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 7.9, "efficiency": 0.91, "wake_events": 1}
+    },
+    {
+      "id": "src_sleep_2026_05_29",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_005",
+      "domain": "sleep",
+      "observed_at": "2026-05-29T23:15:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 7.7, "efficiency": 0.9, "wake_events": 1}
+    },
+    {
+      "id": "src_sleep_2026_05_30",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_006",
+      "domain": "sleep",
+      "observed_at": "2026-05-30T23:25:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 8.1, "efficiency": 0.92, "wake_events": 1}
+    },
+    {
+      "id": "src_sleep_2026_05_31",
+      "source": "synthetic_apple_health_like",
+      "source_record_id": "apple_sleep_007",
+      "domain": "sleep",
+      "observed_at": "2026-05-31T23:05:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sleep_hours": 7.8, "efficiency": 0.91, "wake_events": 1}
+    },
+    {
+      "id": "src_hrv_2026_05_25",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "garmin_hrv_001",
+      "domain": "hrv",
+      "observed_at": "2026-05-25T07:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"rmssd_ms": 61, "baseline_ms": 60}
+    },
+    {
+      "id": "src_hrv_2026_05_31",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "garmin_hrv_007",
+      "domain": "hrv",
+      "observed_at": "2026-05-31T07:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"rmssd_ms": 62, "baseline_ms": 60}
+    },
+    {
+      "id": "src_rhr_2026_05_31",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "garmin_rhr_007",
+      "domain": "resting_heart_rate",
+      "observed_at": "2026-05-31T07:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"bpm": 49, "baseline_bpm": 50}
+    },
+    {
+      "id": "src_ride_2026_05_26",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "garmin_activity_001",
+      "domain": "activity",
+      "observed_at": "2026-05-26T17:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sport": "cycling", "duration_min": 75, "distance_km": 34, "intensity": "moderate", "load": 78}
+    },
+    {
+      "id": "src_ride_2026_05_28",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "garmin_activity_002",
+      "domain": "activity",
+      "observed_at": "2026-05-28T17:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sport": "cycling", "duration_min": 60, "distance_km": 27, "intensity": "easy", "load": 48}
+    },
+    {
+      "id": "src_strength_2026_05_29",
+      "source": "manual_note",
+      "source_record_id": "manual_strength_001",
+      "domain": "activity",
+      "observed_at": "2026-05-29T18:30:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sport": "strength", "duration_min": 35, "intensity": "moderate", "load": 35}
+    },
+    {
+      "id": "src_ride_2026_05_31",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "garmin_activity_003",
+      "domain": "activity",
+      "observed_at": "2026-05-31T08:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"sport": "cycling", "duration_min": 100, "distance_km": 45, "intensity": "moderate", "load": 92}
+    },
+    {
+      "id": "src_note_2026_05_31",
+      "source": "manual_note",
+      "source_record_id": "manual_note_001",
+      "domain": "nutrition_log",
+      "observed_at": "2026-05-31T20:00:00+01:00",
+      "ingested_at": "2026-06-03T09:00:00+01:00",
+      "payload": {"note": "balanced meals with protein at breakfast, lunch, and dinner", "protein_distribution": "distributed"}
+    }
+  ],
+  "expected": {
+    "derived": {
+      "training_load_7d": 253,
+      "sleep_average_hours": 7.84,
+      "recovery_status": "stable",
+      "missing_domains": []
+    },
+    "workflows": {
+      "recovery_today": {
+        "recommendation_class": "normal_training",
+        "confidence": "high",
+        "required_evidence_refs": ["src_sleep_2026_05_31", "src_hrv_2026_05_31", "src_rhr_2026_05_31", "derived_training_load_7d"]
+      },
+      "four_week_training_analysis": {
+        "trend": "moderate_sustainable_load",
+        "required_evidence_refs": ["derived_training_load_7d"]
+      }
+    },
+    "prohibited_claims": ["peak fitness", "medical diagnosis", "aggressive load increase"]
+  }
+}

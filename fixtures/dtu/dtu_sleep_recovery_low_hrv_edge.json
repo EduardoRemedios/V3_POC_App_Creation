@@ -1,0 +1,57 @@
+{
+  "fixture_id": "dtu_sleep_recovery_low_hrv_edge",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Sleep duration is adequate but HRV is low and resting heart rate is elevated, creating a recovery edge case.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_low_hrv_sleep",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_low_hrv_sleep",
+      "domain": "sleep",
+      "observed_at": "2026-06-02T23:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sleep_hours": 7.9, "efficiency": 0.9, "wake_events": 2}
+    },
+    {
+      "id": "src_d009_low_hrv_hrv",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_low_hrv_hrv",
+      "domain": "hrv",
+      "observed_at": "2026-06-03T07:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"rmssd_ms": 45, "baseline_ms": 60}
+    },
+    {
+      "id": "src_d009_low_hrv_rhr",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_low_hrv_rhr",
+      "domain": "resting_heart_rate",
+      "observed_at": "2026-06-03T07:05:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"bpm": 57, "baseline_bpm": 50}
+    },
+    {
+      "id": "src_d009_low_hrv_note",
+      "source": "manual_note",
+      "source_record_id": "d009_low_hrv_note",
+      "domain": "manual_note",
+      "observed_at": "2026-06-03T08:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"note": "slept enough but feel heavy", "subjective_readiness": "low"}
+    }
+  ],
+  "expected": {
+    "families": ["sleep_and_recovery", "safety_edge_cases"],
+    "risk_coverage": ["adequate_sleep_low_hrv_uncertainty"],
+    "workflows": {
+      "recovery_today": {
+        "recommendation_class": "monitor_cautiously",
+        "required_evidence_refs": ["derived_recovery_edge_case"]
+      }
+    },
+    "api_cases": ["GET /api/safety-audit", "GET /api/imports/audit-summary"],
+    "prohibited_claims": ["safe to do hard intervals", "medical diagnosis"]
+  }
+}

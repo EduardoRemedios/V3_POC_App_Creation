@@ -1,0 +1,22 @@
+{
+  "fixture_id": "dtu_proactive_suppressed_quiet_hours",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Recovery decline crosses a proactive threshold during quiet hours, so delivery is suppressed and queued as passive context.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "quiet_pref_1", "source": "manual_note", "source_record_id": "quiet_pref_1", "domain": "report_preferences", "observed_at": "2026-06-01T09:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"quiet_hours_start": "21:30", "quiet_hours_end": "07:30", "proactive_enabled": true}},
+    {"id": "quiet_hrv_1", "source": "synthetic_garmin_like", "source_record_id": "quiet_hrv_1", "domain": "hrv", "observed_at": "2026-06-01T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 51, "baseline_ms": 60}},
+    {"id": "quiet_hrv_2", "source": "synthetic_garmin_like", "source_record_id": "quiet_hrv_2", "domain": "hrv", "observed_at": "2026-06-02T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 46, "baseline_ms": 60}},
+    {"id": "quiet_rhr_2", "source": "synthetic_garmin_like", "source_record_id": "quiet_rhr_2", "domain": "resting_heart_rate", "observed_at": "2026-06-02T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 57, "baseline_bpm": 50}},
+    {"id": "quiet_sleep_2", "source": "synthetic_garmin_like", "source_record_id": "quiet_sleep_2", "domain": "sleep", "observed_at": "2026-06-01T23:45:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.3, "efficiency": 0.81, "wake_events": 4}},
+    {"id": "quiet_event_1", "source": "manual_note", "source_record_id": "quiet_event_1", "domain": "surface_event", "observed_at": "2026-06-02T22:15:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"event": "proactive_candidate_detected", "surface": "telegram_style", "thread_id": "thread_alert_001", "intent_id": "intent_alert_001"}}
+  ],
+  "expected": {
+    "derived": {"quiet_hours_suppressed": true, "proactive_delivery_status": "suppressed_quiet_hours", "surface_count": 1},
+    "workflows": {
+      "proactive_suppression_check": {"recommendation_class": "suppressed_quiet_hours", "required_evidence_refs": ["quiet_pref_1", "quiet_event_1", "quiet_hrv_2", "derived_quiet_hours_suppressed"]}
+    },
+    "prohibited_claims": ["notification delivered", "webhook", "polling"]
+  }
+}

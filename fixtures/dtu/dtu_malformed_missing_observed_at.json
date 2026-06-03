@@ -1,0 +1,30 @@
+{
+  "fixture_id": "dtu_malformed_missing_observed_at",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A source adapter edge case flags an original missing observed_at value while preserving a fallback synthetic observed_at for parseability.",
+  "sources": ["manual_note"],
+  "source_records": [
+    {
+      "id": "src_d009_malformed_observed_at",
+      "source": "manual_note",
+      "source_record_id": "d009_malformed_observed_at",
+      "domain": "manual_note",
+      "observed_at": "2026-06-03T10:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"note": "original adapter row lacked observed_at", "input_quality": "missing_observed_at", "fallback_observed_at_used": true}
+    }
+  ],
+  "expected": {
+    "families": ["malformed_incomplete_inputs", "api_replay_edge_cases"],
+    "risk_coverage": ["missing_observed_at_fallback", "low_confidence_adapter_row"],
+    "workflows": {
+      "recovery_today": {
+        "recommendation_class": "input_quality_review",
+        "required_evidence_refs": ["derived_input_quality_issue"]
+      }
+    },
+    "api_cases": ["GET /api/error-examples", "GET /api/safety-audit"],
+    "prohibited_claims": ["complete data", "high confidence"]
+  }
+}

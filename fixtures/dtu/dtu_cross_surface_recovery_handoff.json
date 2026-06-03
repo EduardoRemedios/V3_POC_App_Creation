@@ -1,0 +1,22 @@
+{
+  "fixture_id": "dtu_cross_surface_recovery_handoff",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A recovery question starts on Telegram-style text, is inspected on desktop, and continues back on Telegram without forking state.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "handoff_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "handoff_sleep_1", "domain": "sleep", "observed_at": "2026-06-02T23:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.4, "efficiency": 0.89, "wake_events": 2}},
+    {"id": "handoff_hrv_1", "source": "synthetic_garmin_like", "source_record_id": "handoff_hrv_1", "domain": "hrv", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 58, "baseline_ms": 60}},
+    {"id": "handoff_rhr_1", "source": "synthetic_garmin_like", "source_record_id": "handoff_rhr_1", "domain": "resting_heart_rate", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 51, "baseline_bpm": 50}},
+    {"id": "handoff_message_telegram_1", "source": "manual_note", "source_record_id": "surface_msg_telegram_1", "domain": "conversation_message", "observed_at": "2026-06-03T08:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_recovery_001", "surface": "telegram_style", "text": "How recovered am I today?", "intent_id": "intent_recovery_001"}},
+    {"id": "handoff_message_desktop_1", "source": "manual_note", "source_record_id": "surface_msg_desktop_1", "domain": "surface_event", "observed_at": "2026-06-03T08:15:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_recovery_001", "surface": "desktop_style", "event": "opened_evidence_panel", "intent_id": "intent_recovery_001"}},
+    {"id": "handoff_message_telegram_2", "source": "manual_note", "source_record_id": "surface_msg_telegram_2", "domain": "conversation_message", "observed_at": "2026-06-03T08:20:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_recovery_001", "surface": "telegram_style", "text": "So keep it easy?", "intent_id": "intent_recovery_001"}}
+  ],
+  "expected": {
+    "derived": {"conversation_thread_count": 1, "intent_session_count": 1, "surface_count": 2, "recovery_status": "stable"},
+    "workflows": {
+      "recovery_today": {"recommendation_class": "normal_or_easy", "required_evidence_refs": ["handoff_sleep_1", "handoff_hrv_1", "handoff_message_telegram_1", "derived_cross_surface_continuity"]}
+    },
+    "prohibited_claims": ["desktop forked state", "telegram owns conversation state"]
+  }
+}

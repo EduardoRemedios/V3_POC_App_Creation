@@ -1,0 +1,110 @@
+"""Workbench bootstrap helpers for the static local UI."""
+
+from __future__ import annotations
+
+import sqlite3
+from typing import Any
+
+from .fixture_manifest import family_summary, validate_manifest
+from .storage import (
+    list_api_contracts,
+    list_derived_facts,
+    list_expected_workflows,
+    list_fixture_files,
+    list_followup_history,
+    list_imports,
+    list_persisted_report_settings,
+    list_recommendation_history,
+    list_report_candidates,
+    list_safety_audit,
+)
+
+
+WORKBENCH_MOUNTS = {
+    "fixture_selector": "#fixture-selector",
+    "fixture_summary": "#fixture-summary",
+    "family_view": "#family-view",
+    "replay_timeline": "#replay-timeline",
+    "evidence_graph": "#evidence-graph",
+    "workflow_runner": "#workflow-runner",
+    "api_runner": "#api-runner",
+    "evidence_panel": "#evidence-panel",
+    "provenance_view": "#provenance-view",
+    "derived_facts": "#derived-facts",
+    "report_candidates": "#report-candidates",
+    "conversation_simulation": "#conversation-simulation",
+    "recommendation_followup": "#recommendation-followup",
+    "safety_status": "#safety-status",
+    "audit_summary": "#audit-summary",
+}
+
+
+def bootstrap_payload(conn: sqlite3.Connection) -> dict[str, Any]:
+    imports = list_imports(conn)
+    imported_fixture_id = imports[0]["fixture_id"] if imports else None
+    return {
+        "app": "Personal Performance OS Synthetic Workbench",
+        "synthetic_only": True,
+        "local_only": True,
+        "packages_installed": [],
+        "live_integrations": [],
+        "mounts": WORKBENCH_MOUNTS,
+        "fixtures": list_fixture_files(),
+        "manifest_validation": validate_manifest(),
+        "families": family_summary(),
+        "workflow_matrix": list_expected_workflows(),
+        "imports": imports,
+        "reports": list_report_candidates(conn),
+        "recommendations": list_recommendation_history(conn),
+        "follow_up_outcomes": list_followup_history(conn),
+        "report_settings": list_persisted_report_settings(conn),
+        "contracts": list_api_contracts(),
+        "derived_facts": list_derived_facts(conn, imported_fixture_id) if imported_fixture_id else [],
+        "safety": {
+            "v3_only": True,
+            "no_real_data": True,
+            "no_live_integrations": True,
+            "no_scheduler": True,
+            "no_notifications": True,
+            "localhost_only": True,
+            "audit_events": list_safety_audit(conn)["event_count"],
+        },
+        "api_routes": [
+            "GET /api/health",
+            "GET /api/fixtures",
+            "GET /api/fixtures/{fixture_id}",
+            "POST /api/import-fixture",
+            "GET /api/imports",
+            "POST /api/workflows/run",
+            "GET /api/workflows/{run_id}",
+            "GET /api/evidence-packs/{evidence_pack_id}",
+            "GET /api/report-candidates",
+            "GET /api/conversation-threads/{thread_id}",
+            "GET /api/workbench/bootstrap",
+            "GET /api/fixture-manifest",
+            "GET /api/fixture-families",
+            "GET /api/fixtures/expected-workflows",
+            "GET /api/imports/audit-summary",
+            "GET /api/workflows/{run_id}/timeline",
+            "GET /api/evidence-graph",
+            "GET /api/evidence-graph/{fixture_id}",
+            "GET /api/recommendations",
+            "GET /api/follow-up-outcomes",
+            "GET /api/report-settings",
+            "GET /api/safety-audit",
+            "GET /api/snapshot/export",
+            "POST /api/snapshot/validate-import",
+            "GET /api/contracts",
+            "GET /api/error-examples",
+        ],
+        "views": [
+            "fixture-catalog",
+            "replay-debugger",
+            "evidence-graph",
+            "workflow-api-runner",
+            "reports",
+            "conversation-continuity",
+            "recommendations-followup",
+            "safety-audit",
+        ],
+    }

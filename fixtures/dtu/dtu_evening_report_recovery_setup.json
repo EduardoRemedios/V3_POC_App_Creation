@@ -1,0 +1,21 @@
+{
+  "fixture_id": "dtu_evening_report_recovery_setup",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Evening report after a heavy training day and late-meal risk pattern suggests recovery setup without delivery.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "evening_setup_activity", "source": "synthetic_garmin_like", "source_record_id": "evening_setup_activity", "domain": "activity", "observed_at": "2026-06-02T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 115, "intensity": "hard", "load": 155}},
+    {"id": "evening_setup_baseline_sleep", "source": "synthetic_garmin_like", "source_record_id": "evening_setup_baseline_sleep", "domain": "sleep", "observed_at": "2026-05-31T23:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.6, "efficiency": 0.9, "wake_events": 1}},
+    {"id": "evening_setup_prior_meal", "source": "manual_note", "source_record_id": "evening_setup_prior_meal", "domain": "nutrition_log", "observed_at": "2026-06-01T22:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "late high-fat dinner before poor sleep", "timing": "late", "fat_level": "high"}},
+    {"id": "evening_setup_sleep", "source": "synthetic_garmin_like", "source_record_id": "evening_setup_sleep", "domain": "sleep", "observed_at": "2026-06-01T23:50:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 5.9, "efficiency": 0.76, "wake_events": 6}},
+    {"id": "evening_setup_note", "source": "manual_note", "source_record_id": "evening_setup_note", "domain": "manual_note", "observed_at": "2026-06-02T20:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "hungry after hard ride", "evening_context": "recovery_setup"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 155, "evening_recovery_setup": true, "late_meal_sleep_association": true},
+    "workflows": {
+      "evening_report_candidate": {"recommendation_class": "recovery_setup_caution", "sections": ["what_changed_today", "recovery_setup", "nutrition_observation", "data_gaps", "follow_up_state"], "required_evidence_refs": ["evening_setup_activity", "evening_setup_prior_meal", "derived_evening_recovery_setup"]}
+    },
+    "prohibited_claims": ["guilt", "shame", "caused your poor sleep"]
+  }
+}

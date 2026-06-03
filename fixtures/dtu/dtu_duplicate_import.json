@@ -1,0 +1,19 @@
+{
+  "fixture_id": "dtu_duplicate_import",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "The same activity appears twice from two synthetic source files and must not double training load.",
+  "sources": ["synthetic_garmin_like", "synthetic_strava_like"],
+  "source_records": [
+    {"id": "duplicate_garmin_ride", "source": "synthetic_garmin_like", "source_record_id": "garmin_activity_dup", "domain": "activity", "observed_at": "2026-06-01T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 90, "distance_km": 41.2, "intensity": "moderate", "load": 96, "file_hash": "synthetic_hash_same_ride"}},
+    {"id": "duplicate_strava_ride", "source": "synthetic_strava_like", "source_record_id": "strava_activity_dup", "domain": "activity", "observed_at": "2026-06-01T17:00:20+01:00", "ingested_at": "2026-06-03T09:01:00+01:00", "payload": {"sport": "cycling", "duration_min": 90, "distance_km": 41.1, "intensity": "moderate", "load": 96, "file_hash": "synthetic_hash_same_ride"}},
+    {"id": "duplicate_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "duplicate_sleep_1", "domain": "sleep", "observed_at": "2026-06-01T23:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.5, "efficiency": 0.9, "wake_events": 1}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 96, "duplicate_activity_pairs": 1, "canonical_activity_count": 1, "recovery_status": "stable"},
+    "workflows": {
+      "four_week_training_analysis": {"trend": "deduped_activity_load", "required_evidence_refs": ["duplicate_garmin_ride", "duplicate_strava_ride", "derived_duplicate_activity_candidates"]}
+    },
+    "prohibited_claims": ["double counted activity", "source-specific core logic"]
+  }
+}

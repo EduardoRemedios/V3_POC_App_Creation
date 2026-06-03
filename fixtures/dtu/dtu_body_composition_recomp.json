@@ -1,0 +1,48 @@
+{
+  "fixture_id": "dtu_body_composition_recomp",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Weight is stable while waist and strength indicators improve, requiring body-composition nuance.",
+  "sources": ["manual_note", "synthetic_garmin_like"],
+  "source_records": [
+    {
+      "id": "src_d009_recomp_weight_a",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_recomp_weight_a",
+      "domain": "weight",
+      "observed_at": "2026-05-10T07:30:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"weight_kg": 76.2, "waist_cm": 84.5}
+    },
+    {
+      "id": "src_d009_recomp_weight_b",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_recomp_weight_b",
+      "domain": "weight",
+      "observed_at": "2026-06-02T07:30:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"weight_kg": 76.0, "waist_cm": 82.8}
+    },
+    {
+      "id": "src_d009_recomp_strength",
+      "source": "manual_note",
+      "source_record_id": "d009_recomp_strength",
+      "domain": "manual_note",
+      "observed_at": "2026-06-02T18:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"note": "strength sets felt easier; waist down but scale flat", "body_composition_signal": "recomp"}
+    }
+  ],
+  "expected": {
+    "families": ["weight_body_composition", "reporting"],
+    "risk_coverage": ["scale_weight_overinterpretation", "body_composition_context"],
+    "workflows": {
+      "weight_trend_check": {
+        "recommendation_class": "body_recomp_context",
+        "required_evidence_refs": ["derived_body_composition_context"]
+      }
+    },
+    "api_cases": ["GET /api/fixture-families", "GET /api/reports-settings"],
+    "prohibited_claims": ["fat loss guaranteed", "medical diagnosis"]
+  }
+}

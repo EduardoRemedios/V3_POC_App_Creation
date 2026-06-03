@@ -1,0 +1,18 @@
+{
+  "fixture_id": "dtu_greek_yoghurt_label_image",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Synthetic OCR-like metadata for a Greek yoghurt nutrition label image requiring quantity clarification.",
+  "sources": ["synthetic_nutrition_image_like"],
+  "source_records": [
+    {"id": "yoghurt_image_1", "source": "synthetic_nutrition_image_like", "source_record_id": "nutrition_image_001", "domain": "nutrition_label_image", "observed_at": "2026-06-02T13:10:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"surface": "telegram_style", "synthetic_image_ref": "synthetic://dtu/greek_yoghurt_label", "retention_status": "fixture_only"}},
+    {"id": "yoghurt_extraction_1", "source": "synthetic_nutrition_image_like", "source_record_id": "nutrition_extraction_001", "domain": "nutrition_extraction", "observed_at": "2026-06-02T13:11:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"method": "synthetic_ocr_fixture", "product": "Greek yoghurt", "basis": "per_serving", "serving_size": {"value": 150, "unit": "g"}, "nutrients": {"calories": {"value": 120, "unit": "kcal"}, "protein": {"value": 15, "unit": "g"}, "carbohydrate": {"value": 8, "unit": "g"}, "sugars": {"value": 6, "unit": "g"}, "fat": {"value": 3, "unit": "g"}, "saturated_fat": {"value": 2, "unit": "g"}, "salt": {"value": 0.15, "unit": "g"}}, "confidence": 0.91, "quantity_consumed": null}}
+  ],
+  "expected": {
+    "derived": {"nutrition_basis": "per_serving", "quantity_required": true, "invented_nutrients": []},
+    "workflows": {
+      "nutrition_label_capture": {"status": "pending_quantity_confirmation", "required_evidence_refs": ["yoghurt_image_1", "yoghurt_extraction_1"], "clarification": "Did you eat one 150 g serving, the whole container, or another amount?"}
+    },
+    "prohibited_claims": ["confirmed consumed macros", "inferred brand", "invented micronutrients", "OCR execution"]
+  }
+}

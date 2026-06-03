@@ -1,0 +1,29 @@
+{
+  "fixture_id": "dtu_accumulated_fatigue",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Sustained load, declining HRV, rising resting heart rate, shorter sleep, and subjective heavy legs.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "fatigue_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "fatigue_sleep_1", "domain": "sleep", "observed_at": "2026-05-25T23:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.6, "efficiency": 0.84, "wake_events": 3}},
+    {"id": "fatigue_sleep_2", "source": "synthetic_garmin_like", "source_record_id": "fatigue_sleep_2", "domain": "sleep", "observed_at": "2026-05-26T23:45:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.4, "efficiency": 0.82, "wake_events": 4}},
+    {"id": "fatigue_sleep_3", "source": "synthetic_garmin_like", "source_record_id": "fatigue_sleep_3", "domain": "sleep", "observed_at": "2026-05-27T23:40:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.2, "efficiency": 0.81, "wake_events": 4}},
+    {"id": "fatigue_sleep_4", "source": "synthetic_garmin_like", "source_record_id": "fatigue_sleep_4", "domain": "sleep", "observed_at": "2026-05-28T23:50:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.0, "efficiency": 0.8, "wake_events": 5}},
+    {"id": "fatigue_hrv_1", "source": "synthetic_garmin_like", "source_record_id": "fatigue_hrv_1", "domain": "hrv", "observed_at": "2026-05-25T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 54, "baseline_ms": 60}},
+    {"id": "fatigue_hrv_4", "source": "synthetic_garmin_like", "source_record_id": "fatigue_hrv_4", "domain": "hrv", "observed_at": "2026-05-28T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 45, "baseline_ms": 60}},
+    {"id": "fatigue_rhr_4", "source": "synthetic_garmin_like", "source_record_id": "fatigue_rhr_4", "domain": "resting_heart_rate", "observed_at": "2026-05-28T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 56, "baseline_bpm": 50}},
+    {"id": "fatigue_ride_1", "source": "synthetic_garmin_like", "source_record_id": "fatigue_activity_1", "domain": "activity", "observed_at": "2026-05-25T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 85, "distance_km": 38, "intensity": "moderate", "load": 92}},
+    {"id": "fatigue_ride_2", "source": "synthetic_garmin_like", "source_record_id": "fatigue_activity_2", "domain": "activity", "observed_at": "2026-05-26T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 95, "distance_km": 42, "intensity": "hard", "load": 130}},
+    {"id": "fatigue_ride_3", "source": "synthetic_garmin_like", "source_record_id": "fatigue_activity_3", "domain": "activity", "observed_at": "2026-05-27T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 70, "distance_km": 31, "intensity": "moderate", "load": 86}},
+    {"id": "fatigue_ride_4", "source": "synthetic_garmin_like", "source_record_id": "fatigue_activity_4", "domain": "activity", "observed_at": "2026-05-28T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 80, "distance_km": 35, "intensity": "moderate", "load": 94}},
+    {"id": "fatigue_note_1", "source": "manual_note", "source_record_id": "fatigue_note_1", "domain": "manual_note", "observed_at": "2026-05-28T20:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "legs feel heavy", "subjective_fatigue": "high"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 402, "sleep_average_hours": 6.3, "recovery_status": "fatigue_risk", "missing_domains": []},
+    "workflows": {
+      "recovery_today": {"recommendation_class": "reduce_intensity", "confidence": "moderate", "required_evidence_refs": ["fatigue_hrv_4", "fatigue_rhr_4", "fatigue_note_1", "derived_training_load_7d"]},
+      "ride_rest_recommendation": {"recommendation_class": "rest_or_recovery_ride", "required_evidence_refs": ["fatigue_ride_2", "fatigue_hrv_4", "fatigue_note_1"]}
+    },
+    "prohibited_claims": ["hard intervals", "overtraining syndrome", "medical diagnosis"]
+  }
+}

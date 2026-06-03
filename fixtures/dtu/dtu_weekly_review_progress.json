@@ -1,0 +1,24 @@
+{
+  "fixture_id": "dtu_weekly_review_progress",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A deload week reduces load and recovery metrics improve, supporting a gradual ramp recommendation.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "weekly_load_prior_1", "source": "synthetic_garmin_like", "source_record_id": "weekly_load_prior_1", "domain": "activity", "observed_at": "2026-05-20T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 100, "intensity": "hard", "load": 145, "week": "prior"}},
+    {"id": "weekly_load_prior_2", "source": "synthetic_garmin_like", "source_record_id": "weekly_load_prior_2", "domain": "activity", "observed_at": "2026-05-22T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 90, "intensity": "moderate", "load": 110, "week": "prior"}},
+    {"id": "weekly_load_deload_1", "source": "synthetic_garmin_like", "source_record_id": "weekly_load_deload_1", "domain": "activity", "observed_at": "2026-05-29T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 50, "intensity": "easy", "load": 42, "week": "deload"}},
+    {"id": "weekly_hrv_prior", "source": "synthetic_garmin_like", "source_record_id": "weekly_hrv_prior", "domain": "hrv", "observed_at": "2026-05-23T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 50, "baseline_ms": 60}},
+    {"id": "weekly_hrv_deload", "source": "synthetic_garmin_like", "source_record_id": "weekly_hrv_deload", "domain": "hrv", "observed_at": "2026-05-30T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 63, "baseline_ms": 60}},
+    {"id": "weekly_rhr_deload", "source": "synthetic_garmin_like", "source_record_id": "weekly_rhr_deload", "domain": "resting_heart_rate", "observed_at": "2026-05-30T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 49, "baseline_bpm": 50}},
+    {"id": "weekly_sleep_deload", "source": "synthetic_garmin_like", "source_record_id": "weekly_sleep_deload", "domain": "sleep", "observed_at": "2026-05-29T23:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 8.0, "efficiency": 0.92, "wake_events": 1}},
+    {"id": "weekly_note", "source": "manual_note", "source_record_id": "weekly_note", "domain": "manual_note", "observed_at": "2026-05-30T09:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "deload felt effective", "plan": "gradual ramp"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 297, "deload_recovery_trend": "improving_after_deload", "weekly_review_progress": true},
+    "workflows": {
+      "weekly_review_report": {"recommendation_class": "gradual_ramp_after_deload", "required_evidence_refs": ["weekly_load_prior_1", "weekly_load_deload_1", "weekly_hrv_deload", "derived_deload_recovery_trend"]}
+    },
+    "prohibited_claims": ["jump to maximum load", "guaranteed adaptation"]
+  }
+}

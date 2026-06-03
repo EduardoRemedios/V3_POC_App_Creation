@@ -1,0 +1,18 @@
+{
+  "fixture_id": "dtu_nutrition_free_text",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "The user logs a free-text meal note without precise macros or quantity.",
+  "sources": ["manual_note"],
+  "source_records": [
+    {"id": "free_text_meal_1", "source": "manual_note", "source_record_id": "free_text_meal_1", "domain": "nutrition_log", "observed_at": "2026-06-02T13:15:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "chicken, rice, vegetables", "precision": "free_text", "quantity": null}},
+    {"id": "free_text_message_1", "source": "manual_note", "source_record_id": "free_text_message_1", "domain": "conversation_message", "observed_at": "2026-06-02T13:16:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"thread_id": "thread_nutrition_001", "surface": "desktop_style", "intent_id": "intent_nutrition_001", "text": "I just ate chicken, rice, and vegetables."}}
+  ],
+  "expected": {
+    "derived": {"nutrition_free_text_needs_clarification": true, "conversation_thread_count": 1, "surface_count": 1},
+    "workflows": {
+      "nutrition_free_text_handling": {"recommendation_class": "needs_clarification", "required_evidence_refs": ["free_text_meal_1", "free_text_message_1", "derived_nutrition_free_text"]}
+    },
+    "prohibited_claims": ["exact macros", "calorie total", "confirmed consumed macros"]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "fixture_id": "dtu_morning_report_fatigue",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Morning report generated after poor sleep, suppressed HRV, elevated RHR, and high recent load.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "morning_fatigue_sleep", "source": "synthetic_garmin_like", "source_record_id": "morning_fatigue_sleep", "domain": "sleep", "observed_at": "2026-06-02T23:35:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 6.0, "efficiency": 0.79, "wake_events": 5}},
+    {"id": "morning_fatigue_hrv", "source": "synthetic_garmin_like", "source_record_id": "morning_fatigue_hrv", "domain": "hrv", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"rmssd_ms": 44, "baseline_ms": 60}},
+    {"id": "morning_fatigue_rhr", "source": "synthetic_garmin_like", "source_record_id": "morning_fatigue_rhr", "domain": "resting_heart_rate", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"bpm": 58, "baseline_bpm": 50}},
+    {"id": "morning_fatigue_activity_1", "source": "synthetic_garmin_like", "source_record_id": "morning_fatigue_activity_1", "domain": "activity", "observed_at": "2026-06-01T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 120, "intensity": "hard", "load": 170}},
+    {"id": "morning_fatigue_activity_2", "source": "synthetic_garmin_like", "source_record_id": "morning_fatigue_activity_2", "domain": "activity", "observed_at": "2026-06-02T17:00:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 90, "intensity": "moderate", "load": 120}},
+    {"id": "morning_fatigue_note", "source": "manual_note", "source_record_id": "morning_fatigue_note", "domain": "manual_note", "observed_at": "2026-06-03T07:30:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"note": "felt drained waking up", "subjective_fatigue": "high"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 290, "morning_fatigue_flag": true, "recovery_status": "stable"},
+    "workflows": {
+      "morning_report_candidate": {"recommendation_class": "reduce_intensity", "sections": ["readiness", "key_evidence", "training_suggestion", "uncertainty", "next_action"], "required_evidence_refs": ["morning_fatigue_sleep", "morning_fatigue_hrv", "morning_fatigue_rhr", "derived_morning_fatigue_flag"]}
+    },
+    "prohibited_claims": ["hard session recommendation", "medical diagnosis"]
+  }
+}

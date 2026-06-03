@@ -1,0 +1,23 @@
+{
+  "fixture_id": "dtu_timezone_boundary",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Late activity and sleep cross local midnight and require domain-specific local-date attribution.",
+  "sources": ["synthetic_polar_like", "synthetic_health_connect_like"],
+  "source_records": [
+    {"id": "tz_late_ride", "source": "synthetic_polar_like", "source_record_id": "polar_activity_late", "domain": "activity", "observed_at": "2026-06-01T23:35:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sport": "cycling", "duration_min": 50, "distance_km": 22, "intensity": "easy", "load": 42, "ended_at": "2026-06-02T00:25:00+01:00"}},
+    {"id": "tz_sleep_cross_midnight", "source": "synthetic_health_connect_like", "source_record_id": "health_connect_sleep_cross", "domain": "sleep", "observed_at": "2026-06-01T23:55:00+01:00", "ingested_at": "2026-06-03T09:00:00+01:00", "payload": {"sleep_hours": 7.2, "efficiency": 0.87, "wake_events": 2, "ended_at": "2026-06-02T07:10:00+01:00"}}
+  ],
+  "expected": {
+    "derived": {
+      "training_load_7d": 42,
+      "activity_local_date": "2026-06-01",
+      "sleep_local_date": "2026-06-02",
+      "recovery_status": "stable"
+    },
+    "workflows": {
+      "recovery_today": {"recommendation_class": "normal_or_easy", "required_evidence_refs": ["tz_late_ride", "tz_sleep_cross_midnight", "derived_timezone_attribution"]}
+    },
+    "prohibited_claims": ["UTC date attribution", "midnight double count"]
+  }
+}

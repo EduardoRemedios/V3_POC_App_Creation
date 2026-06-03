@@ -1,0 +1,296 @@
+{
+  "api_endpoints": [
+    "/api/health",
+    "/api/fixtures",
+    "/api/fixtures/{fixture_id}",
+    "/api/import-fixture",
+    "/api/imports",
+    "/api/workflows/run",
+    "/api/workflows/{run_id}",
+    "/api/evidence-packs/{evidence_pack_id}",
+    "/api/report-candidates",
+    "/api/conversation-threads/{thread_id}",
+    "/api/workbench/bootstrap",
+    "/api/fixture-manifest",
+    "/api/fixture-families",
+    "/api/fixtures/expected-workflows",
+    "/api/imports/audit-summary",
+    "/api/workflows/{run_id}/timeline",
+    "/api/evidence-graph",
+    "/api/evidence-graph/{fixture_id}",
+    "/api/recommendations",
+    "/api/follow-up-outcomes",
+    "/api/report-settings",
+    "/api/safety-audit",
+    "/api/snapshot/export",
+    "/api/snapshot/validate-import",
+    "/api/contracts",
+    "/api/error-examples",
+    "/api/workflows/run:error_unknown_workflow",
+    "/api/import-fixture:error_missing_fixture_id",
+    "/api/fixtures/{fixture_id}:error_missing_fixture",
+    "/api/not-a-route"
+  ],
+  "browser_ui_qa": "browser_plugin_desktop_dom_console_interaction_passed;screenshot_capture_timed_out;mobile_viewport_override_unavailable;stdlib_local_smoke_passed",
+  "commands_run": [
+    "python3 -B -m unittest discover -s tests",
+    "python3 -B scripts/verify_mission_009.py",
+    "python3 -B scripts/mission_009_browser_smoke.py --db /tmp/ppos_mission_009_browser.sqlite --host 127.0.0.1 --port 8765"
+  ],
+  "compliance": {
+    "localhost_only": true,
+    "no_live_integrations": true,
+    "no_package_install": true,
+    "no_real_data": true,
+    "synthetic_only": true,
+    "v3_only": true
+  },
+  "db_tables": [
+    "api_contract_cases",
+    "conversation_messages",
+    "conversation_threads",
+    "derived_facts",
+    "evidence_graph_edges",
+    "evidence_graph_nodes",
+    "evidence_packs",
+    "evidence_refs",
+    "fact_provenance",
+    "fixture_expected_api_cases",
+    "fixture_expected_workflows",
+    "fixture_families",
+    "fixture_imports",
+    "fixture_manifest_entries",
+    "fixture_risk_coverage",
+    "follow_up_outcomes",
+    "intent_sessions",
+    "normalized_facts",
+    "recommendations",
+    "replay_audit_summaries",
+    "report_candidates",
+    "report_settings",
+    "safety_boundary_events",
+    "schema_migrations",
+    "snapshot_exports",
+    "source_records",
+    "surface_events",
+    "workflow_runs",
+    "workflow_timeline_steps"
+  ],
+  "dependency_review": {
+    "new_dependencies": "none",
+    "packages_installed": [],
+    "policy": "Python standard library and static browser-native APIs only"
+  },
+  "fixture_count": 36,
+  "fixture_families": [
+    {
+      "description": "API contract, replay, snapshot, and error-shape cases.",
+      "family_id": "api_replay_edge_cases",
+      "fixture_count": 5,
+      "fixtures": [
+        "dtu_api_unknown_workflow",
+        "dtu_duplicate_import",
+        "dtu_malformed_missing_observed_at",
+        "dtu_snapshot_export_roundtrip",
+        "dtu_timezone_boundary"
+      ]
+    },
+    {
+      "description": "Desktop, Telegram-style, report-review, and handoff continuity cases.",
+      "family_id": "cross_surface_continuity",
+      "fixture_count": 3,
+      "fixtures": [
+        "dtu_cross_surface_recovery_handoff",
+        "dtu_cross_surface_report_review",
+        "dtu_voice_continuation_as_synthetic_transcript"
+      ]
+    },
+    {
+      "description": "Evidence/provenance ambiguity and graph edge cases.",
+      "family_id": "evidence_edge_cases",
+      "fixture_count": 3,
+      "fixtures": [
+        "dtu_evidence_orphan_ref",
+        "dtu_greek_yoghurt_label_image",
+        "dtu_nutrition_label_basis_ambiguity"
+      ]
+    },
+    {
+      "description": "Parseable synthetic malformed/incomplete source-adapter edge cases.",
+      "family_id": "malformed_incomplete_inputs",
+      "fixture_count": 3,
+      "fixtures": [
+        "dtu_incomplete_source_payload",
+        "dtu_malformed_missing_observed_at",
+        "dtu_missing_data"
+      ]
+    },
+    {
+      "description": "Free text, synthetic label metadata, label basis, and quantity ambiguity cases.",
+      "family_id": "nutrition_ambiguity",
+      "fixture_count": 7,
+      "fixtures": [
+        "dtu_evening_report_nutrition_gap",
+        "dtu_greek_yoghurt_label_image",
+        "dtu_late_high_fat_dinner_sleep_drop",
+        "dtu_nutrition_free_text",
+        "dtu_nutrition_label_basis_ambiguity",
+        "dtu_protein_distribution_recovery_improves",
+        "dtu_weight_loss_plateau"
+      ]
+    },
+    {
+      "description": "Suppression, cooldown, and no-delivery proactive behavior.",
+      "family_id": "proactive_suppression",
+      "fixture_count": 2,
+      "fixtures": [
+        "dtu_proactive_suppressed_quiet_hours",
+        "dtu_weekly_report_suppressed_cooldown"
+      ]
+    },
+    {
+      "description": "Prior recommendation and outcome tracking cases.",
+      "family_id": "recommendation_followup",
+      "fixture_count": 2,
+      "fixtures": [
+        "dtu_prior_recommendation_followup",
+        "dtu_synthetic_voice_followup_outcome"
+      ]
+    },
+    {
+      "description": "Morning/evening/weekly report settings, depth, quiet hours, and cooldown cases.",
+      "family_id": "report_settings",
+      "fixture_count": 4,
+      "fixtures": [
+        "dtu_morning_report_normal",
+        "dtu_proactive_suppressed_quiet_hours",
+        "dtu_report_settings_quiet_depth",
+        "dtu_weekly_report_suppressed_cooldown"
+      ]
+    },
+    {
+      "description": "Morning, evening, weekly, and report review cases.",
+      "family_id": "reporting",
+      "fixture_count": 7,
+      "fixtures": [
+        "dtu_body_composition_recomp",
+        "dtu_cross_surface_report_review",
+        "dtu_evening_report_nutrition_gap",
+        "dtu_evening_report_recovery_setup",
+        "dtu_morning_report_fatigue",
+        "dtu_morning_report_normal",
+        "dtu_weekly_review_progress"
+      ]
+    },
+    {
+      "description": "Audit trail, no-delivery, no-live, and compliance cases.",
+      "family_id": "safety_audit",
+      "fixture_count": 3,
+      "fixtures": [
+        "dtu_evidence_orphan_ref",
+        "dtu_report_settings_quiet_depth",
+        "dtu_snapshot_export_roundtrip"
+      ]
+    },
+    {
+      "description": "Safety boundaries, uncertainty, and non-diagnostic language cases.",
+      "family_id": "safety_edge_cases",
+      "fixture_count": 6,
+      "fixtures": [
+        "dtu_accumulated_fatigue",
+        "dtu_contradictory_metrics",
+        "dtu_missing_data",
+        "dtu_sleep_recovery_low_hrv_edge",
+        "dtu_training_ramp_too_fast",
+        "dtu_weight_loss_too_fast"
+      ]
+    },
+    {
+      "description": "Sleep, HRV, RHR, recovery, fatigue, and readiness edge cases.",
+      "family_id": "sleep_and_recovery",
+      "fixture_count": 10,
+      "fixtures": [
+        "dtu_accumulated_fatigue",
+        "dtu_baseline_healthy_week",
+        "dtu_contradictory_metrics",
+        "dtu_deload_recovery",
+        "dtu_evening_report_recovery_setup",
+        "dtu_hard_session_suppressed_recovery",
+        "dtu_late_high_fat_dinner_sleep_drop",
+        "dtu_morning_report_fatigue",
+        "dtu_protein_distribution_recovery_improves",
+        "dtu_sleep_recovery_low_hrv_edge"
+      ]
+    },
+    {
+      "description": "Training load, ramp, duplicate import, timezone, deload, and weekly review cases.",
+      "family_id": "training_load_and_deload",
+      "fixture_count": 8,
+      "fixtures": [
+        "dtu_baseline_healthy_week",
+        "dtu_deload_recovery",
+        "dtu_duplicate_import",
+        "dtu_hard_session_suppressed_recovery",
+        "dtu_incomplete_source_payload",
+        "dtu_timezone_boundary",
+        "dtu_training_ramp_too_fast",
+        "dtu_weekly_review_progress"
+      ]
+    },
+    {
+      "description": "Synthetic transcript continuation without transcription execution.",
+      "family_id": "voice_transcript_continuation",
+      "fixture_count": 2,
+      "fixtures": [
+        "dtu_synthetic_voice_followup_outcome",
+        "dtu_voice_continuation_as_synthetic_transcript"
+      ]
+    },
+    {
+      "description": "Weight trend, rapid loss, plateau, and recomp context cases.",
+      "family_id": "weight_body_composition",
+      "fixture_count": 3,
+      "fixtures": [
+        "dtu_body_composition_recomp",
+        "dtu_weight_loss_plateau",
+        "dtu_weight_loss_too_fast"
+      ]
+    }
+  ],
+  "gates": {
+    "A_prior_mission_evidence_exists": "PASS",
+    "B_research_spikes_complete_and_cited": "PASS",
+    "C_mission_envelope_plan_checkpoint_record_shell_complete": "PASS",
+    "D_fixture_manifest_and_35_45_fixtures_parse": "PASS",
+    "E_manifest_consistency_and_family_coverage_pass": "PASS",
+    "F_schema_repositories_migrate": "PASS",
+    "G_import_idempotent_and_provenance_preserved": "PASS",
+    "H_replay_timeline_persistence_passes": "PASS",
+    "I_evidence_graph_contracts_pass": "PASS",
+    "J_recommendation_followup_report_settings_contracts_pass": "PASS",
+    "K_db_backed_workflow_contracts_pass": "PASS",
+    "L_http_api_matrix_and_error_contracts_pass": "PASS",
+    "M_static_workbench_contract_checks_pass": "PASS",
+    "N_browser_ui_smoke_or_fallback": "PASS",
+    "O_audit_summary_json_passes": "PASS",
+    "P_safety_v3_no_live_no_real_no_package_pass": "PASS"
+  },
+  "mission_id": "MISSION_009_SYNTHETIC_WORKBENCH_PRODUCT_EXPANSION",
+  "residual_risks": [
+    "Synthetic thresholds remain fixture-calibrated, not real-data calibrated.",
+    "Browser visual QA covers smoke paths only, not full accessibility certification.",
+    "Evidence graph layout is intentionally simple and bounded; it is not a general graph engine."
+  ],
+  "status": "COMPLETE",
+  "test_check_count": 200,
+  "workbench_views": [
+    "fixture catalog",
+    "replay debugger",
+    "evidence graph",
+    "workflow api runner",
+    "reports",
+    "conversation continuity",
+    "recommendations follow-up",
+    "safety audit"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "completed_with_v3",
+    "created_date": "2026-06-03",
+    "mission_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md",
+    "closeout_reference": ".factory-v3/evidence/MISSION_004_CLOSEOUT.md",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "/Users/eduardodosremedios/V3_POC_App_Creation",
+    "branch": "not_recorded",
+    "commit_before": "not_recorded",
+    "commit_after": "not_recorded",
+    "coding_harness": "Codex",
+    "objective": "Add medical PDF ingestion and source-adapter architecture constraints so the POC is not locked to Garmin Connect.",
+    "deployment_target": "not_applicable",
+    "data_mode": "synthetic"
+  },
+  "authority": {
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md",
+      ".factory-v3/canons/POC_VISION.md",
+      ".factory-v3/canons/POC_CONSTRAINTS.md",
+      ".factory-v3/canons/POC_VERIFICATION.md",
+      ".factory-v3/canons/DEPENDENCY_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_004_SOURCE_ADAPTER_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_004_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_004_RECORD.json"
+    ],
+    "forbidden_scope": [
+      "Factory V2 usage of any kind",
+      "App source code, scaffolding, or dependency manifests",
+      "Package installation",
+      "Git initialization unless separately approved",
+      "Real medical PDF ingestion, extraction, or storage",
+      "Real personal health data ingestion",
+      "Apple Health, Polar, Strava, Garmin, Telegram, OCR/vision, or voice API calls",
+      "Credentials, tokens, OAuth apps, developer app registration, webhook setup, polling, or live traffic",
+      "Hermes installation, configuration, execution, or operational use",
+      "Public deployment, production infrastructure, cloud storage, telemetry, analytics, authentication, or payment setup",
+      "Edits outside authorized files"
+    ],
+    "allowed_commands": [
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "sed -n '1,260p' <authorized-file>",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_004_RECORD.json",
+      "Public web search and source review through Codex browsing tools for research only"
+    ],
+    "dependency_policy": "New dependencies allowed: NO",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [
+      ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md",
+      ".factory-v3/canons/POC_VISION.md",
+      ".factory-v3/canons/POC_CONSTRAINTS.md",
+      ".factory-v3/canons/POC_VERIFICATION.md",
+      ".factory-v3/canons/DEPENDENCY_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_004_SOURCE_ADAPTER_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_004_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_004_RECORD.json"
+    ],
+    "commands_run": [
+      "sed -n '1,220p' /Users/eduardodosremedios/.codex/skills/pdf/SKILL.md",
+      "Codex web research and source review for Apple HealthKit, Google Health/Fitbit, Health Connect, Google Fit, Polar AccessLink, and Strava",
+      "pwd",
+      "find . -maxdepth 4 -type f | sort",
+      "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_004_RECORD.json"
+    ],
+    "verification": {
+      "commands": [
+        "pwd",
+        "find . -maxdepth 4 -type f | sort",
+        "rg -n \"factoryctl|stage-lint|pack-lint|docs/Factory/ORCHESTRATION|STAGE_A|STAGE_I2\" .factory-v3",
+        "python3 -m json.tool .factory-v3/evidence/MISSION_004_RECORD.json"
+      ],
+      "result": "pass",
+      "summary": "Mission 004 source-adapter and medical-PDF research was recorded, the JSON mission record parses, and V3-only/dependency constraints were maintained."
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "dependency_evidence": {
+    "medical_pdfs": {
+      "touched": false,
+      "mode": "design_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "apple_health": {
+      "touched": false,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "google_health_fitbit": {
+      "touched": false,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "health_connect": {
+      "touched": false,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "polar": {
+      "touched": false,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "strava": {
+      "touched": false,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "garmin": {
+      "touched": false,
+      "mode": "research_only",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    },
+    "hermes": {
+      "touched": false,
+      "mode": "not_used",
+      "approval_reference": ".factory-v3/missions/MISSION_004_SOURCE_ADAPTERS_AND_MEDICAL_PDFS.md"
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass",
+    "verification_quality": "pass",
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "Garmin must remain one adapter rather than the core model.",
+      "Google Health/Fitbit changed recently with Fitbit Air and Google Health app launch on May 7, 2026; public API/export access must be verified before integration.",
+      "Health Connect is the likely Android integration substrate, while Google Fit is legacy/transition research only.",
+      "Medical PDFs require later approved extraction, visual/layout verification, and non-diagnostic safety boundaries.",
+      "The next build should use synthetic adapter fixtures only."
+    ]
+  }
+}

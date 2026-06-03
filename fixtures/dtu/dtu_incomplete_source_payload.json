@@ -1,0 +1,39 @@
+{
+  "fixture_id": "dtu_incomplete_source_payload",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "A source record has parseable JSON but incomplete activity payload fields, requiring low-confidence handling.",
+  "sources": ["synthetic_garmin_like"],
+  "source_records": [
+    {
+      "id": "src_d009_incomplete_activity",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_incomplete_activity",
+      "domain": "activity",
+      "observed_at": "2026-06-02T17:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sport": "cycling", "duration_min": null, "distance_km": null, "intensity": "unknown", "load": 0, "input_quality": "incomplete_payload"}
+    },
+    {
+      "id": "src_d009_incomplete_sleep",
+      "source": "synthetic_garmin_like",
+      "source_record_id": "d009_incomplete_sleep",
+      "domain": "sleep",
+      "observed_at": "2026-06-02T23:00:00+01:00",
+      "ingested_at": "2026-06-03T10:00:00+01:00",
+      "payload": {"sleep_hours": 7.1, "efficiency": 0.86, "wake_events": 2}
+    }
+  ],
+  "expected": {
+    "families": ["malformed_incomplete_inputs", "training_load_and_deload"],
+    "risk_coverage": ["incomplete_payload_no_false_load"],
+    "workflows": {
+      "four_week_training_analysis": {
+        "recommendation_class": "incomplete_payload_review",
+        "required_evidence_refs": ["derived_incomplete_payload"]
+      }
+    },
+    "api_cases": ["GET /api/imports/audit-summary", "GET /api/contracts"],
+    "prohibited_claims": ["exact training load", "complete activity data"]
+  }
+}

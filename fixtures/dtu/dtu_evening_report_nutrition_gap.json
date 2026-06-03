@@ -1,0 +1,19 @@
+{
+  "fixture_id": "dtu_evening_report_nutrition_gap",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "An activity was completed but nutrition data is missing, so the evening report asks a concise follow-up without macro assumptions.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "evening_ride_1", "source": "synthetic_garmin_like", "source_record_id": "evening_activity_1", "domain": "activity", "observed_at": "2026-06-03T17:30:00+01:00", "ingested_at": "2026-06-03T19:30:00+01:00", "payload": {"sport": "cycling", "duration_min": 80, "distance_km": 36, "intensity": "moderate", "load": 84}},
+    {"id": "evening_sleep_prior", "source": "synthetic_garmin_like", "source_record_id": "evening_sleep_prior", "domain": "sleep", "observed_at": "2026-06-02T23:15:00+01:00", "ingested_at": "2026-06-03T07:30:00+01:00", "payload": {"sleep_hours": 7.2, "efficiency": 0.88, "wake_events": 2}},
+    {"id": "evening_note_1", "source": "manual_note", "source_record_id": "evening_note_1", "domain": "manual_note", "observed_at": "2026-06-03T19:45:00+01:00", "ingested_at": "2026-06-03T19:50:00+01:00", "payload": {"note": "ride complete, no meal details logged yet"}}
+  ],
+  "expected": {
+    "derived": {"training_load_7d": 84, "nutrition_gap": true, "recovery_status": "stable"},
+    "workflows": {
+      "evening_report_candidate": {"sections": ["what_changed_today", "recovery_setup", "nutrition_observation", "data_gaps", "follow_up_state"], "recommendation_class": "ask_nutrition_followup", "required_evidence_refs": ["evening_ride_1", "derived_nutrition_gap"], "clarification": "What did you eat after the ride?"}
+    },
+    "prohibited_claims": ["invented macros", "guilt language", "live notification sent"]
+  }
+}

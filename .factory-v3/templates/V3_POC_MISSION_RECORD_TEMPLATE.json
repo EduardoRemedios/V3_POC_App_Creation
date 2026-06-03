@@ -1,0 +1,67 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "draft | completed_with_v3 | halted | blocked | standalone_gap",
+    "created_date": "YYYY-MM-DD",
+    "mission_reference": "",
+    "closeout_reference": "",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "",
+    "branch": "not_recorded",
+    "commit_before": "not_recorded",
+    "commit_after": "not_recorded",
+    "coding_harness": "Codex",
+    "objective": "",
+    "deployment_target": "private_internal | local_only | not_applicable | other",
+    "data_mode": "synthetic | manual_local | garmin_official | garmin_unofficial | mixed | not_applicable"
+  },
+  "authority": {
+    "authorized_files": [],
+    "forbidden_scope": [],
+    "allowed_commands": [],
+    "dependency_policy": "",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [],
+    "commands_run": [],
+    "verification": {
+      "commands": [],
+      "result": "pass | fail | not_run | not_applicable",
+      "summary": ""
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "touched": false,
+      "mode": "not_used | research_only | official_api | manual_import | unofficial_client | deferred",
+      "approval_reference": ""
+    },
+    "hermes": {
+      "touched": false,
+      "mode": "not_used | research_only | optional_harness | integration_candidate",
+      "surfaces": [],
+      "approval_reference": ""
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass | fail | not_reviewed",
+    "verification_quality": "pass | fail | not_reviewed",
+    "evidence_replay": "pass | fail | not_reviewed",
+    "operator_friction_notes": []
+  }
+}
+

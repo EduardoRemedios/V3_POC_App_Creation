@@ -1,0 +1,20 @@
+{
+  "fixture_id": "dtu_morning_report_normal",
+  "synthetic_only": true,
+  "timezone": "Atlantic/Canary",
+  "scenario": "Complete overnight data, stable recovery, and normal planned training produce a concise morning report candidate.",
+  "sources": ["synthetic_garmin_like", "manual_note"],
+  "source_records": [
+    {"id": "morning_sleep_1", "source": "synthetic_garmin_like", "source_record_id": "morning_sleep_1", "domain": "sleep", "observed_at": "2026-06-02T23:00:00+01:00", "ingested_at": "2026-06-03T07:30:00+01:00", "payload": {"sleep_hours": 7.7, "efficiency": 0.9, "wake_events": 1}},
+    {"id": "morning_hrv_1", "source": "synthetic_garmin_like", "source_record_id": "morning_hrv_1", "domain": "hrv", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T07:30:00+01:00", "payload": {"rmssd_ms": 61, "baseline_ms": 60}},
+    {"id": "morning_rhr_1", "source": "synthetic_garmin_like", "source_record_id": "morning_rhr_1", "domain": "resting_heart_rate", "observed_at": "2026-06-03T07:00:00+01:00", "ingested_at": "2026-06-03T07:30:00+01:00", "payload": {"bpm": 50, "baseline_bpm": 50}},
+    {"id": "morning_plan_1", "source": "manual_note", "source_record_id": "morning_plan_1", "domain": "manual_note", "observed_at": "2026-06-03T07:20:00+01:00", "ingested_at": "2026-06-03T07:30:00+01:00", "payload": {"note": "planned endurance ride today", "planned_training": "endurance_ride"}}
+  ],
+  "expected": {
+    "derived": {"sleep_average_hours": 7.7, "recovery_status": "stable", "missing_domains": []},
+    "workflows": {
+      "morning_report_candidate": {"sections": ["readiness", "key_evidence", "training_suggestion", "uncertainty", "next_action"], "recommendation_class": "normal_training", "required_evidence_refs": ["morning_sleep_1", "morning_hrv_1", "morning_rhr_1", "morning_plan_1"]}
+    },
+    "prohibited_claims": ["alert language", "medical diagnosis", "live notification sent"]
+  }
+}

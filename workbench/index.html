@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Personal Performance OS Synthetic Workbench</title>
+    <link rel="stylesheet" href="/workbench/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>Personal Performance OS</h1>
+          <p>Synthetic local workbench</p>
+        </div>
+        <div id="safety-status" class="status-strip" aria-live="polite"></div>
+      </header>
+
+      <aside class="sidebar" aria-label="Workbench views">
+        <button class="nav-button is-active" data-view="catalog">Catalog</button>
+        <button class="nav-button" data-view="replay">Replay</button>
+        <button class="nav-button" data-view="graph">Graph</button>
+        <button class="nav-button" data-view="runner">Runner</button>
+        <button class="nav-button" data-view="reports">Reports</button>
+        <button class="nav-button" data-view="conversation">Conversation</button>
+        <button class="nav-button" data-view="recommendations">Follow-up</button>
+        <button class="nav-button" data-view="audit">Audit</button>
+      </aside>
+
+      <main class="workspace">
+        <section class="toolbar">
+          <label for="fixture-selector">Fixture</label>
+          <select id="fixture-selector"></select>
+          <button id="import-fixture">Import</button>
+          <span id="fixture-count" class="metric"></span>
+        </section>
+
+        <section class="view is-active" id="view-catalog" data-view-panel="catalog">
+          <div class="panel">
+            <h2>Fixture Catalog</h2>
+            <div id="fixture-summary" class="summary-grid"></div>
+            <div id="family-view" class="list-grid"></div>
+          </div>
+          <div class="panel">
+            <h2>Provenance</h2>
+            <div id="provenance-view" class="two-column">
+              <div>
+                <h3>Source Records</h3>
+                <div id="source-list" class="dense-list"></div>
+              </div>
+              <div>
+                <h3>Normalized Facts</h3>
+                <div id="normalized-list" class="dense-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-replay" data-view-panel="replay">
+          <div class="panel">
+            <h2>Replay Debugger</h2>
+            <div id="replay-timeline" class="timeline"></div>
+          </div>
+          <div class="panel">
+            <h2>Derived Facts</h2>
+            <div id="derived-facts"><div id="derived-list" class="dense-list"></div></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-graph" data-view-panel="graph">
+          <div class="panel">
+            <h2>Evidence Graph</h2>
+            <div id="evidence-graph" class="graph-grid"></div>
+          </div>
+          <div class="panel">
+            <h2>Evidence Pack</h2>
+            <pre id="evidence-panel" class="json-output"></pre>
+          </div>
+        </section>
+
+        <section class="view" id="view-runner" data-view-panel="runner">
+          <div class="panel" id="workflow-runner">
+            <h2>Workflow Runner</h2>
+            <div class="control-row">
+              <select id="workflow-selector">
+                <option value="recovery_today">recovery_today</option>
+                <option value="sleep_cause_analysis">sleep_cause_analysis</option>
+                <option value="four_week_training_analysis">four_week_training_analysis</option>
+                <option value="nutrition_label_capture">nutrition_label_capture</option>
+                <option value="ride_rest_recommendation">ride_rest_recommendation</option>
+                <option value="nutrition_free_text_handling">nutrition_free_text_handling</option>
+                <option value="weight_trend_check">weight_trend_check</option>
+                <option value="protein_timing_pattern">protein_timing_pattern</option>
+                <option value="weekly_review_report">weekly_review_report</option>
+                <option value="proactive_suppression_check">proactive_suppression_check</option>
+                <option value="prior_recommendation_followup">prior_recommendation_followup</option>
+                <option value="voice_transcript_continuity">voice_transcript_continuity</option>
+              </select>
+              <button id="run-workflow">Run</button>
+            </div>
+            <pre id="workflow-output" class="json-output"></pre>
+          </div>
+          <div class="panel" id="api-runner">
+            <h2>API Matrix</h2>
+            <div id="api-contract-list" class="dense-list"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-reports" data-view-panel="reports">
+          <div class="panel">
+            <h2>Reports</h2>
+            <div id="report-candidates"><div id="report-list" class="dense-list"></div></div>
+          </div>
+          <div class="panel">
+            <h2>Report Settings</h2>
+            <div id="report-settings" class="dense-list"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-conversation" data-view-panel="conversation">
+          <div class="panel">
+            <h2>Conversation Continuity</h2>
+            <div id="conversation-simulation"><div id="thread-list" class="dense-list"></div></div>
+          </div>
+          <div class="panel">
+            <h2>Workflow Matrix</h2>
+            <div id="workflow-matrix" class="dense-list"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-recommendations" data-view-panel="recommendations">
+          <div class="panel">
+            <h2>Recommendation History</h2>
+            <div id="recommendation-followup" class="dense-list"></div>
+          </div>
+          <div class="panel">
+            <h2>Follow-up Outcomes</h2>
+            <div id="followup-list" class="dense-list"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-audit" data-view-panel="audit">
+          <div class="panel">
+            <h2>Safety Audit</h2>
+            <div id="audit-summary" class="dense-list"></div>
+          </div>
+          <div class="panel">
+            <h2>Snapshot</h2>
+            <pre id="snapshot-output" class="json-output"></pre>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="/workbench/app.js"></script>
+  </body>
+</html>
