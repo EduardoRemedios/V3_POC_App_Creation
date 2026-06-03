@@ -31,23 +31,21 @@ Prove both:
 | Ambient agent behavior | Morning reports, evening reports, proactive observations, follow-ups, thresholds, cooldowns, quiet hours, and report evidence are verified before live scheduling. |
 
 ## Default Verification Commands
-Fill these after the app stack is chosen:
+Current local synthetic workbench commands:
 
 ```bash
-# lint
-not_selected_yet
-
-# typecheck
-not_selected_yet
-
 # test
-not_selected_yet
+python3 -B -m unittest discover -s tests
 
-# build
-not_selected_yet
+# mission 010 local UI/API QA
+python3 -B scripts/mission_010_workbench_qa.py --db /tmp/ppos_mission_010_qa.sqlite --host 127.0.0.1 --port 8770
 
-# local/private deployment smoke check
-not_selected_yet
+# mission 010 evidence/static verifier
+python3 -B scripts/verify_mission_010.py
+
+# JSON evidence parse checks
+python3 -m json.tool .factory-v3/evidence/MISSION_010_RECORD.json
+python3 -m json.tool .factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json
 ```
 
 ## Research Mission Verification
@@ -62,13 +60,15 @@ For V3-only dependency and architecture research missions, verify:
 - Hermes was researched only and not installed, configured, or used,
 - JSON mission records parse.
 
-## Long-Horizon Mission Verification
-For long-horizon missions, verify:
-- mission envelope declares duration band, phases, checkpoints, fixture gates, drift audit, and reentry rules,
-- each checkpoint records phase, files changed, commands run, fixture gate status, open risks, and next phase,
-- fixture gates are run before dependent work proceeds,
-- failures are classified as implementation bug, fixture issue, scope gap, dependency gap, or standalone V3 gap,
-- scope expansion is recorded and halted unless already authorized,
+## Adaptive Mission Verification
+For larger/adaptive missions, verify:
+- mission envelope declares objective, authority, files, commands, dependency policy, verification side effects, git authority, stop/interrupt rules, and reentry rules,
+- authored mission state exists and matches repository state,
+- checkpoints are recorded at natural phase boundaries or risk transitions,
+- human decision interrupts exist for unresolved ambiguity, dependency, credential, deployment, safety, recovery, budget, reentry, or authority choices,
+- plan deltas exist before scope, file, command, dependency, verification, continuation, or git authority changes,
+- verification side effects write only to authorized output paths,
+- failures are classified as implementation bug, fixture issue, scope gap, dependency gap, recovery decision, or standalone V3 gap,
 - closeout can replay what changed across the full mission.
 
 Recommended fixture gate order:
@@ -129,3 +129,14 @@ Golden fixtures are required to prevent synthetic data from becoming arbitrary d
 - Label manual-import evidence separately from automated Garmin API evidence.
 - Label Hermes-assisted evidence separately if Hermes is later approved.
 - Label Telegram live-bot evidence separately if Telegram is later approved.
+
+## Current Browser/UI QA Baseline
+Mission 010 established that the built-in Codex Browser can verify the local synthetic workbench on desktop and mobile:
+- desktop Browser scenario walkthrough passed at 1280x720,
+- desktop screenshot capture succeeded,
+- mobile viewport override to 390x844 succeeded,
+- mobile screenshot capture succeeded,
+- Browser viewport reset succeeded,
+- runtime error evidence was collected through the workbench QA error buffer.
+
+Browser screenshots are emitted through the Browser tool response unless a future mission authorizes persisted image artifact paths.

@@ -15,35 +15,31 @@ If V3 cannot proceed without V2, stop and record:
 - the evidence that proves the gap,
 - the recommended V3 improvement.
 
-## Long-Horizon Mission Constraint
-Factory V3 missions may be larger than micro-sprints when the mission envelope is explicit enough to prevent drift.
+## Adaptive Mission Constraint
+Factory V3 missions may be larger than micro-sprints when the objective, approved authority, verification requirements, budget, and evidence needs justify the size.
 
-Allowed mission sizes:
-- micro mission: narrow artifact or decision,
-- standard mission: several related artifacts or a narrow implementation slice,
-- long-horizon mission: multi-step design/build/test slice that may run for one to two hours or more.
+Mission size must not be padded by arbitrary file counts, time targets, fixtures, or tests. Size emerges from the mission objective and the risk/verification surface.
 
-Long-horizon missions require:
-- explicit duration band,
-- phases,
-- checkpoints,
-- fixture gates,
-- authorized files/directories,
-- allowed commands,
-- dependency policy,
-- drift audit,
-- reentry rules,
-- closeout and mission record.
+Larger missions require:
+- phase-boundary or risk-transition checkpoints,
+- authored mission state,
+- human decision interrupts when ambiguity, authority, dependency, credential, deployment, safety, recovery, budget, or reentry decisions appear,
+- plan deltas before scope, file, command, dependency, verification, or continuation changes,
+- explicit verification side-effect rules,
+- explicit git authority before commit, push, branch, remote, or initialization work,
+- closeout and mission record evidence that can replay the work.
 
-A long-horizon mission must stop if:
+A mission must stop or interrupt if:
 - it needs files outside authorization,
 - it needs an unapproved dependency,
 - it needs credentials or real private data,
 - it needs a live integration not approved by the mission,
-- fixture failure implies scope expansion rather than implementation correction,
-- verification cannot be run.
+- verification failure implies scope expansion rather than implementation correction,
+- verification cannot be run,
+- authored mission state or checkpoint evidence is stale,
+- git write operations are needed without explicit human authority.
 
-Larger missions do not weaken V3-only, dependency, privacy, or evidence constraints.
+Larger missions do not weaken V3-only, dependency, privacy, adaptive-control, or evidence constraints.
 
 ## Deployment Constraint
 Deployment is private/internal only unless a later mission explicitly approves a target and scope.
@@ -196,6 +192,8 @@ Requires later mission approval:
 - registering webhooks,
 - using long polling against the live API,
 - sending or receiving live Telegram messages.
+
+Telegram may be considered only as a future research/candidate interrupt surface under adaptive mission control. It is not an approved live interrupt surface, bot, token, polling loop, webhook, or delivery mechanism.
 
 ## Cross-Surface Conversation Constraint
 Conversation, intent, and coaching memory must be independent of the UI surface.

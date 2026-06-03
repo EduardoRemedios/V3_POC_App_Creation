@@ -76,6 +76,13 @@ The proof succeeds if V3 with Codex can:
 ## First Useful App Outcome
 The first app should be useful enough for private sponsor use, while staying small enough to test V3 rather than burying the proof under product scope.
 
+Current implemented local POC shape after Mission 010:
+- synthetic-only local stdlib HTTP API,
+- SQLite-backed fixture import, workflow replay, timelines, evidence graph, recommendations, follow-ups, report settings, and safety audit state,
+- static no-build multi-view workbench,
+- operator scenario walkthrough and QA evidence surfaces,
+- Browser-verified desktop and mobile local UI behavior.
+
 Recommended first POC shape after Mission 002 research:
 - synthetic-first local data model,
 - Digital Twin User model for representative training, recovery, sleep, nutrition, and health patterns,

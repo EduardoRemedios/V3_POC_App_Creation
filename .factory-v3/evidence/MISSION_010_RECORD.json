@@ -1,0 +1,166 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "completed_with_v3",
+    "created_date": "2026-06-03",
+    "mission_reference": ".factory-v3/missions/MISSION_010_SYNTHETIC_WORKBENCH_QA_AND_OPERATOR_READINESS.md",
+    "closeout_reference": ".factory-v3/evidence/MISSION_010_CLOSEOUT.md",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "/Users/eduardodosremedios/V3_POC_App_Creation",
+    "branch": "main",
+    "commit_before": "abb8ec0",
+    "commit_after": "not_recorded",
+    "coding_harness": "Codex",
+    "objective": "Improve the Mission 009 synthetic local workbench into a more reliable operator-ready QA surface with stronger browser/UI verification, scenario walkthrough coverage, UI state/error handling, responsive layout contracts, and generated audit evidence.",
+    "deployment_target": "local_only",
+    "data_mode": "synthetic"
+  },
+  "authority": {
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_010_SYNTHETIC_WORKBENCH_QA_AND_OPERATOR_READINESS.md",
+      ".factory-v3/evidence/MISSION_010_IMPLEMENTATION_PLAN.md",
+      ".factory-v3/evidence/MISSION_010_STATE.md",
+      ".factory-v3/evidence/MISSION_010_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_010_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_010_RECORD.json",
+      ".factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      ".factory-v3/evidence/MISSION_010_BROWSER_NOTES.md",
+      "workbench/index.html",
+      "workbench/app.js",
+      "workbench/styles.css",
+      "scripts/mission_010_workbench_qa.py",
+      "scripts/verify_mission_010.py",
+      "tests/test_mission_010_workbench_qa.py"
+    ],
+    "forbidden_scope": [
+      "Factory V2 or Factory_V3 repo tooling",
+      "real data",
+      "live integrations",
+      "Telegram bot/token/polling/webhook/live traffic",
+      "OCR or voice transcription execution",
+      "package installation without interrupt and plan delta",
+      "public deployment",
+      "git write operations without explicit human authority"
+    ],
+    "allowed_commands": [
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B scripts/mission_010_workbench_qa.py --db /tmp/ppos_mission_010_qa.sqlite --host 127.0.0.1 --port 8770",
+      "python3 -B scripts/verify_mission_010.py",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_010_RECORD.json",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      "python3 -B -m ppos_core.api --db <tmp sqlite path> --host 127.0.0.1 --port <localhost port>",
+      "built-in Codex Browser against localhost workbench",
+      "command -v npx"
+    ],
+    "dependency_policy": "No new dependencies. Playwright CLI may be used only if already available without package acquisition; otherwise halt for human decision interrupt.",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [
+      ".factory-v3/missions/MISSION_010_SYNTHETIC_WORKBENCH_QA_AND_OPERATOR_READINESS.md",
+      ".factory-v3/evidence/MISSION_010_IMPLEMENTATION_PLAN.md",
+      ".factory-v3/evidence/MISSION_010_STATE.md",
+      ".factory-v3/evidence/MISSION_010_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_010_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_010_RECORD.json",
+      ".factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      ".factory-v3/evidence/MISSION_010_BROWSER_NOTES.md",
+      "workbench/index.html",
+      "workbench/app.js",
+      "workbench/styles.css",
+      "scripts/mission_010_workbench_qa.py",
+      "scripts/verify_mission_010.py",
+      "tests/test_mission_010_workbench_qa.py"
+    ],
+    "commands_run": [
+      "python3 -B scripts/mission_010_workbench_qa.py --db /tmp/ppos_mission_010_qa.sqlite --host 127.0.0.1 --port 8770",
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B scripts/verify_mission_010.py",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_010_RECORD.json",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      "python3 -B -m ppos_core.api --db /tmp/ppos_mission_010_browser.sqlite --host 127.0.0.1 --port 8770",
+      "built-in Codex Browser desktop/mobile QA against localhost workbench",
+      "git status --short --branch",
+      "git diff --stat",
+      "lsof -ti tcp:8770"
+    ],
+    "verification": {
+        "commands": [
+          "python3 -B scripts/mission_010_workbench_qa.py --db /tmp/ppos_mission_010_qa.sqlite --host 127.0.0.1 --port 8770",
+          "python3 -B -m unittest discover -s tests",
+          "python3 -B scripts/verify_mission_010.py",
+          "python3 -m json.tool .factory-v3/evidence/MISSION_010_RECORD.json",
+          "python3 -m json.tool .factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+          "built-in Codex Browser desktop/mobile QA"
+        ],
+        "result": "pass",
+        "summary": "Stdlib QA harness passed, 137 unit tests passed, Mission 010 verifier passed 39 checks, JSON evidence parsed, Browser desktop/mobile QA passed with screenshots emitted through Browser."
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "adaptive_mission_control": {
+    "checkpoints": [
+      ".factory-v3/evidence/MISSION_010_CHECKPOINTS.md#checkpoint-001",
+      ".factory-v3/evidence/MISSION_010_CHECKPOINTS.md#checkpoint-002",
+      ".factory-v3/evidence/MISSION_010_CHECKPOINTS.md#checkpoint-003"
+    ],
+    "mission_state_reference": ".factory-v3/evidence/MISSION_010_STATE.md",
+    "human_decision_interrupts": [],
+    "plan_deltas": [],
+    "verification_side_effects": [
+      ".factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      ".factory-v3/evidence/MISSION_010_BROWSER_NOTES.md",
+      ".factory-v3/evidence/MISSION_010_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_010_STATE.md",
+      ".factory-v3/evidence/MISSION_010_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_010_RECORD.json"
+    ],
+    "git": {
+      "allowed": false,
+      "commands": [
+        "git status --short --branch",
+        "git log --oneline --decorate -8",
+        "git diff --stat",
+        "git diff -- workbench scripts tests .factory-v3"
+      ],
+      "commit_before": "abb8ec0",
+      "commit_after": "not_recorded",
+      "remote_policy": "read_status_only",
+      "pushed": false
+    }
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "touched": false,
+      "mode": "not_used",
+      "approval_reference": ""
+    },
+    "hermes": {
+      "touched": false,
+      "mode": "not_used",
+      "surfaces": [],
+      "approval_reference": ""
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass",
+    "verification_quality": "pass",
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "Browser screenshot and viewport behavior worked in Mission 010 after adding URL fixture selection and runtime QA error buffering.",
+      "Screenshots were emitted through Browser but not persisted to files because no screenshot artifact path was authorized."
+    ]
+  }
+}

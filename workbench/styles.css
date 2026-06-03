@@ -9,6 +9,8 @@
   --accent: #227c74;
   --accent-2: #9a5b2f;
   --danger: #b23b48;
+  --warning: #bb7a16;
+  --success: #31775b;
   --shadow: 0 14px 30px rgba(30, 45, 62, 0.08);
 }
 
@@ -26,6 +28,12 @@ body {
 button,
 select {
   font: inherit;
+}
+
+button:disabled,
+select:disabled {
+  cursor: progress;
+  opacity: 0.65;
 }
 
 .app-shell {
@@ -145,6 +153,31 @@ button:hover {
   flex-wrap: wrap;
 }
 
+.operator-state {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.status-line,
+.error-line {
+  min-height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 7px 9px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.error-line {
+  border-color: #e5a8ae;
+  background: #fff5f6;
+  color: var(--danger);
+}
+
 select {
   min-height: 36px;
   max-width: 100%;
@@ -158,10 +191,15 @@ select {
   display: none;
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
   gap: 14px;
+  align-items: start;
 }
 
 .view.is-active {
   display: grid;
+}
+
+#view-runner.is-active {
+  grid-template-columns: minmax(260px, 0.9fr) minmax(260px, 1fr) minmax(260px, 0.9fr);
 }
 
 .panel {
@@ -231,6 +269,22 @@ select {
   white-space: pre-wrap;
 }
 
+.scenario-step.pass {
+  border-left: 4px solid var(--success);
+}
+
+.scenario-step.running {
+  border-left: 4px solid var(--warning);
+}
+
+.scenario-step.fail {
+  border-left: 4px solid var(--danger);
+}
+
+body[data-loading="true"] .workspace {
+  cursor: progress;
+}
+
 .graph-node {
   border-left: 4px solid var(--accent);
 }
@@ -274,9 +328,21 @@ select {
   }
 
   .view,
+  #view-runner.is-active,
   .summary-grid,
   .list-grid,
   .two-column {
     grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    align-items: stretch;
+  }
+
+  .toolbar > label,
+  .toolbar > select,
+  .toolbar > button,
+  .toolbar > .metric {
+    width: 100%;
   }
 }

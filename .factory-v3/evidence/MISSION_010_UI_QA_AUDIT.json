@@ -1,0 +1,104 @@
+{
+  "api_scenario": {
+    "error_contract_field": true,
+    "error_contract_status": true,
+    "fixture_count": 36,
+    "graph_edge_count": 22,
+    "graph_node_count": 20,
+    "health_ok": true,
+    "import_count": 16,
+    "recommendation_count": 2,
+    "run_id": "dtu_training_ramp_too_fast_workflow_ride_rest_recommendation",
+    "safety_event_count": 3,
+    "selected_fixture": "dtu_training_ramp_too_fast",
+    "snapshot_synthetic_only": true,
+    "timeline_step_count": 5,
+    "workflow": "ride_rest_recommendation",
+    "workflow_status": "candidate"
+  },
+  "browser_qa": {
+    "console_or_runtime_errors": 0,
+    "desktop": {
+      "active_view_after_scenario": "audit",
+      "audit_items": 7,
+      "evidence_graph_items": 42,
+      "fixture_id": "dtu_training_ramp_too_fast",
+      "horizontal_overflow": [],
+      "replay_timeline_items": 5,
+      "scenario_timeline_steps": 5,
+      "screenshot": {
+        "bytes": 69241,
+        "captured": true
+      },
+      "viewport": {
+        "height": 720,
+        "width": 1280
+      }
+    },
+    "mobile": {
+      "fixture_id": "dtu_training_ramp_too_fast",
+      "horizontal_overflow": [],
+      "nav_overflow": "intentional_scrollable_sidebar",
+      "screenshot": {
+        "bytes": 40281,
+        "captured": true
+      },
+      "toolbar_width": 351,
+      "viewport": {
+        "height": 844,
+        "width": 390
+      },
+      "viewport_reset": true
+    },
+    "notes": [
+      "Browser QA recorded in .factory-v3/evidence/MISSION_010_BROWSER_NOTES.md.",
+      "Screenshots were emitted by the Browser tool response and not persisted because no image artifact path was authorized.",
+      "Runtime error evidence used window.__PPOS_WORKBENCH_QA__.errors because direct console APIs were not exposed by the Browser tab interface."
+    ],
+    "status": "pass"
+  },
+  "commands_run": [
+    "python3 -B scripts/mission_010_workbench_qa.py --db /tmp/ppos_mission_010_qa.sqlite --host 127.0.0.1 --port 8770"
+  ],
+  "generated_at": "2026-06-03T13:51:56.227458Z",
+  "local_only": true,
+  "mission_id": "MISSION_010_SYNTHETIC_WORKBENCH_QA_AND_OPERATOR_READINESS",
+  "no_package_install": true,
+  "residual_risks": [],
+  "static_contracts": {
+    "api_error_handling": true,
+    "css_served": true,
+    "fixture_persistence": true,
+    "html_served": true,
+    "js_served": true,
+    "loading_state": true,
+    "required_test_ids": {
+      "audit-summary": true,
+      "evidence-graph": true,
+      "fixture-selector": true,
+      "import-fixture": true,
+      "operator-state": true,
+      "operator-toolbar": true,
+      "replay-timeline": true,
+      "reset-workbench": true,
+      "run-scenario": true,
+      "scenario-output": true,
+      "scenario-runner": true,
+      "view-audit": true,
+      "view-catalog": true,
+      "view-conversation": true,
+      "view-graph": true,
+      "view-recommendations": true,
+      "view-replay": true,
+      "view-reports": true,
+      "view-runner": true,
+      "workbench-title": true
+    },
+    "reset_control": true,
+    "responsive_contract": true,
+    "scenario_walkthrough": true,
+    "url_fixture_selection": true
+  },
+  "status": "pass",
+  "synthetic_only": true
+}

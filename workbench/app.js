@@ -1,8 +1,28 @@
 const state = {
   fixtures: [],
   selectedFixtureId: null,
+  selectedFixtureDetail: null,
   lastRunId: null,
+  busy: false,
+  lastError: null,
+  scenario: [],
 };
+
+window.__PPOS_WORKBENCH_QA__ = {
+  errors: [],
+  events: [],
+};
+
+window.addEventListener("error", (event) => {
+  window.__PPOS_WORKBENCH_QA__.errors.push(event.message || "window error");
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  const reason = event.reason && event.reason.message ? event.reason.message : String(event.reason);
+  window.__PPOS_WORKBENCH_QA__.errors.push(reason);
+});
+
+const STORAGE_KEY = "ppos.workbench.selectedFixtureId";
 
 const api = {
   bootstrap: () => fetchJson("/api/workbench/bootstrap"),
@@ -27,7 +47,54 @@ async function fetchJson(path, body) {
     headers: body ? { "Content-Type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
   });
-  return response.json();
+  const payload = await response.json();
+  if (!response.ok) {
+    const message = payload.detail || payload.title || `Local API request failed: ${path}`;
+    throw new Error(message);
+  }
+  return payload;
+}
+
+function setBusy(isBusy, message) {
+  state.busy = isBusy;
+  document.body.dataset.loading = isBusy ? "true" : "false";
+  document.querySelectorAll("button, select").forEach((control) => {
+    control.disabled = isBusy;
+  });
+  if (message) {
+    setStatus(message);
+  }
+}
+
+function setStatus(message) {
+  document.querySelector("#operator-status").textContent = message;
+  window.__PPOS_WORKBENCH_QA__.events.push({ type: "status", message });
+}
+
+function setError(error) {
+  state.lastError = error;
+  const panel = document.querySelector("#operator-error");
+  if (!error) {
+    panel.hidden = true;
+    panel.textContent = "";
+    return;
+  }
+  panel.hidden = false;
+  panel.textContent = error.message || String(error);
+}
+
+async function withOperation(message, operation) {
+  setError(null);
+  setBusy(true, message);
+  try {
+    const result = await operation();
+    setBusy(false);
+    return result;
+  } catch (error) {
+    setBusy(false, "Workbench operation failed");
+    setError(error);
+    throw error;
+  }
 }
 
 function renderSafety(safety) {
@@ -48,28 +115,33 @@ function renderFixtureSelector(fixtures) {
 
 function wireNavigation() {
   document.querySelectorAll(".nav-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll(".nav-button").forEach((item) => item.classList.remove("is-active"));
-      document.querySelectorAll("[data-view-panel]").forEach((panel) => panel.classList.remove("is-active"));
-      button.classList.add("is-active");
-      document.querySelector(`[data-view-panel="${button.dataset.view}"]`).classList.add("is-active");
-    });
+    button.addEventListener("click", () => activateView(button.dataset.view));
   });
 }
 
 async function selectFixture(fixtureId) {
-  state.selectedFixtureId = fixtureId;
-  const detail = await api.fixture(fixtureId);
-  await api.importFixture(fixtureId);
-  const persisted = await api.fixtureState(fixtureId);
-  renderFixtureSummary(detail);
-  renderProvenance(persisted);
-  renderDerivedFacts(persisted.derived_facts);
-  renderConversation(detail);
-  await renderGraph(fixtureId);
-  await renderReports();
-  await renderRecommendations();
-  await renderSafetyAudit();
+  await withOperation(`Loading ${fixtureId}`, async () => {
+    state.selectedFixtureId = fixtureId;
+    localStorage.setItem(STORAGE_KEY, fixtureId);
+    const selector = document.querySelector("#fixture-selector");
+    if (selector.value !== fixtureId) {
+      selector.value = fixtureId;
+    }
+    const detail = await api.fixture(fixtureId);
+    state.selectedFixtureDetail = detail;
+    await api.importFixture(fixtureId);
+    const persisted = await api.fixtureState(fixtureId);
+    renderFixtureSummary(detail);
+    renderProvenance(persisted);
+    renderDerivedFacts(persisted.derived_facts);
+    renderConversation(detail);
+    renderScenarioSteps([]);
+    await renderGraph(fixtureId);
+    await renderReports();
+    await renderRecommendations();
+    await renderSafetyAudit();
+    setStatus(`Ready: ${fixtureId}`);
+  });
 }
 
 function renderFixtureSummary(detail) {
@@ -116,6 +188,15 @@ async function renderGraph(fixtureId) {
     ...nodes.map((node) => `<div class="item graph-node"><strong>${escapeHtml(node.node_type)}</strong><br>${escapeHtml(node.label)}</div>`),
     ...edges.map((edge) => `<div class="item graph-edge"><strong>${escapeHtml(edge.relation)}</strong><br>${escapeHtml(edge.source_node_id)} -> ${escapeHtml(edge.target_node_id)}</div>`),
   ].join("");
+  document.querySelector("#evidence-panel").textContent = JSON.stringify(
+    {
+      fixture_id: fixtureId,
+      node_count: data.graph.nodes.length,
+      edge_count: data.graph.edges.length,
+    },
+    null,
+    2
+  );
 }
 
 async function renderReports() {
@@ -175,17 +256,19 @@ function renderWorkflowMatrix(rows) {
 }
 
 async function runSelectedWorkflow() {
-  const workflow = document.querySelector("#workflow-selector").value;
-  const result = await api.runWorkflow(state.selectedFixtureId, workflow);
-  state.lastRunId = result.workflow_run.id;
-  document.querySelector("#workflow-output").textContent = JSON.stringify(result.workflow_run, null, 2);
-  const timeline = await api.timeline(state.lastRunId);
-  document.querySelector("#replay-timeline").innerHTML = timeline.timeline.steps
-    .map((step) => `<div class="item"><strong>${step.step_index}. ${escapeHtml(step.step_name)}</strong><br>${escapeHtml(step.status)} / refs ${step.evidence_refs.length}</div>`)
-    .join("");
-  document.querySelector("#evidence-panel").textContent = JSON.stringify(timeline.timeline, null, 2);
-  await renderGraph(state.selectedFixtureId);
-  await renderRecommendations();
+  return withOperation("Running workflow", async () => {
+    const workflow = document.querySelector("#workflow-selector").value;
+    const result = await api.runWorkflow(state.selectedFixtureId, workflow);
+    state.lastRunId = result.workflow_run.id;
+    document.querySelector("#workflow-output").textContent = JSON.stringify(result.workflow_run, null, 2);
+    const timeline = await api.timeline(state.lastRunId);
+    renderTimeline(timeline.timeline);
+    document.querySelector("#evidence-panel").textContent = JSON.stringify(timeline.timeline, null, 2);
+    await renderGraph(state.selectedFixtureId);
+    await renderRecommendations();
+    setStatus(`Workflow complete: ${workflow}`);
+    return { workflow, result, timeline };
+  });
 }
 
 async function renderSnapshot() {
@@ -202,21 +285,126 @@ async function renderSnapshot() {
   );
 }
 
-async function init() {
-  wireNavigation();
-  const boot = await api.bootstrap();
-  state.fixtures = boot.fixtures;
-  renderSafety(boot.safety);
-  renderFamilies(boot.families);
-  renderFixtureSelector(boot.fixtures);
-  renderWorkflowMatrix(boot.workflow_matrix);
-  await renderContracts();
-  await renderSnapshot();
-  document.querySelector("#run-workflow").addEventListener("click", runSelectedWorkflow);
-  document.querySelector("#import-fixture").addEventListener("click", () => selectFixture(state.selectedFixtureId));
-  if (boot.fixtures[0]) {
-    await selectFixture(boot.fixtures[0].fixture_id);
+function renderTimeline(timeline) {
+  document.querySelector("#replay-timeline").innerHTML = timeline.steps
+    .map((step) => `<div class="item"><strong>${step.step_index}. ${escapeHtml(step.step_name)}</strong><br>${escapeHtml(step.status)} / refs ${step.evidence_refs.length}</div>`)
+    .join("");
+}
+
+function activateView(viewName) {
+  document.querySelectorAll(".nav-button").forEach((item) => item.classList.remove("is-active"));
+  document.querySelectorAll("[data-view-panel]").forEach((panel) => panel.classList.remove("is-active"));
+  const button = document.querySelector(`[data-view="${viewName}"]`);
+  const panel = document.querySelector(`[data-view-panel="${viewName}"]`);
+  if (button && panel) {
+    button.classList.add("is-active");
+    panel.classList.add("is-active");
+    setStatus(`View: ${button.textContent.trim()}`);
   }
+}
+
+function firstExpectedWorkflow(detail) {
+  const workflows = Object.keys(detail.expected.workflows || {});
+  return workflows[0] || document.querySelector("#workflow-selector").value;
+}
+
+function renderScenarioSteps(steps) {
+  const defaults = steps.length
+    ? steps
+    : [
+        { name: "Select fixture", status: "pending" },
+        { name: "Import fixture", status: "pending" },
+        { name: "Run expected workflow", status: "pending" },
+        { name: "Inspect replay timeline", status: "pending" },
+        { name: "Refresh evidence and audit surfaces", status: "pending" },
+      ];
+  document.querySelector("#scenario-steps").innerHTML = defaults
+    .map((step) => `<div class="item scenario-step ${escapeHtml(step.status)}"><strong>${escapeHtml(step.name)}</strong><br>${escapeHtml(step.status)}</div>`)
+    .join("");
+}
+
+async function runScenarioWalkthrough() {
+  await withOperation("Running operator scenario", async () => {
+    activateView("runner");
+    const fixtureId = state.selectedFixtureId;
+    const detail = state.selectedFixtureDetail || (await api.fixture(fixtureId));
+    const workflow = firstExpectedWorkflow(detail);
+    document.querySelector("#workflow-selector").value = workflow;
+    const steps = [
+      { name: `Selected ${fixtureId}`, status: "pass" },
+      { name: "Imported fixture", status: "pass" },
+      { name: `Ran ${workflow}`, status: "running" },
+      { name: "Inspected replay timeline", status: "pending" },
+      { name: "Refreshed evidence and audit surfaces", status: "pending" },
+    ];
+    renderScenarioSteps(steps);
+    const result = await api.runWorkflow(fixtureId, workflow);
+    state.lastRunId = result.workflow_run.id;
+    document.querySelector("#workflow-output").textContent = JSON.stringify(result.workflow_run, null, 2);
+    const timeline = await api.timeline(state.lastRunId);
+    renderTimeline(timeline.timeline);
+    await renderGraph(fixtureId);
+    await renderReports();
+    await renderRecommendations();
+    await renderSafetyAudit();
+    steps[2].status = "pass";
+    steps[3].status = timeline.timeline.steps.length ? "pass" : "fail";
+    steps[4].status = "pass";
+    renderScenarioSteps(steps);
+    const summary = {
+      fixture_id: fixtureId,
+      workflow,
+      run_id: state.lastRunId,
+      timeline_steps: timeline.timeline.steps.length,
+      recommendation_count: document.querySelectorAll("#recommendation-followup .item").length,
+      audit_items: document.querySelectorAll("#audit-summary .item").length,
+    };
+    document.querySelector("#scenario-output").textContent = JSON.stringify(summary, null, 2);
+    setStatus(`Scenario complete: ${fixtureId}`);
+  });
+}
+
+async function resetWorkbench() {
+  await withOperation("Resetting workbench state", async () => {
+    localStorage.removeItem(STORAGE_KEY);
+    state.lastRunId = null;
+    state.scenario = [];
+    document.querySelector("#workflow-output").textContent = "";
+    document.querySelector("#scenario-output").textContent = "";
+    document.querySelector("#replay-timeline").innerHTML = "";
+    renderScenarioSteps([]);
+    if (state.fixtures[0]) {
+      await selectFixture(state.fixtures[0].fixture_id);
+    }
+    activateView("catalog");
+    setStatus("Workbench reset");
+  });
+}
+
+async function init() {
+  await withOperation("Bootstrapping synthetic workbench", async () => {
+    wireNavigation();
+    const boot = await api.bootstrap();
+    state.fixtures = boot.fixtures;
+    renderSafety(boot.safety);
+    renderFamilies(boot.families);
+    renderFixtureSelector(boot.fixtures);
+    renderWorkflowMatrix(boot.workflow_matrix);
+    renderScenarioSteps([]);
+    await renderContracts();
+    await renderSnapshot();
+    document.querySelector("#run-workflow").addEventListener("click", runSelectedWorkflow);
+    document.querySelector("#run-scenario").addEventListener("click", runScenarioWalkthrough);
+    document.querySelector("#reset-workbench").addEventListener("click", resetWorkbench);
+    document.querySelector("#import-fixture").addEventListener("click", () => selectFixture(state.selectedFixtureId));
+    const urlFixture = new URLSearchParams(window.location.search).get("fixture");
+    const savedFixture = urlFixture || localStorage.getItem(STORAGE_KEY);
+    const defaultFixture = boot.fixtures.find((fixture) => fixture.fixture_id === savedFixture) || boot.fixtures[0];
+    if (defaultFixture) {
+      await selectFixture(defaultFixture.fixture_id);
+    }
+    setStatus("Synthetic workbench ready");
+  });
 }
 
 function card(label, value) {
