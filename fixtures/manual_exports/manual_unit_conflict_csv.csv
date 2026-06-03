@@ -1,0 +1,4 @@
+record_id,observed_at,timezone,weight_kg,weight_lb,body_fat_percent,source_note
+unit_conflict_001,2026-05-01T07:00:00+01:00,Atlantic/Canary,74.8,,15.2,synthetic metric row
+unit_conflict_002,2026-05-02T07:00:00+01:00,Atlantic/Canary,,165.0,15.2,synthetic imperial row
+unit_conflict_003,2026-05-03T07:00:00+01:00,Atlantic/Canary,74.0,180.0,15.1,synthetic conflicting units

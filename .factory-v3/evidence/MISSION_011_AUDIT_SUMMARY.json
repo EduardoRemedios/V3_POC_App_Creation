@@ -1,0 +1,98 @@
+{
+  "adapter_count": 5,
+  "api_checks": {
+    "adapter_count": 5,
+    "audit_conflict_count": 2,
+    "audit_session_count": 2,
+    "audit_synthetic_only": true,
+    "duplicate_conflicts": 1,
+    "duplicate_preview_rows": 4,
+    "duplicate_preview_status": "previewed",
+    "error_commit_detail_contains_validation": true,
+    "error_commit_status": 400,
+    "manual_export_count": 9,
+    "mapping_rows": 32,
+    "unit_conflict_commit_status": "committed",
+    "unit_conflict_count": 1
+  },
+  "browser_qa": {
+    "desktop": {
+      "adapter_items": 5,
+      "default_preview_passed": true,
+      "duplicate_conflict_rendered": true,
+      "horizontal_overflow": [],
+      "runtime_errors": 0,
+      "selected_duplicate_export": "manual_activity_csv_duplicate",
+      "unit_conflict_commit_rendered": true,
+      "viewport_observed": {
+        "height": 1938,
+        "width": 942
+      }
+    },
+    "limitations": [
+      "Browser screenshot capture timed out in Page.captureScreenshot.",
+      "Browser viewport override did not report requested 390x844 dimensions during the mobile check.",
+      "Screenshots were not persisted because no image artifact path was authorized."
+    ],
+    "mobile_or_responsive": {
+      "active_view": "imports",
+      "adapter_items": 5,
+      "horizontal_overflow": [],
+      "offscreen_right_count": 0,
+      "runtime_errors": 0,
+      "selected_export": "manual_activity_csv_duplicate",
+      "viewport_observed": {
+        "height": 1938,
+        "width": 942
+      },
+      "viewport_reset_attempted": true
+    },
+    "notes": [
+      "Browser QA recorded in .factory-v3/evidence/MISSION_011_BROWSER_NOTES.md."
+    ],
+    "status": "pass"
+  },
+  "commands_run": [
+    "python3 -B scripts/mission_011_import_lab_qa.py --db /tmp/ppos_mission_011_qa.sqlite --host 127.0.0.1 --port 8780"
+  ],
+  "generated_at": "2026-06-03T14:13:34Z",
+  "local_only": true,
+  "manifest_validation": {
+    "adapter_count": 5,
+    "errors": [],
+    "export_count": 9,
+    "synthetic_only": true,
+    "valid": true
+  },
+  "manual_export_fixture_count": 9,
+  "mission_id": "MISSION_011_SYNTHETIC_MANUAL_IMPORT_SOURCE_ADAPTER_READINESS",
+  "no_package_install": true,
+  "residual_risks": [],
+  "status": "pass",
+  "synthetic_only": true,
+  "workbench_checks": {
+    "api_calls": {
+      "audit": true,
+      "commit": true,
+      "manual_exports": true,
+      "preview": true,
+      "source_adapters": true
+    },
+    "manual_export_param": true,
+    "required_test_ids": {
+      "adapter-catalog": true,
+      "commit-manual-import": true,
+      "manual-export-selector": true,
+      "manual-import-audit": true,
+      "manual-import-conflicts": true,
+      "manual-import-mapping": true,
+      "manual-import-preview": true,
+      "nav-imports": true,
+      "preview-manual-import": true,
+      "source-adapter-lab": true,
+      "view-imports": true
+    },
+    "view_param": true,
+    "warning_style": true
+  }
+}

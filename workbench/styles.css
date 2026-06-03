@@ -297,6 +297,10 @@ body[data-loading="true"] .workspace {
   border-left: 4px solid var(--danger);
 }
 
+.warning {
+  border-left: 4px solid var(--warning);
+}
+
 @media (max-width: 860px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -329,6 +333,7 @@ body[data-loading="true"] .workspace {
 
   .view,
   #view-runner.is-active,
+  #view-imports.is-active,
   .summary-grid,
   .list-grid,
   .two-column {

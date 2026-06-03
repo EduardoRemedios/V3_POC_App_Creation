@@ -1,0 +1,5 @@
+record_id,observed_at,timezone,activity_type,duration_min,distance_km,load,source_note
+act_dup_001,2026-05-08T07:10:00+01:00,Atlantic/Canary,ride,48,22.6,76,synthetic duplicate base
+act_dup_002,2026-05-08T07:10:00+01:00,Atlantic/Canary,ride,48,22.6,76,synthetic duplicate copy
+act_dup_003,2026-05-10T08:00:00+01:00,Atlantic/Canary,ride,92,45.2,142,synthetic long ride
+act_dup_004,2026-05-12T19:05:00+01:00,Atlantic/Canary,strength,38,0,44,synthetic strength

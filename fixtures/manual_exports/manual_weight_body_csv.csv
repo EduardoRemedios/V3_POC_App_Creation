@@ -1,0 +1,5 @@
+record_id,observed_at,timezone,weight_kg,body_fat_percent,source_note
+weight_001,2026-05-01T07:00:00+01:00,Atlantic/Canary,74.8,15.2,synthetic weigh-in
+weight_002,2026-05-08T07:05:00+01:00,Atlantic/Canary,74.5,15.1,synthetic weigh-in
+weight_003,2026-05-15T07:05:00+01:00,Atlantic/Canary,74.2,15.0,synthetic weigh-in
+weight_004,2026-05-22T07:10:00+01:00,Atlantic/Canary,74.1,14.9,synthetic weigh-in

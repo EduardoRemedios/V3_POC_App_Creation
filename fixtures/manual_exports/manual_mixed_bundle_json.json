@@ -1,0 +1,45 @@
+{
+  "synthetic_only": true,
+  "source": "synthetic_mixed_manual_bundle",
+  "records": [
+    {
+      "record_id": "mixed_activity_001",
+      "domain": "activity",
+      "observed_at": "2026-05-14T07:20:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "activity_type": "ride",
+      "duration_min": 61,
+      "distance_km": 29.3,
+      "load": 96
+    },
+    {
+      "record_id": "mixed_sleep_001",
+      "domain": "sleep",
+      "observed_at": "2026-05-13T23:00:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 6.9,
+      "hrv_rmssd_ms": 55
+    },
+    {
+      "record_id": "mixed_weight_001",
+      "domain": "body_weight",
+      "observed_at": "2026-05-14T07:00:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "weight_kg": 74.2
+    },
+    {
+      "record_id": "mixed_note_001",
+      "domain": "nutrition_log",
+      "observed_at": "2026-05-14T13:15:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "text": "Lunch was tuna sandwich and fruit; quantity approximate."
+    },
+    {
+      "record_id": "mixed_note_002",
+      "domain": "manual_note",
+      "observed_at": "2026-05-14T21:00:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "text": "Felt unusually tired after afternoon work block."
+    }
+  ]
+}

@@ -13,6 +13,8 @@ from .storage import (
     list_fixture_files,
     list_followup_history,
     list_imports,
+    list_manual_exports,
+    list_source_adapters,
     list_persisted_report_settings,
     list_recommendation_history,
     list_report_candidates,
@@ -36,6 +38,10 @@ WORKBENCH_MOUNTS = {
     "recommendation_followup": "#recommendation-followup",
     "safety_status": "#safety-status",
     "audit_summary": "#audit-summary",
+    "source_adapter_lab": "#source-adapter-lab",
+    "manual_import_preview": "#manual-import-preview",
+    "manual_import_mapping": "#manual-import-mapping",
+    "manual_import_conflicts": "#manual-import-conflicts",
 }
 
 
@@ -59,6 +65,8 @@ def bootstrap_payload(conn: sqlite3.Connection) -> dict[str, Any]:
         "follow_up_outcomes": list_followup_history(conn),
         "report_settings": list_persisted_report_settings(conn),
         "contracts": list_api_contracts(),
+        "source_adapters": list_source_adapters(),
+        "manual_exports": list_manual_exports(),
         "derived_facts": list_derived_facts(conn, imported_fixture_id) if imported_fixture_id else [],
         "safety": {
             "v3_only": True,
@@ -96,6 +104,16 @@ def bootstrap_payload(conn: sqlite3.Connection) -> dict[str, Any]:
             "POST /api/snapshot/validate-import",
             "GET /api/contracts",
             "GET /api/error-examples",
+            "GET /api/source-adapters",
+            "GET /api/manual-exports",
+            "GET /api/manual-exports/{export_id}",
+            "POST /api/manual-imports/preview",
+            "POST /api/manual-imports/commit-synthetic",
+            "GET /api/manual-imports/sessions",
+            "GET /api/manual-imports/sessions/{session_id}",
+            "GET /api/manual-imports/{session_id}/mapping",
+            "GET /api/manual-imports/{session_id}/conflicts",
+            "GET /api/manual-imports/audit-summary",
         ],
         "views": [
             "fixture-catalog",
@@ -107,4 +125,5 @@ def bootstrap_payload(conn: sqlite3.Connection) -> dict[str, Any]:
             "recommendations-followup",
             "safety-audit",
         ],
+        "workbench_extensions": ["source-adapter-lab"],
     }

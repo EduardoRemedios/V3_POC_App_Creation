@@ -25,6 +25,7 @@
         <button class="nav-button" data-view="conversation" data-testid="nav-conversation">Conversation</button>
         <button class="nav-button" data-view="recommendations" data-testid="nav-recommendations">Follow-up</button>
         <button class="nav-button" data-view="audit" data-testid="nav-audit">Audit</button>
+        <button class="nav-button" data-view="imports" data-testid="nav-imports">Imports</button>
       </aside>
 
       <main class="workspace">
@@ -158,6 +159,32 @@
           <div class="panel" data-testid="snapshot-panel">
             <h2>Snapshot</h2>
             <pre id="snapshot-output" class="json-output" data-testid="snapshot-output"></pre>
+          </div>
+        </section>
+
+        <section class="view" id="view-imports" data-view-panel="imports" data-testid="view-imports">
+          <div class="panel" id="source-adapter-lab" data-testid="source-adapter-lab">
+            <h2>Source Adapter Lab</h2>
+            <div class="control-row">
+              <select id="manual-export-selector" data-testid="manual-export-selector"></select>
+              <button id="preview-manual-import" data-testid="preview-manual-import">Preview</button>
+              <button id="commit-manual-import" data-testid="commit-manual-import">Commit synthetic</button>
+            </div>
+            <div id="adapter-catalog" class="dense-list" data-testid="adapter-catalog"></div>
+          </div>
+          <div class="panel" data-testid="manual-import-preview-panel">
+            <h2>Preview And Validation</h2>
+            <div id="manual-import-preview" class="dense-list" data-testid="manual-import-preview"></div>
+          </div>
+          <div class="panel" data-testid="manual-import-mapping-panel">
+            <h2>Mapping And Conflicts</h2>
+            <div id="manual-import-mapping" class="dense-list" data-testid="manual-import-mapping"></div>
+            <h3>Conflicts</h3>
+            <div id="manual-import-conflicts" class="dense-list" data-testid="manual-import-conflicts"></div>
+          </div>
+          <div class="panel" data-testid="manual-import-audit-panel">
+            <h2>Import Audit</h2>
+            <div id="manual-import-audit" class="dense-list" data-testid="manual-import-audit"></div>
           </div>
         </section>
       </main>

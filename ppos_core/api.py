@@ -31,14 +31,23 @@ from .storage import (
     list_fixture_files,
     list_followup_history,
     list_imports,
+    list_manual_exports,
+    list_manual_import_sessions,
     list_normalized_facts,
     list_persisted_report_settings,
     list_recommendation_history,
     list_report_candidates,
     list_safety_audit,
+    list_source_adapters,
     list_snapshot_export,
     list_source_records,
+    manual_import_audit_summary,
     migrate,
+    get_manual_export_detail,
+    get_manual_import_conflicts,
+    get_manual_import_mapping,
+    get_manual_import_session,
+    preview_manual_import,
     run_and_persist_workflow,
     validate_snapshot_payload,
 )
@@ -112,6 +121,28 @@ class WorkbenchAPI:
                 return 200, {"thread": get_conversation_thread(self.conn, parts[2])}
             if method == "GET" and parts == ["api", "workbench", "bootstrap"]:
                 return 200, bootstrap_payload(self.conn)
+            if method == "GET" and parts == ["api", "source-adapters"]:
+                return 200, {"adapters": list_source_adapters()}
+            if method == "GET" and parts == ["api", "manual-exports"]:
+                return 200, {"exports": list_manual_exports()}
+            if method == "GET" and len(parts) == 3 and parts[:2] == ["api", "manual-exports"]:
+                return 200, {"export": get_manual_export_detail(parts[2])}
+            if method == "POST" and parts == ["api", "manual-imports", "preview"]:
+                export_id = _required(body, "export_id")
+                return 200, {"session": preview_manual_import(self.conn, export_id, commit=False)}
+            if method == "POST" and parts == ["api", "manual-imports", "commit-synthetic"]:
+                export_id = _required(body, "export_id")
+                return 200, {"session": preview_manual_import(self.conn, export_id, commit=True)}
+            if method == "GET" and parts == ["api", "manual-imports", "sessions"]:
+                return 200, {"sessions": list_manual_import_sessions(self.conn)}
+            if method == "GET" and len(parts) == 4 and parts[:3] == ["api", "manual-imports", "sessions"]:
+                return 200, {"session": get_manual_import_session(self.conn, parts[3])}
+            if method == "GET" and len(parts) == 4 and parts[:2] == ["api", "manual-imports"] and parts[3] == "mapping":
+                return 200, get_manual_import_mapping(self.conn, parts[2])
+            if method == "GET" and len(parts) == 4 and parts[:2] == ["api", "manual-imports"] and parts[3] == "conflicts":
+                return 200, get_manual_import_conflicts(self.conn, parts[2])
+            if method == "GET" and parts == ["api", "manual-imports", "audit-summary"]:
+                return 200, {"manual_import_audit": manual_import_audit_summary(self.conn)}
             if method == "GET" and len(parts) == 4 and parts[:3] == ["api", "fixtures", "state"]:
                 fixture_id = parts[3]
                 import_fixture(self.conn, load_fixture(Path("fixtures/dtu") / f"{fixture_id}.json"))

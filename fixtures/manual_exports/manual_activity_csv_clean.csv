@@ -1,0 +1,4 @@
+record_id,observed_at,timezone,activity_type,duration_min,distance_km,load,source_note
+act_clean_001,2026-05-01T07:15:00+01:00,Atlantic/Canary,ride,52,24.1,82,synthetic clean ride
+act_clean_002,2026-05-03T18:20:00+01:00,Atlantic/Canary,strength,45,0,58,synthetic strength session
+act_clean_003,2026-05-05T06:55:00+01:00,Atlantic/Canary,ride,68,31.4,104,synthetic endurance ride

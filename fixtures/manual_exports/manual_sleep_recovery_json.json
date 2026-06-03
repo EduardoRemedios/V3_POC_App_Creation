@@ -1,0 +1,30 @@
+{
+  "synthetic_only": true,
+  "source": "synthetic_sleep_recovery_export",
+  "records": [
+    {
+      "record_id": "sleep_json_001",
+      "observed_at": "2026-05-01T22:40:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 7.4,
+      "hrv_rmssd_ms": 61,
+      "resting_hr_bpm": 49
+    },
+    {
+      "record_id": "sleep_json_002",
+      "observed_at": "2026-05-02T23:10:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 6.6,
+      "hrv_rmssd_ms": 52,
+      "resting_hr_bpm": 53
+    },
+    {
+      "record_id": "sleep_json_003",
+      "observed_at": "2026-05-03T22:55:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 7.1,
+      "hrv_rmssd_ms": 58,
+      "resting_hr_bpm": 50
+    }
+  ]
+}

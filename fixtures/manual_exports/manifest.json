@@ -1,0 +1,79 @@
+{
+  "schema_version": "mission_011_manual_exports_v1",
+  "synthetic_only": true,
+  "description": "Synthetic manual export-like files for source-adapter preview and validation. No real data.",
+  "exports": [
+    {
+      "export_id": "manual_activity_csv_clean",
+      "adapter_id": "garmin_activity_csv",
+      "path": "fixtures/manual_exports/manual_activity_csv_clean.csv",
+      "family": "activity",
+      "risk_tags": ["mapping_preview", "training_load"],
+      "expected": {"preview_rows": 3, "validation_errors": 0, "validation_warnings": 0, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_activity_csv_duplicate",
+      "adapter_id": "garmin_activity_csv",
+      "path": "fixtures/manual_exports/manual_activity_csv_duplicate.csv",
+      "family": "activity",
+      "risk_tags": ["duplicate_detection", "idempotency"],
+      "expected": {"preview_rows": 4, "validation_errors": 0, "validation_warnings": 1, "duplicates": 1}
+    },
+    {
+      "export_id": "manual_sleep_recovery_json",
+      "adapter_id": "sleep_recovery_json",
+      "path": "fixtures/manual_exports/manual_sleep_recovery_json.json",
+      "family": "sleep_recovery",
+      "risk_tags": ["json_mapping", "recovery_context"],
+      "expected": {"preview_rows": 3, "validation_errors": 0, "validation_warnings": 0, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_weight_body_csv",
+      "adapter_id": "weight_body_csv",
+      "path": "fixtures/manual_exports/manual_weight_body_csv.csv",
+      "family": "body_composition",
+      "risk_tags": ["unit_normalization", "trend_preview"],
+      "expected": {"preview_rows": 4, "validation_errors": 0, "validation_warnings": 0, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_nutrition_notes_json",
+      "adapter_id": "nutrition_notes_json",
+      "path": "fixtures/manual_exports/manual_nutrition_notes_json.json",
+      "family": "nutrition",
+      "risk_tags": ["free_text", "quantity_ambiguity"],
+      "expected": {"preview_rows": 3, "validation_errors": 0, "validation_warnings": 3, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_malformed_missing_time_csv",
+      "adapter_id": "garmin_activity_csv",
+      "path": "fixtures/manual_exports/manual_malformed_missing_time_csv.csv",
+      "family": "malformed",
+      "risk_tags": ["missing_observed_at", "validation_error"],
+      "expected": {"preview_rows": 2, "validation_errors": 1, "validation_warnings": 0, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_timezone_boundary_csv",
+      "adapter_id": "garmin_activity_csv",
+      "path": "fixtures/manual_exports/manual_timezone_boundary_csv.csv",
+      "family": "timezone",
+      "risk_tags": ["timezone_boundary", "local_date"],
+      "expected": {"preview_rows": 2, "validation_errors": 0, "validation_warnings": 1, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_unit_conflict_csv",
+      "adapter_id": "weight_body_csv",
+      "path": "fixtures/manual_exports/manual_unit_conflict_csv.csv",
+      "family": "unit_conflict",
+      "risk_tags": ["unit_ambiguity", "conflict_detection"],
+      "expected": {"preview_rows": 3, "validation_errors": 0, "validation_warnings": 2, "duplicates": 0}
+    },
+    {
+      "export_id": "manual_mixed_bundle_json",
+      "adapter_id": "mixed_bundle_json",
+      "path": "fixtures/manual_exports/manual_mixed_bundle_json.json",
+      "family": "mixed_bundle",
+      "risk_tags": ["multi_domain", "cross_source_mapping"],
+      "expected": {"preview_rows": 5, "validation_errors": 0, "validation_warnings": 1, "duplicates": 0}
+    }
+  ]
+}

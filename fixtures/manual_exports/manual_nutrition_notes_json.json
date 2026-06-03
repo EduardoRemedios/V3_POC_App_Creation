@@ -1,0 +1,27 @@
+{
+  "synthetic_only": true,
+  "source": "synthetic_nutrition_note_export",
+  "records": [
+    {
+      "record_id": "nutrition_note_001",
+      "observed_at": "2026-05-01T13:20:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "text": "Chicken, rice, vegetables after ride. Portion not weighed.",
+      "meal_type": "lunch"
+    },
+    {
+      "record_id": "nutrition_note_002",
+      "observed_at": "2026-05-01T20:45:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "text": "Greek yoghurt label logged, quantity unclear.",
+      "meal_type": "evening_snack"
+    },
+    {
+      "record_id": "nutrition_note_003",
+      "observed_at": "2026-05-02T08:10:00+01:00",
+      "timezone": "Atlantic/Canary",
+      "text": "Oats and berries, roughly normal breakfast.",
+      "meal_type": "breakfast"
+    }
+  ]
+}

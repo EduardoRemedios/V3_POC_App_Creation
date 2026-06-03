@@ -39,6 +39,13 @@ const api = {
   safety: () => fetchJson("/api/safety-audit"),
   snapshot: () => fetchJson("/api/snapshot/export"),
   contracts: () => fetchJson("/api/contracts"),
+  sourceAdapters: () => fetchJson("/api/source-adapters"),
+  manualExports: () => fetchJson("/api/manual-exports"),
+  previewManualImport: (exportId) => fetchJson("/api/manual-imports/preview", { export_id: exportId }),
+  commitManualImport: (exportId) => fetchJson("/api/manual-imports/commit-synthetic", { export_id: exportId }),
+  manualImportMapping: (sessionId) => fetchJson(`/api/manual-imports/${sessionId}/mapping`),
+  manualImportConflicts: (sessionId) => fetchJson(`/api/manual-imports/${sessionId}/conflicts`),
+  manualImportAudit: () => fetchJson("/api/manual-imports/audit-summary"),
 };
 
 async function fetchJson(path, body) {
@@ -393,18 +400,98 @@ async function init() {
     renderScenarioSteps([]);
     await renderContracts();
     await renderSnapshot();
+    const urlManualExport = new URLSearchParams(window.location.search).get("manual_export");
+    await renderImportLab(boot.source_adapters || [], boot.manual_exports || [], urlManualExport);
     document.querySelector("#run-workflow").addEventListener("click", runSelectedWorkflow);
     document.querySelector("#run-scenario").addEventListener("click", runScenarioWalkthrough);
     document.querySelector("#reset-workbench").addEventListener("click", resetWorkbench);
     document.querySelector("#import-fixture").addEventListener("click", () => selectFixture(state.selectedFixtureId));
+    document.querySelector("#preview-manual-import").addEventListener("click", previewSelectedManualImport);
+    document.querySelector("#commit-manual-import").addEventListener("click", commitSelectedManualImport);
     const urlFixture = new URLSearchParams(window.location.search).get("fixture");
+    const urlView = new URLSearchParams(window.location.search).get("view");
     const savedFixture = urlFixture || localStorage.getItem(STORAGE_KEY);
     const defaultFixture = boot.fixtures.find((fixture) => fixture.fixture_id === savedFixture) || boot.fixtures[0];
     if (defaultFixture) {
       await selectFixture(defaultFixture.fixture_id);
     }
+    if (urlView) {
+      activateView(urlView);
+    }
     setStatus("Synthetic workbench ready");
   });
+}
+
+async function renderImportLab(adapters, exports, selectedExportId) {
+  document.querySelector("#adapter-catalog").innerHTML = adapters
+    .map((adapter) => card(adapter.label, `${adapter.adapter_id} / ${adapter.domains.join(", ")}`))
+    .join("");
+  const selector = document.querySelector("#manual-export-selector");
+  selector.innerHTML = exports
+    .map((item) => `<option value="${escapeHtml(item.export_id)}">${escapeHtml(item.export_id)}</option>`)
+    .join("");
+  if (selectedExportId && exports.some((item) => item.export_id === selectedExportId)) {
+    selector.value = selectedExportId;
+  }
+  await renderManualImportAudit();
+  if (exports[0]) {
+    document.querySelector("#manual-import-preview").innerHTML = card("Ready", "Select Preview to inspect a synthetic manual export.");
+  }
+}
+
+async function previewSelectedManualImport() {
+  await withOperation("Previewing manual import", async () => {
+    activateView("imports");
+    const exportId = document.querySelector("#manual-export-selector").value;
+    const result = await api.previewManualImport(exportId);
+    renderManualImportSession(result.session);
+    setStatus(`Previewed ${exportId}`);
+  });
+}
+
+async function commitSelectedManualImport() {
+  await withOperation("Committing synthetic import preview", async () => {
+    activateView("imports");
+    const exportId = document.querySelector("#manual-export-selector").value;
+    const result = await api.commitManualImport(exportId);
+    renderManualImportSession(result.session);
+    await renderManualImportAudit();
+    setStatus(`Committed synthetic import: ${exportId}`);
+  });
+}
+
+function renderManualImportSession(session) {
+  document.querySelector("#manual-import-preview").innerHTML = [
+    card("Session", `${session.id} / ${session.status}`),
+    card("Rows", String(session.row_count)),
+    card("Issues", String(session.issue_count)),
+    card("Conflicts", String(session.conflict_count)),
+    ...session.issues.slice(0, 12).map((issue) =>
+      `<div class="item ${issue.severity === "error" ? "danger" : "warning"}"><strong>${escapeHtml(issue.issue_type)}</strong><br>${escapeHtml(issue.field)}: ${escapeHtml(issue.message)}</div>`
+    ),
+    ...session.rows.slice(0, 10).map((row) =>
+      `<div class="item"><strong>${escapeHtml(row.domain)} / row ${row.row_index}</strong><br>${escapeHtml(row.source_record_id)} -> ${escapeHtml(JSON.stringify(row.normalized))}</div>`
+    ),
+  ].join("");
+  document.querySelector("#manual-import-mapping").innerHTML = session.mappings
+    .slice(0, 28)
+    .map((mapping) => `<div class="item"><strong>${escapeHtml(mapping.source_field)} -> ${escapeHtml(mapping.normalized_field)}</strong><br>${escapeHtml(mapping.transform)} / ${escapeHtml(mapping.confidence)}</div>`)
+    .join("");
+  document.querySelector("#manual-import-conflicts").innerHTML = session.conflicts.length
+    ? session.conflicts.map((conflict) => `<div class="item warning"><strong>${escapeHtml(conflict.conflict_type)}</strong><br>${escapeHtml(conflict.message)}</div>`).join("")
+    : '<div class="item">No conflicts detected</div>';
+}
+
+async function renderManualImportAudit() {
+  const audit = await api.manualImportAudit();
+  const summary = audit.manual_import_audit;
+  document.querySelector("#manual-import-audit").innerHTML = [
+    card("Adapters", String(summary.adapter_count)),
+    card("Synthetic exports", String(summary.manual_export_count)),
+    card("Sessions", String(summary.session_count)),
+    card("Issues", String(summary.issue_count)),
+    card("Conflicts", String(summary.conflict_count)),
+  ].join("");
 }
 
 function card(label, value) {

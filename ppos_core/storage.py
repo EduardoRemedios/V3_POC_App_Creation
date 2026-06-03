@@ -12,6 +12,13 @@ from .api_contracts import contract_rows
 from .evidence_graph import graph_payload, refresh_evidence_graph
 from .fixture_manifest import api_matrix, family_summary, load_manifest, validate_manifest, workflow_matrix
 from .loader import load_fixture, load_fixtures
+from .manual_imports import (
+    adapter_catalog,
+    get_manual_export,
+    manual_export_catalog,
+    preview_manual_export,
+    validate_manual_export_manifest,
+)
 from .primitives import derived_facts
 from .recommendations import (
     list_follow_up_outcomes,
@@ -96,6 +103,93 @@ def import_fixture(conn: sqlite3.Connection, fixture_or_path: Fixture | str | Pa
         _insert_fixture_import(conn, fixture, import_count, len(persisted_derived))
         refresh_evidence_graph(conn, fixture.fixture_id)
     return get_import(conn, fixture.fixture_id)
+
+
+def list_source_adapters() -> list[dict[str, Any]]:
+    return adapter_catalog()
+
+
+def list_manual_exports() -> list[dict[str, Any]]:
+    return manual_export_catalog()
+
+
+def get_manual_export_detail(export_id: str) -> dict[str, Any]:
+    export = get_manual_export(export_id)
+    preview = preview_manual_export(export_id)
+    return {**export, "preview_summary": preview["summary"]}
+
+
+def preview_manual_import(conn: sqlite3.Connection, export_id: str, commit: bool = False) -> dict[str, Any]:
+    migrate(conn)
+    preview = preview_manual_export(export_id)
+    if commit and not preview["summary"]["can_commit"]:
+        raise ValueError("manual import preview has validation errors and cannot be committed")
+    status = "committed" if commit else "previewed"
+    with conn:
+        _persist_manual_import_preview(conn, preview, status)
+    return get_manual_import_session(conn, preview["session_id"])
+
+
+def list_manual_import_sessions(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    migrate(conn)
+    rows = conn.execute("SELECT * FROM manual_import_sessions ORDER BY created_at DESC, id").fetchall()
+    return [_manual_session_row(conn, row) for row in rows]
+
+
+def get_manual_import_session(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
+    migrate(conn)
+    row = conn.execute("SELECT * FROM manual_import_sessions WHERE id = ?", (session_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"manual import session not found: {session_id}")
+    return _manual_session_row(conn, row)
+
+
+def get_manual_import_mapping(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
+    session = get_manual_import_session(conn, session_id)
+    return {
+        "session_id": session_id,
+        "export_id": session["export_id"],
+        "adapter_id": session["adapter_id"],
+        "mappings": session["mappings"],
+    }
+
+
+def get_manual_import_conflicts(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
+    session = get_manual_import_session(conn, session_id)
+    return {
+        "session_id": session_id,
+        "export_id": session["export_id"],
+        "adapter_id": session["adapter_id"],
+        "conflicts": session["conflicts"],
+    }
+
+
+def manual_import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
+    migrate(conn)
+    sessions = list_manual_import_sessions(conn)
+    manifest_validation = validate_manual_export_manifest()
+    return {
+        "synthetic_only": True,
+        "manifest_validation": manifest_validation,
+        "adapter_count": len(adapter_catalog()),
+        "manual_export_count": len(manual_export_catalog()),
+        "session_count": len(sessions),
+        "committed_session_count": sum(1 for session in sessions if session["status"] == "committed"),
+        "issue_count": sum(session["issue_count"] for session in sessions),
+        "conflict_count": sum(session["conflict_count"] for session in sessions),
+        "sessions": [
+            {
+                "session_id": session["id"],
+                "export_id": session["export_id"],
+                "adapter_id": session["adapter_id"],
+                "status": session["status"],
+                "row_count": session["row_count"],
+                "issue_count": session["issue_count"],
+                "conflict_count": session["conflict_count"],
+            }
+            for session in sessions
+        ],
+    }
 
 
 def import_all_fixtures(conn: sqlite3.Connection, directory: str | Path = "fixtures/dtu") -> list[dict[str, Any]]:
@@ -563,6 +657,166 @@ def _sync_api_contract_cases(conn: sqlite3.Connection) -> None:
                 row["description"],
             ),
         )
+
+
+def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, Any], status: str) -> None:
+    session_id = preview["session_id"]
+    now = _now()
+    conn.execute("DELETE FROM manual_import_source_files WHERE session_id = ?", (session_id,))
+    conn.execute("DELETE FROM manual_import_preview_rows WHERE session_id = ?", (session_id,))
+    conn.execute("DELETE FROM manual_import_validation_issues WHERE session_id = ?", (session_id,))
+    conn.execute("DELETE FROM manual_import_mapping_rows WHERE session_id = ?", (session_id,))
+    conn.execute("DELETE FROM manual_import_conflicts WHERE session_id = ?", (session_id,))
+    conn.execute(
+        """
+        INSERT OR REPLACE INTO manual_import_sessions
+        (id, export_id, adapter_id, status, synthetic_only, row_count, issue_count, conflict_count, created_at, committed_at, summary_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            session_id,
+            preview["export"]["export_id"],
+            preview["adapter"]["adapter_id"],
+            status,
+            1,
+            preview["summary"]["row_count"],
+            preview["summary"]["issue_count"],
+            preview["summary"]["conflict_count"],
+            now,
+            now if status == "committed" else None,
+            _dump(preview["summary"]),
+        ),
+    )
+    conn.execute(
+        """
+        INSERT OR REPLACE INTO manual_import_source_files
+        (id, session_id, export_id, path, sha256, parser, row_count)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            f"{session_id}_source_file",
+            session_id,
+            preview["export"]["export_id"],
+            preview["source_file"]["path"],
+            preview["source_file"]["sha256"],
+            preview["source_file"]["parser"],
+            preview["summary"]["row_count"],
+        ),
+    )
+    for row in preview["rows"]:
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO manual_import_preview_rows
+            (id, session_id, row_index, source_record_id, domain, observed_at, raw_json, normalized_json, provenance_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                f"{session_id}_row_{row['row_index']}",
+                session_id,
+                row["row_index"],
+                row["source_record_id"],
+                row["domain"],
+                row["observed_at"],
+                _dump(row["raw"]),
+                _dump(row["normalized"]),
+                _dump(row["provenance"]),
+            ),
+        )
+    for index, issue in enumerate(preview["issues"], start=1):
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO manual_import_validation_issues
+            (id, session_id, row_index, severity, issue_type, field, message)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                f"{session_id}_issue_{index}",
+                session_id,
+                issue["row_index"],
+                issue["severity"],
+                issue["issue_type"],
+                issue["field"],
+                issue["message"],
+            ),
+        )
+    for index, mapping in enumerate(preview["mappings"], start=1):
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO manual_import_mapping_rows
+            (id, session_id, row_index, source_field, normalized_field, transform, confidence)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                f"{session_id}_mapping_{index}",
+                session_id,
+                mapping["row_index"],
+                mapping["source_field"],
+                mapping["normalized_field"],
+                mapping["transform"],
+                mapping["confidence"],
+            ),
+        )
+    for index, conflict in enumerate(preview["conflicts"], start=1):
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO manual_import_conflicts
+            (id, session_id, conflict_type, signature, message, related_rows_json)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                f"{session_id}_conflict_{index}",
+                session_id,
+                conflict["conflict_type"],
+                conflict["signature"],
+                conflict["message"],
+                _dump(conflict["row_indexes"]),
+            ),
+        )
+
+
+def _manual_session_row(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
+    data = _row(row)
+    data["synthetic_only"] = bool(data["synthetic_only"])
+    data["summary"] = json.loads(data.pop("summary_json"))
+    rows = conn.execute(
+        "SELECT * FROM manual_import_preview_rows WHERE session_id = ? ORDER BY row_index", (data["id"],)
+    ).fetchall()
+    issues = conn.execute(
+        "SELECT * FROM manual_import_validation_issues WHERE session_id = ? ORDER BY row_index, id", (data["id"],)
+    ).fetchall()
+    mappings = conn.execute(
+        "SELECT * FROM manual_import_mapping_rows WHERE session_id = ? ORDER BY row_index, id", (data["id"],)
+    ).fetchall()
+    conflicts = conn.execute(
+        "SELECT * FROM manual_import_conflicts WHERE session_id = ? ORDER BY id", (data["id"],)
+    ).fetchall()
+    files = conn.execute("SELECT * FROM manual_import_source_files WHERE session_id = ?", (data["id"],)).fetchall()
+    data["source_files"] = [_row(item) for item in files]
+    data["rows"] = [
+        {
+            **_row(item),
+            "raw": json.loads(item["raw_json"]),
+            "normalized": json.loads(item["normalized_json"]),
+            "provenance": json.loads(item["provenance_json"]),
+        }
+        for item in rows
+    ]
+    for item in data["rows"]:
+        item.pop("raw_json")
+        item.pop("normalized_json")
+        item.pop("provenance_json")
+    data["issues"] = [_row(item) for item in issues]
+    data["mappings"] = [_row(item) for item in mappings]
+    data["conflicts"] = [
+        {
+            **_row(item),
+            "related_rows": json.loads(item["related_rows_json"]),
+        }
+        for item in conflicts
+    ]
+    for item in data["conflicts"]:
+        item.pop("related_rows_json")
+    return data
 
 
 def _upsert_evidence_pack(
