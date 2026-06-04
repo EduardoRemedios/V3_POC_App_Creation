@@ -9,10 +9,10 @@
 - V2 allowed: NO
 
 ## Current Phase
-Synthetic approval UX, Mission 013 QA script, verifier, and Browser QA.
+Closeout, record, final verifier, audit summary, and final commit.
 
 ## Last Checkpoint
-M013-CP009 is complete and ready to commit; it records workflow/timeline/evidence-graph/report consumption plus the synthetic approval UX/storage/API test coverage.
+M013-CP010 is complete and ready to commit; it records Mission 013 QA script, full stdlib verification, JSON checks, and Browser QA.
 
 ## Active Plan
 Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`.
@@ -40,9 +40,13 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Materialized imported Garmin facts can now be consumed by workflow runs, workflow timelines, evidence graph nodes/edges, and morning/evening report candidates through `run_manual_import_consumption`.
 - The workbench/API now expose Garmin export fixtures, synthetic approval rehearsal records, retention posture, source labeling, consent state, and imported-fact consumption controls.
 - Focused Mission 013 suite passed: `python3 -B -m unittest tests.test_mission_013_garmin_fixtures tests.test_mission_013_bridge_adapter tests.test_mission_013_materialization tests.test_mission_013_fact_rollback tests.test_mission_013_workflow_integration tests.test_mission_013_approval_ux tests.test_mission_013_api` ran 13 tests and passed.
+- Mission 013 QA script passed: `python3 -B scripts/mission_013_bridge_qa.py --db /tmp/ppos_mission_013_qa.sqlite --host 127.0.0.1 --port 8800`.
+- Full stdlib unit suite passed after Mission 013 surface work: `python3 -B -m unittest discover -s tests` ran 170 tests and passed.
+- JSON parse checks passed for both required interrupts, Garmin fixture manifest, and Mission 013 audit summary.
+- Browser QA passed for desktop Imports flow; responsive/mobile resize was attempted but the in-app browser viewport remained 1280x720, so that limitation is recorded in `.factory-v3/evidence/MISSION_013_BROWSER_NOTES.md`.
 
 ## Pending Phases
-- Verification, Browser QA, closeout, record, and audit summary.
+- Closeout, record, final verifier, and final commit.
 
 ## Open Human Decision Interrupts
 - HDI-013-001: applied as `option_a`; no longer blocking.
@@ -93,7 +97,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
   - checkpoint-context reads via `sed -n '321,760p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md` and `sed -n '761,1240p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
 
 ## Next Action
-Commit M013-CP009, then add Mission 013 QA/verifier scripts and run full verification.
+Commit M013-CP010, then write closeout, record, run final verifier, and commit final closeout.
 
 ## Reentry Rule
 Resume only from this state file, authored Mission 013 artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

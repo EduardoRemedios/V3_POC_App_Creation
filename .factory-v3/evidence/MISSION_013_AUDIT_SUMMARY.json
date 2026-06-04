@@ -1,0 +1,268 @@
+{
+  "approval": {
+    "approval_state": "approved",
+    "approved_at": "2026-06-04T11:19:05.369044+00:00",
+    "consent_text": "Synthetic Mission 013 QA approval rehearsal; no real file is read.",
+    "created_at": "2026-06-04T11:19:05.369044+00:00",
+    "data_categories": [
+      "activities",
+      "activity"
+    ],
+    "export_id": "garmin_activities_clean_csv",
+    "file_reference": "fixtures/garmin_exports/activities_clean.csv",
+    "id": "mission013_approval_001",
+    "payload": {
+      "approval_defaults": {
+        "default_retention_posture": "keep-raw-until-verified",
+        "interrupt_id": "HDI-013-001",
+        "optional_families": [
+          "wellness_hrv_stress"
+        ],
+        "selected_option_id": "option_a"
+      },
+      "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
+      "real_data_enabled": false,
+      "source_label": "real_garmin_manual_export",
+      "synthetic_fixture_export_id": "garmin_activities_clean_csv",
+      "synthetic_rehearsal": true
+    },
+    "preview_only": true,
+    "retention_posture": "keep-raw-until-verified",
+    "session_id": "garmin_import_garmin_activities_clean_csv",
+    "source_label": "real_garmin_manual_export",
+    "synthetic_only": true
+  },
+  "checks": [
+    {
+      "label": "garmin export catalog",
+      "method": "GET",
+      "path": "/api/garmin-exports",
+      "status": 200
+    },
+    {
+      "label": "synthetic approval",
+      "method": "POST",
+      "path": "/api/manual-imports/approval",
+      "status": 200
+    },
+    {
+      "label": "preview Garmin activities",
+      "method": "POST",
+      "path": "/api/manual-imports/preview",
+      "status": 200
+    },
+    {
+      "label": "accept row 1",
+      "method": "POST",
+      "path": "/api/manual-imports/review-row",
+      "status": 200
+    },
+    {
+      "label": "accept row 2",
+      "method": "POST",
+      "path": "/api/manual-imports/review-row",
+      "status": 200
+    },
+    {
+      "label": "accept row 3",
+      "method": "POST",
+      "path": "/api/manual-imports/review-row",
+      "status": 200
+    },
+    {
+      "label": "commit reviewed Garmin activities",
+      "method": "POST",
+      "path": "/api/manual-imports/commit-reviewed",
+      "status": 200
+    },
+    {
+      "label": "consume imported facts",
+      "method": "POST",
+      "path": "/api/manual-imports/garmin_import_garmin_activities_clean_csv/consume",
+      "status": 200
+    },
+    {
+      "label": "timeline read",
+      "method": "GET",
+      "path": "/api/workflows/garmin_import_garmin_activities_clean_csv_workflow_recovery_today/timeline",
+      "status": 200
+    },
+    {
+      "label": "report candidates",
+      "method": "GET",
+      "path": "/api/report-candidates",
+      "status": 200
+    },
+    {
+      "label": "preview Garmin body composition",
+      "method": "POST",
+      "path": "/api/manual-imports/preview",
+      "status": 200
+    },
+    {
+      "label": "accept body row 1",
+      "method": "POST",
+      "path": "/api/manual-imports/review-row",
+      "status": 200
+    },
+    {
+      "label": "accept body row 2",
+      "method": "POST",
+      "path": "/api/manual-imports/review-row",
+      "status": 200
+    },
+    {
+      "label": "accept body row 3",
+      "method": "POST",
+      "path": "/api/manual-imports/review-row",
+      "status": 200
+    },
+    {
+      "label": "commit reviewed body composition",
+      "method": "POST",
+      "path": "/api/manual-imports/commit-reviewed",
+      "status": 200
+    },
+    {
+      "label": "rollback materialized facts",
+      "method": "POST",
+      "path": "/api/manual-imports/rollback",
+      "status": 200
+    },
+    {
+      "label": "manual import audit",
+      "method": "GET",
+      "path": "/api/manual-imports/audit-summary",
+      "status": 200
+    }
+  ],
+  "consumption": {
+    "graph": {
+      "edge_count": 28,
+      "node_count": 24
+    },
+    "report_ids": [
+      "garmin_import_garmin_activities_clean_csv_report_morning_candidate",
+      "garmin_import_garmin_activities_clean_csv_report_evening_candidate"
+    ],
+    "session_id": "garmin_import_garmin_activities_clean_csv",
+    "synthetic_only": true,
+    "timeline_run_ids": [
+      "garmin_import_garmin_activities_clean_csv_workflow_recovery_today",
+      "garmin_import_garmin_activities_clean_csv_workflow_four_week_training_analysis"
+    ],
+    "workflow_count": 2,
+    "workflows": [
+      {
+        "created_at": "2026-06-04T11:19:05.381047+00:00",
+        "evidence_pack_id": "garmin_import_garmin_activities_clean_csv_evidence_recovery_today_recovery_today",
+        "fixture_id": "garmin_import_garmin_activities_clean_csv",
+        "id": "garmin_import_garmin_activities_clean_csv_workflow_recovery_today",
+        "output": {
+          "summary": {
+            "activity_local_date": "2026-02-05",
+            "canonical_activity_count": 3,
+            "duplicate_activity_pairs": 0,
+            "missing_domains": [
+              "sleep",
+              "hrv",
+              "resting_heart_rate"
+            ],
+            "nutrition_gap": false,
+            "recovery_status": "uncertain_missing_data",
+            "sleep_average_hours": null,
+            "training_load_7d": 211
+          },
+          "text": "Recovery is uncertain_missing_data; recommendation is normal_or_easy_with_uncertainty."
+        },
+        "recommendation_class": "normal_or_easy_with_uncertainty",
+        "status": "candidate",
+        "workflow": "recovery_today"
+      },
+      {
+        "created_at": "2026-06-04T11:19:05.381742+00:00",
+        "evidence_pack_id": "garmin_import_garmin_activities_clean_csv_evidence_four_week_training_analysis_four_week_training_analysis",
+        "fixture_id": "garmin_import_garmin_activities_clean_csv",
+        "id": "garmin_import_garmin_activities_clean_csv_workflow_four_week_training_analysis",
+        "output": {
+          "duplicate_activity_pairs": 0,
+          "text": "Training trend is moderate_sustainable_load.",
+          "trend": "moderate_sustainable_load",
+          "weekly_load_proxy": 211
+        },
+        "recommendation_class": "moderate_sustainable_load",
+        "status": "candidate",
+        "workflow": "four_week_training_analysis"
+      }
+    ]
+  },
+  "db_path": "/tmp/ppos_mission_013_qa.sqlite",
+  "host": "127.0.0.1",
+  "live_integrations_used": false,
+  "local_only": true,
+  "manual_import_audit": {
+    "adapter_count": 9,
+    "approval_count": 1,
+    "audit_event_count": 12,
+    "committed_session_count": 1,
+    "conflict_count": 0,
+    "issue_count": 1,
+    "manifest_validation": {
+      "adapter_count": 5,
+      "errors": [],
+      "export_count": 9,
+      "synthetic_only": true,
+      "valid": true
+    },
+    "manual_export_count": 9,
+    "materialized_fact_count": 3,
+    "reverted_materialized_fact_count": 3,
+    "reverted_session_count": 1,
+    "review_summary": {
+      "accepted": 6,
+      "needs_clarification": 0,
+      "rejected": 0
+    },
+    "session_count": 2,
+    "sessions": [
+      {
+        "adapter_id": "garmin_bridge_body_composition_csv",
+        "conflict_count": 0,
+        "export_id": "garmin_body_composition_clean_csv",
+        "issue_count": 1,
+        "reverted_at": "2026-06-04T11:19:05.393384+00:00",
+        "review_summary": {
+          "accepted": 3,
+          "needs_clarification": 0,
+          "rejected": 0
+        },
+        "rollback_reason": "Mission 013 QA rollback",
+        "row_count": 3,
+        "session_id": "garmin_import_garmin_body_composition_clean_csv",
+        "status": "reverted"
+      },
+      {
+        "adapter_id": "garmin_bridge_activities_csv",
+        "conflict_count": 0,
+        "export_id": "garmin_activities_clean_csv",
+        "issue_count": 0,
+        "reverted_at": null,
+        "review_summary": {
+          "accepted": 3,
+          "needs_clarification": 0,
+          "rejected": 0
+        },
+        "rollback_reason": null,
+        "row_count": 3,
+        "session_id": "garmin_import_garmin_activities_clean_csv",
+        "status": "committed"
+      }
+    ],
+    "synthetic_only": true
+  },
+  "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
+  "port": 8800,
+  "real_data_used": false,
+  "schema_version": "mission_013_audit_summary_v1",
+  "synthetic_only": true
+}

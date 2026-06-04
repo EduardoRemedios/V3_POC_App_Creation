@@ -668,7 +668,7 @@ Halt if:
 - Checkpoint ID: M013-CP009
 - Checkpoint status: complete
 - Commit before: 89c282b
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: cbf8980
 
 ## Current Phase
 Workflow/timeline/evidence-graph/report integration and synthetic approval UX implemented.
@@ -727,6 +727,13 @@ Materialized Garmin import sessions now have a bounded consumption path: active 
 - Full stdlib verification, Mission 013 QA script, verifier script, JSON parse checks, and Browser QA remain pending.
 - Browser QA may require localhost bind escalation depending on sandbox behavior.
 
+## Mid-Mission Budget Review
+- Cumulative checkpoints: 9 complete.
+- Cumulative tool-call count: approximately 165, counting wrapped subcalls and file edits through imported fact surfaces.
+- Mission 012 comparison: about 2.1x Mission 012's 77 tool-call total, consistent with the sponsor's rough 2x long-mission sizing direction.
+- Remaining phases: QA/verifier scripts, full verification, Browser QA, closeout, record, audit summary, final verifier run, and final commit.
+- Judgment: continue without descope; remaining scope is closeout-heavy and bounded.
+
 ## Pending Human Decisions
 - None. HDI-013-001 and HDI-013-002 are both applied.
 
@@ -758,3 +765,89 @@ Resume from:
 Halt if:
 - Authored state conflicts with repository state.
 - Any continuation requires real data, real export files, Factory V2, Factory_V3 tooling, package installation, unauthorized git operations, or destructive mutation of prior mission evidence.
+
+## Checkpoint 010
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP010
+- Checkpoint status: complete
+- Commit before: cbf8980
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+Mission 013 QA script, stdlib verification, JSON checks, and Browser QA complete.
+
+## Objective Progress
+Mission 013 QA and verifier scripts were added. The QA script exercised Garmin catalog, synthetic approval recording, preview/review, reviewed commit, materialization, imported-fact consumption into workflows/timeline/graph/reports, and fact rollback, then wrote `.factory-v3/evidence/MISSION_013_AUDIT_SUMMARY.json`. The full stdlib test suite passed with 170 tests. Required JSON parse checks passed. Browser QA passed on the desktop in-app Browser flow for synthetic approval, preview, row acceptance, reviewed commit, imported-fact consumption, graph/reports/replay inspection, and rollback. Responsive/mobile Browser QA was attempted, but the in-app browser viewport did not resize and remained 1280x720; this limitation is recorded in browser notes.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_AUDIT_SUMMARY.json`
+- `.factory-v3/evidence/MISSION_013_BROWSER_NOTES.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `scripts/mission_013_bridge_qa.py`
+- `scripts/verify_mission_013.py`
+
+## Commands Run Since Last Checkpoint
+- `python3 -B scripts/mission_013_bridge_qa.py --db /tmp/ppos_mission_013_qa.sqlite --host 127.0.0.1 --port 8800` (initial failure: direct script import path did not include repo root)
+- `python3 -B scripts/mission_013_bridge_qa.py --db /tmp/ppos_mission_013_qa.sqlite --host 127.0.0.1 --port 8800`
+- `python3 -B -m unittest discover -s tests`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `python3 -m json.tool fixtures/garmin_exports/manifest.json`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_AUDIT_SUMMARY.json`
+- `cat /Users/eduardodosremedios/.codex/plugins/cache/openai-bundled/browser/26.601.21317/skills/control-in-app-browser/SKILL.md`
+- `python3 -B -m ppos_core.api --db /tmp/ppos_mission_013_browser.sqlite --host 127.0.0.1 --port 8800`
+- Browser QA via Codex in-app Browser against `http://127.0.0.1:8800/workbench/?view=imports&manual_export=garmin_activities_clean_csv`
+- Browser responsive resize attempt via Codex in-app Browser
+- Server stopped with keyboard interrupt after Browser QA
+- `git status --short --branch`
+- `git diff --stat`
+- `git log --oneline -n 12`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B scripts/mission_013_bridge_qa.py --db /tmp/ppos_mission_013_qa.sqlite --host 127.0.0.1 --port 8800` | FAIL then fixed | Initial direct-script import path missed repo root; scripts were patched to insert repo root into `sys.path`. |
+| `python3 -B scripts/mission_013_bridge_qa.py --db /tmp/ppos_mission_013_qa.sqlite --host 127.0.0.1 --port 8800` | PASS | 17 QA checks passed; audit summary written. |
+| `python3 -B -m unittest discover -s tests` | PASS | 170 tests passed. |
+| JSON parse checks for HDI001, HDI002, Garmin manifest, audit summary | PASS | All parse with `python3 -m json.tool`. |
+| Browser QA desktop flow | PASS | Approval, preview/review/commit, consume, graph, reports, replay, rollback; no window or console errors. |
+| Browser responsive attempt | ATTEMPTED_LIMITED | Viewport remained `1280x720`, so mobile media query did not engage. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is high but bounded because implementation is complete and closeout artifacts are structured.
+- Tool-call count since last checkpoint: 31, counting wrapped subcalls, script edits, QA runs, full unit run, JSON parse checks, Browser setup/interactions, server lifecycle, and checkpoint evidence edits.
+- Wall-clock time since last checkpoint: approximately 55 minutes from checkpoint 009 commit through scripts, verification, Browser QA, and checkpoint evidence.
+- Context/buffer concern: enough for closeout, record, final verifier, and final commit; do not start new implementation scope.
+- Stop threshold reached: NO
+
+## Open Risks
+- Final verifier will fail until closeout and record exist; run it after final artifacts are authored.
+- Mobile Browser QA could not be completed because the in-app Browser viewport did not resize; limitation is recorded.
+
+## Pending Human Decisions
+- None. HDI-013-001 and HDI-013-002 are both applied.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Commit checkpoint 010, then write final closeout and Mission 013 record, run final verifier, and commit closeout.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_AUDIT_SUMMARY.json`
+- `.factory-v3/evidence/MISSION_013_BROWSER_NOTES.md`
+- `scripts/mission_013_bridge_qa.py`
+- `scripts/verify_mission_013.py`
+- current repository state
+
+Halt if:
+- Authored state conflicts with repository state.
+- Any final verification requires real data, real export files, Factory V2, Factory_V3 tooling, package installation, push/pull/fetch/merge/rebase/reset/checkout, or unauthorized files.
