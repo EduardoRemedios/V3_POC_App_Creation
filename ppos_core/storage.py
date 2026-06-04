@@ -12,6 +12,7 @@ from typing import Any
 from .api_contracts import contract_rows
 from .evidence_graph import graph_payload, refresh_evidence_graph
 from .fixture_manifest import api_matrix, family_summary, load_manifest, validate_manifest, workflow_matrix
+from .garmin_bridge import garmin_export_catalog
 from .loader import load_fixture, load_fixtures
 from .manual_imports import (
     adapter_catalog,
@@ -30,7 +31,7 @@ from .recommendations import (
 )
 from .reports import evening_report_candidate, morning_report_candidate
 from .safety_audit import list_safety_events, persist_safety_events, safety_summary
-from .schema import Fixture
+from .schema import Fixture, NormalizedFact, SourceRecord
 from .snapshots import export_snapshot, validate_snapshot_import
 from .timeline import get_timeline, persist_workflow_timeline, replay_audit_summary
 from .workflows import run_workflow
@@ -112,6 +113,10 @@ def list_source_adapters() -> list[dict[str, Any]]:
 
 def list_manual_exports() -> list[dict[str, Any]]:
     return manual_export_catalog()
+
+
+def list_garmin_exports() -> list[dict[str, Any]]:
+    return garmin_export_catalog()
 
 
 def get_manual_export_detail(export_id: str) -> dict[str, Any]:
@@ -262,6 +267,77 @@ def list_manual_import_materialized_facts(conn: sqlite3.Connection, session_id: 
     return [_materialized_fact_row(row) for row in rows]
 
 
+def run_manual_import_consumption(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
+    migrate(conn)
+    session = get_manual_import_session(conn, session_id)
+    if session["status"] != "committed":
+        raise ValueError(f"manual import session must be committed before consumption, got {session['status']}")
+    fixture = _fixture_from_materialized_import(conn, session_id)
+    if not fixture.normalized_facts:
+        raise ValueError(f"manual import session has no active materialized facts: {session_id}")
+    workflow_names = _import_workflow_names(fixture)
+    workflow_runs: list[dict[str, Any]] = []
+    report_ids: list[str] = []
+    with conn:
+        conn.execute("DELETE FROM derived_facts WHERE fixture_id = ?", (session_id,))
+        _insert_derived_facts(conn, fixture, derived_facts(fixture))
+        for workflow_name in workflow_names:
+            result = run_workflow(workflow_name, fixture)
+            evidence_id = f"{session_id}_{result.evidence_pack.id}_{workflow_name}"
+            run_id = f"{session_id}_{result.id}"
+            _upsert_evidence_pack(
+                conn,
+                evidence_id,
+                session_id,
+                result.evidence_pack.uncertainty,
+                workflow_name,
+                result.evidence_pack.refs,
+            )
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO workflow_runs
+                (id, fixture_id, workflow, status, recommendation_class, evidence_pack_id, output_json, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    run_id,
+                    session_id,
+                    result.workflow,
+                    result.status,
+                    result.recommendation_class,
+                    evidence_id,
+                    _dump(result.output),
+                    _now(),
+                ),
+            )
+            persist_workflow_timeline(conn, fixture, run_id, result)
+            persist_workflow_recommendation(conn, fixture, run_id, result)
+            workflow_runs.append(get_workflow_run(conn, run_id))
+        report_ids = _insert_import_reports(conn, fixture)
+        _insert_manual_import_audit_event(
+            conn,
+            session_id,
+            "consumed_by_workflows_reports",
+            {
+                "workflow_count": len(workflow_names),
+                "workflows": workflow_names,
+                "report_count": len(report_ids),
+                "report_ids": report_ids,
+                "synthetic_only": True,
+            },
+        )
+        graph = refresh_evidence_graph(conn, session_id)
+    return {
+        "session_id": session_id,
+        "synthetic_only": True,
+        "workflow_count": len(workflow_runs),
+        "workflows": workflow_runs,
+        "report_ids": report_ids,
+        "graph": graph,
+        "timeline_run_ids": [run["id"] for run in workflow_runs],
+    }
+
+
 def get_manual_import_mapping(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
     session = get_manual_import_session(conn, session_id)
     return {
@@ -304,6 +380,7 @@ def manual_import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
         "reverted_materialized_fact_count": conn.execute(
             "SELECT COUNT(*) AS count FROM manual_import_materialized_facts WHERE active = 0"
         ).fetchone()["count"],
+        "approval_count": conn.execute("SELECT COUNT(*) AS count FROM manual_import_approval_records").fetchone()["count"],
         "sessions": [
             {
                 "session_id": session["id"],
@@ -320,6 +397,76 @@ def manual_import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
             for session in sessions
         ],
     }
+
+
+def create_synthetic_import_approval(
+    conn: sqlite3.Connection,
+    export_id: str,
+    retention_posture: str = "keep-raw-until-verified",
+    approval_state: str = "approved",
+    preview_only: bool = True,
+    consent_text: str = "",
+) -> dict[str, Any]:
+    migrate(conn)
+    if retention_posture not in {"keep-raw-until-verified", "keep-normalized-only", "keep-raw-and-normalized"}:
+        raise ValueError("unsupported retention posture")
+    if approval_state not in {"draft", "approved", "revoked"}:
+        raise ValueError("approval_state must be draft, approved, or revoked")
+    export = get_manual_export(export_id)
+    preview = preview_manual_export(export_id)
+    now = _now()
+    count = conn.execute("SELECT COUNT(*) AS count FROM manual_import_approval_records").fetchone()["count"] + 1
+    approval_id = f"mission013_approval_{count:03d}"
+    categories = sorted(set(preview["adapter"].get("domains", [])) | {export.get("family", "manual_export")})
+    source_label = "real_garmin_manual_export" if str(export.get("adapter_id", "")).startswith("garmin_bridge_") else "real_manual_export"
+    text = consent_text or "Synthetic rehearsal approval only; no real file is read and no live Garmin integration is enabled."
+    payload = {
+        "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
+        "synthetic_rehearsal": True,
+        "real_data_enabled": False,
+        "source_label": source_label,
+        "synthetic_fixture_export_id": export_id,
+        "approval_defaults": preview.get("approval_defaults", {}),
+    }
+    with conn:
+        conn.execute(
+            """
+            INSERT INTO manual_import_approval_records
+            (id, export_id, session_id, source_label, file_reference, data_categories_json, retention_posture, approval_state, preview_only, synthetic_only, consent_text, approved_at, created_at, payload_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                approval_id,
+                export_id,
+                preview["session_id"],
+                source_label,
+                export.get("path", export_id),
+                _dump(categories),
+                retention_posture,
+                approval_state,
+                1 if preview_only else 0,
+                1,
+                text,
+                now if approval_state == "approved" else None,
+                now,
+                _dump(payload),
+            ),
+        )
+    return get_synthetic_import_approval(conn, approval_id)
+
+
+def get_synthetic_import_approval(conn: sqlite3.Connection, approval_id: str) -> dict[str, Any]:
+    migrate(conn)
+    row = conn.execute("SELECT * FROM manual_import_approval_records WHERE id = ?", (approval_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"synthetic import approval not found: {approval_id}")
+    return _approval_row(row)
+
+
+def list_synthetic_import_approvals(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    migrate(conn)
+    rows = conn.execute("SELECT * FROM manual_import_approval_records ORDER BY created_at DESC, id").fetchall()
+    return [_approval_row(row) for row in rows]
 
 
 def import_all_fixtures(conn: sqlite3.Connection, directory: str | Path = "fixtures/dtu") -> list[dict[str, Any]]:
@@ -1076,6 +1223,194 @@ def _rollback_materialized_import_facts(conn: sqlite3.Connection, session_id: st
         refresh_evidence_graph(conn, session_id)
 
 
+def _fixture_from_materialized_import(conn: sqlite3.Connection, session_id: str) -> Fixture:
+    session = get_manual_import_session(conn, session_id)
+    rows = conn.execute(
+        """
+        SELECT mf.*, nf.value_json, sr.source, sr.source_record_id AS original_source_record_id, sr.payload_json
+        FROM manual_import_materialized_facts mf
+        JOIN normalized_facts nf ON nf.id = mf.fact_id AND nf.fixture_id = mf.fixture_id
+        JOIN source_records sr ON sr.id = mf.source_record_id AND sr.fixture_id = mf.fixture_id
+        WHERE mf.session_id = ? AND mf.active = 1
+        ORDER BY mf.row_index
+        """,
+        (session_id,),
+    ).fetchall()
+    source_records: list[SourceRecord] = []
+    normalized_facts: list[NormalizedFact] = []
+    sources: set[str] = set()
+    for row in rows:
+        value = json.loads(row["value_json"])
+        payload = _workflow_payload_for_import(row["domain"], value, json.loads(row["payload_json"]))
+        source = row["source_identity"]
+        sources.add(source)
+        source_records.append(
+            SourceRecord(
+                id=row["source_record_id"],
+                source=source,
+                source_record_id=row["original_source_record_id"],
+                domain=_workflow_domain_for_import(row["domain"]),
+                observed_at=row["observed_at"],
+                ingested_at=row["materialized_at"],
+                payload=payload,
+            )
+        )
+        source_records.extend(_supplemental_import_records(row, value, source))
+        normalized_facts.append(
+            NormalizedFact(
+                id=row["fact_id"],
+                domain=row["domain"],
+                observed_at=row["observed_at"],
+                value=value,
+                provenance_refs=(row["source_record_id"],),
+            )
+        )
+    expected = _import_expected_contracts(source_records)
+    return Fixture(
+        path=Path(f"fixtures/garmin_exports/{session['export_id']}"),
+        fixture_id=session_id,
+        synthetic_only=True,
+        timezone="synthetic_import_timezone",
+        scenario=f"Mission 013 materialized Garmin import consumption for {session['export_id']}",
+        sources=tuple(sorted(sources or {"synthetic_garmin_manual_export"})),
+        source_records=tuple(source_records),
+        normalized_facts=tuple(normalized_facts),
+        expected=expected,
+    )
+
+
+def _workflow_payload_for_import(domain: str, value: dict[str, Any], raw: dict[str, Any]) -> dict[str, Any]:
+    payload = dict(value)
+    if domain == "activity":
+        payload.setdefault("load", value.get("training_load", 0))
+        payload.setdefault("ended_at", value.get("start_time") or raw.get("start_time"))
+        payload.setdefault("intensity", "hard" if int(value.get("training_load") or 0) >= 140 else "moderate")
+    elif domain == "sleep":
+        payload.setdefault("ended_at", value.get("sleep_end"))
+    elif domain == "body_composition":
+        payload.setdefault("weight_kg", value.get("weight_kg"))
+    elif domain == "wellness":
+        payload.setdefault("rmssd_ms", value.get("hrv_rmssd_ms"))
+        payload.setdefault("baseline_ms", max(int(value.get("hrv_rmssd_ms") or 0) + 8, 8))
+    payload["synthetic_import_source"] = "mission_013_materialized_fact"
+    return payload
+
+
+def _workflow_domain_for_import(domain: str) -> str:
+    if domain == "body_composition":
+        return "weight"
+    if domain == "wellness":
+        return "hrv"
+    return domain
+
+
+def _supplemental_import_records(row: sqlite3.Row, value: dict[str, Any], source: str) -> list[SourceRecord]:
+    records: list[SourceRecord] = []
+    if row["domain"] == "sleep":
+        if value.get("hrv_rmssd_ms") is not None:
+            records.append(
+                SourceRecord(
+                    id=f"{row['source_record_id']}_hrv",
+                    source=source,
+                    source_record_id=f"{row['original_source_record_id']}_hrv",
+                    domain="hrv",
+                    observed_at=row["observed_at"],
+                    ingested_at=row["materialized_at"],
+                    payload={
+                        "rmssd_ms": value.get("hrv_rmssd_ms"),
+                        "baseline_ms": int(value.get("hrv_rmssd_ms") or 0) + 8,
+                        "synthetic_import_source": "mission_013_sleep_row",
+                    },
+                )
+            )
+        if value.get("resting_hr_bpm") is not None:
+            records.append(
+                SourceRecord(
+                    id=f"{row['source_record_id']}_rhr",
+                    source=source,
+                    source_record_id=f"{row['original_source_record_id']}_rhr",
+                    domain="resting_heart_rate",
+                    observed_at=row["observed_at"],
+                    ingested_at=row["materialized_at"],
+                    payload={
+                        "bpm": value.get("resting_hr_bpm"),
+                        "baseline_bpm": int(value.get("resting_hr_bpm") or 0) + 2,
+                        "synthetic_import_source": "mission_013_sleep_row",
+                    },
+                )
+            )
+    return records
+
+
+def _import_expected_contracts(source_records: list[SourceRecord]) -> dict[str, Any]:
+    refs = [record.id for record in source_records[:4]]
+    if not refs:
+        refs = ["derived_missing_data"]
+    workflows = {
+        "recovery_today": {"required_evidence_refs": refs + ["derived_training_load_7d"]},
+        "morning_report_candidate": {"required_evidence_refs": refs, "sections": list(MORNING_SECTIONS_FOR_IMPORT)},
+        "evening_report_candidate": {"required_evidence_refs": refs, "sections": list(EVENING_SECTIONS_FOR_IMPORT)},
+    }
+    domains = {record.domain for record in source_records}
+    if "activity" in domains:
+        workflows["four_week_training_analysis"] = {"required_evidence_refs": ["derived_training_load_7d"]}
+    if "weight" in domains:
+        workflows["weight_trend_check"] = {"required_evidence_refs": ["derived_weight_trend"]}
+    return {"workflows": workflows, "prohibited_claims": [], "families": ["mission_013_imported_garmin_facts"]}
+
+
+MORNING_SECTIONS_FOR_IMPORT = ("readiness", "imported_key_evidence", "training_suggestion", "uncertainty")
+EVENING_SECTIONS_FOR_IMPORT = ("imported_facts", "recovery_setup", "data_gaps", "follow_up_state")
+
+
+def _import_workflow_names(fixture: Fixture) -> list[str]:
+    names = ["recovery_today"]
+    domains = {record.domain for record in fixture.source_records}
+    if "activity" in domains:
+        names.append("four_week_training_analysis")
+    if "weight" in domains:
+        names.append("weight_trend_check")
+    if len(names) == 1:
+        names.append("sleep_cause_analysis")
+    return names
+
+
+def _insert_import_reports(conn: sqlite3.Connection, fixture: Fixture) -> list[str]:
+    report_ids: list[str] = []
+    for workflow_name, report in (
+        ("morning_report_candidate", morning_report_candidate(fixture)),
+        ("evening_report_candidate", evening_report_candidate(fixture)),
+    ):
+        evidence_id = f"{fixture.fixture_id}_{report.evidence_pack.id}_{workflow_name}"
+        _upsert_evidence_pack(
+            conn,
+            evidence_id,
+            fixture.fixture_id,
+            report.evidence_pack.uncertainty,
+            workflow_name,
+            report.evidence_pack.refs,
+        )
+        report_id = f"{fixture.fixture_id}_{report.id}"
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO report_candidates
+            (id, fixture_id, report_type, sections_json, evidence_pack_id, delivery_status, output_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                report_id,
+                fixture.fixture_id,
+                report.report_type,
+                _dump(list(report.sections)),
+                evidence_id,
+                report.delivery_status,
+                _dump(report.output),
+            ),
+        )
+        report_ids.append(report_id)
+    return report_ids
+
+
 def _manual_session_row(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
     data = _row(row)
     data["synthetic_only"] = bool(data["synthetic_only"])
@@ -1181,6 +1516,15 @@ def _materialized_fact_row(row: sqlite3.Row) -> dict[str, Any]:
     data = _row(row)
     data["active"] = bool(data["active"])
     data["provenance"] = json.loads(data.pop("provenance_json"))
+    return data
+
+
+def _approval_row(row: sqlite3.Row) -> dict[str, Any]:
+    data = _row(row)
+    data["preview_only"] = bool(data["preview_only"])
+    data["synthetic_only"] = bool(data["synthetic_only"])
+    data["data_categories"] = json.loads(data.pop("data_categories_json"))
+    data["payload"] = json.loads(data.pop("payload_json"))
     return data
 
 

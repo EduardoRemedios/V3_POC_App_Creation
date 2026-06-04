@@ -42,6 +42,16 @@ const api = {
   contracts: () => fetchJson("/api/contracts"),
   sourceAdapters: () => fetchJson("/api/source-adapters"),
   manualExports: () => fetchJson("/api/manual-exports"),
+  garminExports: () => fetchJson("/api/garmin-exports"),
+  syntheticApprovals: () => fetchJson("/api/manual-imports/approvals"),
+  recordSyntheticApproval: (exportId, retentionPosture, consentText) =>
+    fetchJson("/api/manual-imports/approval", {
+      export_id: exportId,
+      retention_posture: retentionPosture,
+      approval_state: "approved",
+      preview_only: true,
+      consent_text: consentText,
+    }),
   previewManualImport: (exportId) => fetchJson("/api/manual-imports/preview", { export_id: exportId }),
   commitManualImport: (exportId) => fetchJson("/api/manual-imports/commit-synthetic", { export_id: exportId }),
   reviewManualImportRow: (sessionId, rowIndex, reviewState) =>
@@ -51,6 +61,7 @@ const api = {
       review_state: reviewState,
     }),
   commitReviewedManualImport: (sessionId) => fetchJson("/api/manual-imports/commit-reviewed", { session_id: sessionId }),
+  consumeManualImport: (sessionId) => fetchJson(`/api/manual-imports/${sessionId}/consume`, {}),
   rollbackManualImport: (sessionId) =>
     fetchJson("/api/manual-imports/rollback", { session_id: sessionId, reason: "synthetic operator rollback from workbench" }),
   manualImportMapping: (sessionId) => fetchJson(`/api/manual-imports/${sessionId}/mapping`),
@@ -411,7 +422,7 @@ async function init() {
     await renderContracts();
     await renderSnapshot();
     const urlManualExport = new URLSearchParams(window.location.search).get("manual_export");
-    await renderImportLab(boot.source_adapters || [], boot.manual_exports || [], urlManualExport);
+    await renderImportLab(boot.source_adapters || [], [...(boot.manual_exports || []), ...(boot.garmin_exports || [])], urlManualExport);
     document.querySelector("#run-workflow").addEventListener("click", runSelectedWorkflow);
     document.querySelector("#run-scenario").addEventListener("click", runScenarioWalkthrough);
     document.querySelector("#reset-workbench").addEventListener("click", resetWorkbench);
@@ -419,7 +430,9 @@ async function init() {
     document.querySelector("#preview-manual-import").addEventListener("click", previewSelectedManualImport);
     document.querySelector("#commit-manual-import").addEventListener("click", commitSelectedManualImport);
     document.querySelector("#commit-reviewed-manual-import").addEventListener("click", commitReviewedManualImport);
+    document.querySelector("#consume-manual-import").addEventListener("click", consumeManualImport);
     document.querySelector("#rollback-manual-import").addEventListener("click", rollbackManualImport);
+    document.querySelector("#record-synthetic-approval").addEventListener("click", recordSyntheticApproval);
     document.querySelector("#manual-import-preview").addEventListener("click", reviewManualImportRowFromButton);
     const urlFixture = new URLSearchParams(window.location.search).get("fixture");
     const urlView = new URLSearchParams(window.location.search).get("view");
@@ -447,9 +460,26 @@ async function renderImportLab(adapters, exports, selectedExportId) {
     selector.value = selectedExportId;
   }
   await renderManualImportAudit();
+  await renderSyntheticApprovalState();
   if (exports[0]) {
     document.querySelector("#manual-import-preview").innerHTML = card("Ready", "Select Preview to inspect a synthetic manual export.");
   }
+}
+
+async function recordSyntheticApproval() {
+  await withOperation("Recording synthetic approval", async () => {
+    activateView("imports");
+    const consent = document.querySelector("#approval-consent");
+    if (!consent.checked) {
+      throw new Error("Synthetic consent must be checked before recording approval.");
+    }
+    const exportId = document.querySelector("#manual-export-selector").value;
+    const retention = document.querySelector("#approval-retention").value;
+    const consentText = "Synthetic Mission 013 approval rehearsal; no real file is read.";
+    const result = await api.recordSyntheticApproval(exportId, retention, consentText);
+    await renderSyntheticApprovalState();
+    setStatus(`Recorded synthetic approval: ${result.approval.id}`);
+  });
 }
 
 async function previewSelectedManualImport() {
@@ -504,6 +534,29 @@ async function commitReviewedManualImport() {
     renderManualImportSession(result.session);
     await renderManualImportAudit();
     setStatus(`Committed reviewed synthetic import: ${session.id}`);
+  });
+}
+
+async function consumeManualImport() {
+  await withOperation("Consuming materialized import facts", async () => {
+    activateView("imports");
+    const session = requireManualImportSession();
+    const result = await api.consumeManualImport(session.id);
+    await renderGraph(session.id);
+    await renderReports();
+    await renderRecommendations();
+    const firstRunId = result.consumption.timeline_run_ids[0];
+    if (firstRunId) {
+      const timeline = await api.timeline(firstRunId);
+      renderTimeline(timeline.timeline);
+    }
+    document.querySelector("#manual-import-conflicts").innerHTML = [
+      card("Consumed workflows", String(result.consumption.workflow_count)),
+      card("Report candidates", String(result.consumption.report_ids.length)),
+      card("Graph nodes", String(result.consumption.graph.node_count)),
+      card("Graph edges", String(result.consumption.graph.edge_count)),
+    ].join("");
+    setStatus(`Consumed materialized facts: ${session.id}`);
   });
 }
 
@@ -587,7 +640,20 @@ async function renderManualImportAudit() {
     card("Conflicts", String(summary.conflict_count)),
     card("Review states", reviewSummaryText(summary.review_summary)),
     card("Audit events", String(summary.audit_event_count || 0)),
+    card("Approvals", String(summary.approval_count || 0)),
   ].join("");
+}
+
+async function renderSyntheticApprovalState() {
+  const data = await api.syntheticApprovals();
+  document.querySelector("#synthetic-approval-state").innerHTML = data.approvals.length
+    ? data.approvals
+        .slice(0, 8)
+        .map(
+          (approval) => `<div class="item"><strong>${escapeHtml(approval.source_label)}</strong><br>${escapeHtml(approval.export_id)} / ${escapeHtml(approval.retention_posture)} / ${escapeHtml(approval.approval_state)}</div>`
+        )
+        .join("")
+    : card("Approval state", "No synthetic approvals recorded");
 }
 
 function card(label, value) {

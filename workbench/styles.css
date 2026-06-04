@@ -202,6 +202,10 @@ select {
   grid-template-columns: minmax(260px, 0.9fr) minmax(260px, 1fr) minmax(260px, 0.9fr);
 }
 
+#view-imports.is-active {
+  grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+}
+
 .panel {
   min-width: 0;
   background: var(--surface);
@@ -289,6 +293,15 @@ select {
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 10px;
+}
+
+.check-row {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .json-output {

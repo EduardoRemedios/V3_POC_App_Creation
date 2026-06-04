@@ -30,6 +30,7 @@ from .storage import (
     list_fixture_families,
     list_fixture_files,
     list_followup_history,
+    list_garmin_exports,
     list_imports,
     list_manual_exports,
     list_manual_import_sessions,
@@ -41,15 +42,18 @@ from .storage import (
     list_source_adapters,
     list_snapshot_export,
     list_source_records,
+    list_synthetic_import_approvals,
     manual_import_audit_summary,
     migrate,
     commit_reviewed_manual_import,
+    create_synthetic_import_approval,
     get_manual_export_detail,
     get_manual_import_conflicts,
     get_manual_import_mapping,
     get_manual_import_session,
     preview_manual_import,
     rollback_manual_import,
+    run_manual_import_consumption,
     run_and_persist_workflow,
     update_manual_import_row_review,
     validate_snapshot_payload,
@@ -128,8 +132,24 @@ class WorkbenchAPI:
                 return 200, {"adapters": list_source_adapters()}
             if method == "GET" and parts == ["api", "manual-exports"]:
                 return 200, {"exports": list_manual_exports()}
+            if method == "GET" and parts == ["api", "garmin-exports"]:
+                return 200, {"exports": list_garmin_exports()}
             if method == "GET" and len(parts) == 3 and parts[:2] == ["api", "manual-exports"]:
                 return 200, {"export": get_manual_export_detail(parts[2])}
+            if method == "POST" and parts == ["api", "manual-imports", "approval"]:
+                export_id = _required(body, "export_id")
+                return 200, {
+                    "approval": create_synthetic_import_approval(
+                        self.conn,
+                        export_id,
+                        str((body or {}).get("retention_posture", "keep-raw-until-verified")),
+                        str((body or {}).get("approval_state", "approved")),
+                        bool((body or {}).get("preview_only", True)),
+                        str((body or {}).get("consent_text", "")),
+                    )
+                }
+            if method == "GET" and parts == ["api", "manual-imports", "approvals"]:
+                return 200, {"approvals": list_synthetic_import_approvals(self.conn)}
             if method == "POST" and parts == ["api", "manual-imports", "preview"]:
                 export_id = _required(body, "export_id")
                 return 200, {"session": preview_manual_import(self.conn, export_id, commit=False)}
@@ -161,6 +181,8 @@ class WorkbenchAPI:
                 return 200, get_manual_import_mapping(self.conn, parts[2])
             if method == "GET" and len(parts) == 4 and parts[:2] == ["api", "manual-imports"] and parts[3] == "conflicts":
                 return 200, get_manual_import_conflicts(self.conn, parts[2])
+            if method == "POST" and len(parts) == 4 and parts[:2] == ["api", "manual-imports"] and parts[3] == "consume":
+                return 200, {"consumption": run_manual_import_consumption(self.conn, parts[2])}
             if method == "GET" and parts == ["api", "manual-imports", "audit-summary"]:
                 return 200, {"manual_import_audit": manual_import_audit_summary(self.conn)}
             if method == "GET" and len(parts) == 4 and parts[:3] == ["api", "fixtures", "state"]:

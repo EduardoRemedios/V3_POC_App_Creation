@@ -34,3 +34,19 @@ CREATE TABLE IF NOT EXISTS manual_import_materialization_conflicts (
   created_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS manual_import_approval_records (
+  id TEXT PRIMARY KEY,
+  export_id TEXT NOT NULL,
+  session_id TEXT,
+  source_label TEXT NOT NULL,
+  file_reference TEXT NOT NULL,
+  data_categories_json TEXT NOT NULL,
+  retention_posture TEXT NOT NULL,
+  approval_state TEXT NOT NULL,
+  preview_only INTEGER NOT NULL,
+  synthetic_only INTEGER NOT NULL,
+  consent_text TEXT NOT NULL,
+  approved_at TEXT,
+  created_at TEXT NOT NULL,
+  payload_json TEXT NOT NULL
+);

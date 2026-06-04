@@ -571,7 +571,7 @@ Halt if:
 - Checkpoint ID: M013-CP008
 - Checkpoint status: complete
 - Commit before: 9d43abd
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: 89c282b
 
 ## Current Phase
 Fresh-session resume recorded; fact rollback verified.
@@ -655,6 +655,104 @@ Resume from:
 - `ppos_core/migrations/005_mission_013.sql`
 - `tests/test_mission_013_materialization.py`
 - `tests/test_mission_013_fact_rollback.py`
+- current repository state
+
+Halt if:
+- Authored state conflicts with repository state.
+- Any continuation requires real data, real export files, Factory V2, Factory_V3 tooling, package installation, unauthorized git operations, or destructive mutation of prior mission evidence.
+
+## Checkpoint 009
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP009
+- Checkpoint status: complete
+- Commit before: 89c282b
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+Workflow/timeline/evidence-graph/report integration and synthetic approval UX implemented.
+
+## Objective Progress
+Materialized Garmin import sessions now have a bounded consumption path: active materialized imported facts are converted into a synthetic fixture view, then consumed by existing workflow logic, workflow timelines, evidence packs, evidence graph refresh, recommendations, and morning/evening report candidates. The workbench and API now expose Garmin fixture exports separately from the legacy manual-export catalog, record synthetic future-real-import approval rehearsals with source label, retention posture, consent text, preview-only state, and synthetic-only payload metadata, and provide a workbench action to consume materialized imported facts after reviewed commit.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `ppos_core/api.py`
+- `ppos_core/migrations/005_mission_013.sql`
+- `ppos_core/storage.py`
+- `ppos_core/workbench.py`
+- `workbench/app.js`
+- `workbench/index.html`
+- `workbench/styles.css`
+- `tests/test_mission_013_workflow_integration.py`
+- `tests/test_mission_013_approval_ux.py`
+- `tests/test_mission_013_api.py`
+
+## Commands Run Since Last Checkpoint
+- `sed -n '1,360p' ppos_core/migrations/001_initial.sql`
+- `sed -n '1,360p' ppos_core/workbench.py`
+- `sed -n '1,260p' workbench/index.html`
+- `sed -n '1,420p' workbench/app.js`
+- `sed -n '1,360p' workbench/styles.css`
+- `sed -n '421,920p' workbench/app.js`
+- `sed -n '361,760p' workbench/styles.css`
+- `rg -n "manual_import|approval|report_candidates|workflow_timeline|evidence_graph" ppos_core tests workbench .factory-v3/evidence/MISSION_013_STATE.md`
+- `sed -n '1,260p' tests/test_mission_013_bridge_adapter.py`
+- `sed -n '1,260p' tests/test_mission_013_garmin_fixtures.py`
+- `sed -n '1,320p' ppos_core/schema.py`
+- `sed -n '1,420p' ppos_core/primitives.py`
+- `sed -n '1,220p' ppos_core/migrations/002_mission_009.sql`
+- `sed -n '1,140p' ppos_core/migrations/003_mission_011.sql`
+- `sed -n '1,120p' ppos_core/migrations/004_mission_012.sql`
+- `python3 -B -m unittest tests.test_mission_013_garmin_fixtures tests.test_mission_013_bridge_adapter tests.test_mission_013_materialization tests.test_mission_013_fact_rollback tests.test_mission_013_workflow_integration tests.test_mission_013_approval_ux tests.test_mission_013_api`
+- `git status --short --branch`
+- `git diff --stat`
+- `git log --oneline -n 12`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest tests.test_mission_013_garmin_fixtures tests.test_mission_013_bridge_adapter tests.test_mission_013_materialization tests.test_mission_013_fact_rollback tests.test_mission_013_workflow_integration tests.test_mission_013_approval_ux tests.test_mission_013_api` | PASS | 13 focused Mission 013 tests passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is moderate-to-high from implementation reads, storage/API/UI edits, and focused tests.
+- Tool-call count since last checkpoint: 29, counting wrapped subcalls, file edits, focused tests, status/log/diff, and checkpoint evidence edits.
+- Wall-clock time since last checkpoint: approximately 45 minutes from checkpoint 008 commit through surface integration, approval UX, tests, and checkpoint evidence.
+- Context/buffer concern: manageable for QA/verifier scripts and full verification, but checkpoint immediately before the larger QA/browser closeout phase.
+- Stop threshold reached: NO
+
+## Open Risks
+- Full stdlib verification, Mission 013 QA script, verifier script, JSON parse checks, and Browser QA remain pending.
+- Browser QA may require localhost bind escalation depending on sandbox behavior.
+
+## Pending Human Decisions
+- None. HDI-013-001 and HDI-013-002 are both applied.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Commit checkpoint 009, then add Mission 013 QA and verifier scripts and run full verification.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `fixtures/garmin_exports/manifest.json`
+- `ppos_core/garmin_bridge.py`
+- `ppos_core/manual_imports.py`
+- `ppos_core/storage.py`
+- `ppos_core/api.py`
+- `ppos_core/workbench.py`
+- `workbench/index.html`
+- `workbench/app.js`
+- `workbench/styles.css`
 - current repository state
 
 Halt if:

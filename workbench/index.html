@@ -170,9 +170,26 @@
               <button id="preview-manual-import" data-testid="preview-manual-import">Preview</button>
               <button id="commit-manual-import" data-testid="commit-manual-import">Commit synthetic</button>
               <button id="commit-reviewed-manual-import" data-testid="commit-reviewed-manual-import">Commit reviewed</button>
+              <button id="consume-manual-import" data-testid="consume-manual-import">Consume facts</button>
               <button id="rollback-manual-import" data-testid="rollback-manual-import">Rollback</button>
             </div>
             <div id="adapter-catalog" class="dense-list" data-testid="adapter-catalog"></div>
+          </div>
+          <div class="panel" data-testid="synthetic-approval-panel">
+            <h2>Approval Rehearsal</h2>
+            <div class="control-row">
+              <select id="approval-retention" data-testid="approval-retention">
+                <option value="keep-raw-until-verified">keep-raw-until-verified</option>
+                <option value="keep-normalized-only">keep-normalized-only</option>
+                <option value="keep-raw-and-normalized">keep-raw-and-normalized</option>
+              </select>
+              <label class="check-row">
+                <input id="approval-consent" type="checkbox" data-testid="approval-consent">
+                <span>synthetic consent</span>
+              </label>
+              <button id="record-synthetic-approval" data-testid="record-synthetic-approval">Record approval</button>
+            </div>
+            <div id="synthetic-approval-state" class="dense-list" data-testid="synthetic-approval-state"></div>
           </div>
           <div class="panel" data-testid="manual-import-preview-panel">
             <h2>Preview And Validation</h2>
