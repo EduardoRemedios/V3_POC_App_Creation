@@ -2,17 +2,17 @@
 
 ## Mission
 - Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
-- Mission status: paused
+- Mission status: active
 - Profile: V3-POC-STANDALONE
 - Data mode: synthetic only
 - V3-only: YES
 - V2 allowed: NO
 
 ## Current Phase
-Deliberate cross-session resume boundary after materialization implementation.
+Workflow/timeline/evidence-graph/report consumption of materialized imported facts.
 
 ## Last Checkpoint
-M013-CP006 committed as `5248ee2`; M013-CP007 is being authored as the required deliberate resume boundary.
+M013-CP008 is complete and ready to commit; it records the fresh-session resume and focused fact rollback verification.
 
 ## Active Plan
 Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`.
@@ -35,6 +35,8 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Mission 013 materialization and fact rollback tests were added.
 - Focused Mission 013 tests passed: 8 tests.
 - Full stdlib unit suite passed: 165 tests.
+- Deliberate cross-session resume boundary was committed as `9d43abd` (`Mission 013 checkpoint 007: materialization resume boundary`) and this fresh session resumed from authored artifacts plus repository state only.
+- Fresh-session focused verification passed: `python3 -B -m unittest tests.test_mission_013_materialization tests.test_mission_013_fact_rollback` ran 3 tests and passed.
 
 ## Pending Phases
 - Workflow, timeline, evidence graph, and report consumption.
@@ -63,12 +65,34 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Context/buffer concern: high enough to stop at the required deliberate resume boundary before the remaining surface/UX phases.
 
 ## Resume Evidence
-- Deliberate cross-session resume boundary is being created at M013-CP007.
-- No fresh-session resume has occurred yet.
-- The next session must resume from authored artifacts only and then list the exact files read here before continuing.
+- Deliberate cross-session resume boundary: M013-CP007 committed as `9d43abd` (`Mission 013 checkpoint 007: materialization resume boundary`), resolved from `git log --oneline -n 30` in the fresh session.
+- Fresh-session resume occurred on 2026-06-04 from authored artifacts and current repository state only.
+- The fresh session read exactly:
+  - `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+  - `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+  - `.factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md`
+  - `.factory-v3/evidence/MISSION_013_STATE.md`
+  - `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+  - `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+  - `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+  - `fixtures/garmin_exports/manifest.json`
+  - `ppos_core/garmin_bridge.py`
+  - `ppos_core/manual_imports.py`
+  - `ppos_core/storage.py`
+  - `ppos_core/migrations/005_mission_013.sql`
+  - `tests/test_mission_013_materialization.py`
+  - `tests/test_mission_013_fact_rollback.py`
+  - `ppos_core/timeline.py`
+  - `ppos_core/evidence_graph.py`
+  - `ppos_core/workflows.py`
+  - `ppos_core/reports.py`
+  - `ppos_core/api.py`
+  - `.factory-v3/evidence/MISSION_012_REAL_DATA_APPROVAL_DESIGN.md`
+  - current repository state via `pwd`, `git status --short --branch`, `git log --oneline -n 30`, and `git diff --stat`
+  - checkpoint-context reads via `sed -n '321,760p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md` and `sed -n '761,1240p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
 
 ## Next Action
-Stop after committing M013-CP007. A fresh session should resume from authored artifacts only, record what it read, and continue with workflow/timeline/evidence-graph integration.
+Record M013-CP008 after fresh-session fact rollback verification, then continue with workflow/timeline/evidence-graph/report consumption.
 
 ## Reentry Rule
 Resume only from this state file, authored Mission 013 artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

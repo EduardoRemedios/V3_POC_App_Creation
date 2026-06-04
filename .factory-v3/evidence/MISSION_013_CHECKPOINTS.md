@@ -478,7 +478,7 @@ Halt if:
 - Checkpoint ID: M013-CP007
 - Checkpoint status: complete
 - Commit before: 5248ee2
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: 9d43abd
 
 ## Current Phase
 HDI-013-002 applied; materialization implemented; deliberate resume boundary.
@@ -547,6 +547,103 @@ Resume from:
 - `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
 - `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
 - `.factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `fixtures/garmin_exports/manifest.json`
+- `ppos_core/garmin_bridge.py`
+- `ppos_core/manual_imports.py`
+- `ppos_core/storage.py`
+- `ppos_core/migrations/005_mission_013.sql`
+- `tests/test_mission_013_materialization.py`
+- `tests/test_mission_013_fact_rollback.py`
+- current repository state
+
+Halt if:
+- Authored state conflicts with repository state.
+- Any continuation requires real data, real export files, Factory V2, Factory_V3 tooling, package installation, unauthorized git operations, or destructive mutation of prior mission evidence.
+
+## Checkpoint 008
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP008
+- Checkpoint status: complete
+- Commit before: 9d43abd
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+Fresh-session resume recorded; fact rollback verified.
+
+## Objective Progress
+The fresh session resumed from authored artifacts and current repository state only. Checkpoint 007's pending `commit_after` was resolved from git log as `9d43abd` (`Mission 013 checkpoint 007: materialization resume boundary`). The state file now lists exactly which artifacts and repository-state commands were read before continuation. Focused materialization and rollback tests passed in the fresh session.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `pwd`
+- `sed -n '1,240p' .factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `sed -n '1,260p' .factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `sed -n '1,240p' .factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md`
+- `sed -n '1,280p' .factory-v3/evidence/MISSION_013_STATE.md`
+- `sed -n '1,320p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `sed -n '1,220p' .factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `sed -n '1,220p' .factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `sed -n '1,260p' fixtures/garmin_exports/manifest.json`
+- `sed -n '1,320p' ppos_core/garmin_bridge.py`
+- `sed -n '321,760p' ppos_core/garmin_bridge.py`
+- `sed -n '1,360p' ppos_core/manual_imports.py`
+- `sed -n '1,380p' ppos_core/storage.py`
+- `sed -n '381,860p' ppos_core/storage.py`
+- `sed -n '861,1360p' ppos_core/storage.py`
+- `sed -n '1361,1860p' ppos_core/storage.py`
+- `sed -n '1,260p' ppos_core/migrations/005_mission_013.sql`
+- `sed -n '1,260p' tests/test_mission_013_materialization.py`
+- `sed -n '1,260p' tests/test_mission_013_fact_rollback.py`
+- `sed -n '1,220p' ppos_core/timeline.py`
+- `sed -n '1,320p' ppos_core/evidence_graph.py`
+- `sed -n '1,360p' ppos_core/workflows.py`
+- `sed -n '1,300p' ppos_core/reports.py`
+- `sed -n '1,380p' ppos_core/api.py`
+- `sed -n '1,300p' .factory-v3/evidence/MISSION_012_REAL_DATA_APPROVAL_DESIGN.md`
+- `sed -n '321,760p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `sed -n '761,1240p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `git status --short --branch`
+- `git log --oneline -n 30`
+- `git diff --stat`
+- `python3 -B -m unittest tests.test_mission_013_materialization tests.test_mission_013_fact_rollback`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest tests.test_mission_013_materialization tests.test_mission_013_fact_rollback` | PASS | 3 focused Mission 013 materialization/rollback tests passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is moderate after fresh-session artifact reads.
+- Tool-call count since last checkpoint: 39, counting wrapped subcalls, git status/log/diff, focused verification, and file-edit operations.
+- Wall-clock time since last checkpoint: approximately 30 minutes from fresh-session intake through artifact reads, resume evidence recording, and focused rollback verification.
+- Context/buffer concern: manageable for fact rollback verification and surface integration.
+- Stop threshold reached: NO
+
+## Open Risks
+- Workflow/timeline/evidence-graph/report consumption and approval UX remain pending.
+
+## Pending Human Decisions
+- None. HDI-013-001 and HDI-013-002 are both applied.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Commit checkpoint 008, then continue with workflow/timeline/evidence-graph/report integration.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
 - `.factory-v3/evidence/MISSION_013_STATE.md`
 - `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
 - `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
