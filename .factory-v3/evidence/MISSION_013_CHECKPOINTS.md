@@ -89,7 +89,7 @@ Halt if:
 - Checkpoint ID: M013-CP002
 - Checkpoint status: complete
 - Commit before: 7f6f8d1
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: fcb585c
 
 ## Current Phase
 Garmin export shape research complete.
@@ -157,3 +157,80 @@ Resume from:
 
 Halt if:
 - Any continuation requires real Garmin files, account access, login, credentials, downloaded samples, package installation, Factory V2, Factory_V3 tooling, or unauthorized git operations.
+
+## Checkpoint 003
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP003
+- Checkpoint status: complete
+- Commit before: fcb585c
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+HDI-013-001 asked.
+
+## Objective Progress
+HDI-013-001 was authored in `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json` with status `asked`. The interrupt presents three concrete options covering optional fixture families beyond activities/sleep/body composition and the default retention posture for the synthetic future-real-import approval UX. The recommended option is `option_a`: add wellness/HRV/stress and default to `keep-raw-until-verified`.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `git status --short --branch`
+- `git diff --stat`
+- `git add .factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md .factory-v3/evidence/MISSION_013_STATE.md .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `git commit -m "Mission 013 checkpoint 002: Garmin shape research complete"`
+- `git log --oneline -n 20`
+- `git status --short --branch`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json` | PASS | Interrupt JSON parses with status `asked`. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is moderate from research, checkpoint, and interrupt authoring.
+- Tool-call count since last checkpoint: 10, counting wrapped subcalls, git commands, JSON parse check, and file-edit operations that authored this checkpoint.
+- Wall-clock time since last checkpoint: approximately 10 minutes from checkpoint 002 commit through interrupt authoring.
+- Context/buffer concern: none if the interrupt is answered clearly; fixture creation is blocked until answer.
+- Stop threshold reached: YES if the sponsor answer is not available, because fixture scope and retention posture are blocking for the next phase.
+
+## Mid-Mission Budget Review
+- Cumulative checkpoints: 3 of minimum 11 complete.
+- Cumulative tool-call count: approximately 47, counting wrapped subcalls and file edits.
+- Mission 012 comparison: below Mission 012 total of 77 tool calls and far below the sponsor's rough 2x guardrail, as expected this early.
+- Remaining phases: fixture pack, adapter integration, HDI-013-002, materialization, resume, rollback, surface integration, approval UX, verification, and closeout remain substantial.
+- Judgment: continue after a clear HDI-013-001 answer; do not descope now.
+
+## Open Risks
+- The sponsor must answer clearly; no default may be fabricated.
+- The answer surface must be recorded honestly. The asked surface is `codex-mobile-thread`; if the answer arrives from desktop or another surface, the interrupt file must say so.
+- Checkpoint `commit_after` is pending until the checkpoint commit exists; a later checkpoint will resolve it from `git log --oneline -n 20`.
+
+## Pending Human Decisions
+- HDI-013-001 is asked and blocking.
+- HDI-013-002 remains pending.
+
+## Plan Delta References
+- None. No answer has been received yet.
+
+## Next Planned Action
+Commit checkpoint 003, ask HDI-013-001 in-thread, and wait for the sponsor's answer.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- current repository state
+
+Halt if:
+- HDI-013-001 remains unanswered and fixture creation is the next required action.
+- The answer is ambiguous after one sharper re-ask, requests unauthorized real data, or requires scope outside the Mission 013 envelope.

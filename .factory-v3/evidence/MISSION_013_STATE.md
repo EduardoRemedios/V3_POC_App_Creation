@@ -9,10 +9,10 @@
 - V2 allowed: NO
 
 ## Current Phase
-Phase 2: Garmin public shape research complete; preparing checkpoint 002.
+Phase 3: HDI-013-001 asked; awaiting sponsor answer.
 
 ## Last Checkpoint
-M013-CP001 committed as `7f6f8d1`; M013-CP002 is being authored.
+M013-CP002 committed as `fcb585c`; M013-CP003 is being authored.
 
 ## Active Plan
 Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`.
@@ -22,9 +22,9 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Mission 013 implementation plan, state, and checkpoints files were initialized.
 - Public Garmin support/developer documentation was researched without login, account, export download, sample file use, API calls, or scraping.
 - `.factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md` was authored with export families, fields, units, timestamps, duplicate handling, and fixture-shape implications.
+- HDI-013-001 was written with status `asked` and options for optional fixture family scope plus default future retention posture.
 
 ## Pending Phases
-- HDI-013-001 fixture scope and retention decision.
 - Garmin-shaped synthetic fixture pack.
 - Garmin bridge adapter integration.
 - HDI-013-002 materialization conflict strategy decision.
@@ -36,7 +36,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Verification, Browser QA, closeout, record, and audit summary.
 
 ## Open Human Decision Interrupts
-- HDI-013-001: not yet asked.
+- HDI-013-001: asked; blocking before fixture pack creation.
 - HDI-013-002: not yet asked.
 - HDI-013-003: not raised; optional only if a genuine implementation decision appears.
 
@@ -58,7 +58,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Required future resume must read authored artifacts and current repository state, then list the exact files read here.
 
 ## Next Action
-Commit checkpoint 002, then write and commit HDI-013-001 with status `asked` before asking the sponsor in-thread.
+Commit checkpoint 003, ask HDI-013-001 in-thread, and wait for a clear sponsor answer. If no answer arrives and fixture creation is blocked, pause.
 
 ## Reentry Rule
 Resume only from this state file, authored Mission 013 artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

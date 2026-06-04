@@ -1,0 +1,51 @@
+{
+  "interrupt_id": "HDI-013-001",
+  "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
+  "status": "asked",
+  "decision_type": "product_decision",
+  "question": "Which Garmin-shaped fixture families beyond the required activities, sleep, and body-composition families should Mission 013 include, and which default retention posture should the synthetic future-real-import approval UX present?",
+  "context_summary": "Public Garmin documentation supports the required activity, sleep/wellness, and body-composition shape. It also publicly lists wellness domains such as HRV, stress, respiration, Body Battery, pulse ox, steps, calories, and heart rate. Mission 013 remains synthetic-only and does not enable real imports.",
+  "reason_for_interrupt": "Fixture breadth affects implementation size, test coverage, workbench catalog shape, and evidence value. Retention default affects the synthetic approval UX and future real-data bridge posture.",
+  "options": [
+    {
+      "id": "option_a",
+      "label": "Add wellness/HRV/stress; keep raw until verified",
+      "effect": "Adds a compact wellness family covering HRV/stress-style rows beyond the required three and presents `keep-raw-until-verified` as the default retention posture for future real imports.",
+      "risk": "Adds moderate fixture and adapter surface area, but keeps retention conservative and aligned with Mission 012's short/local raw-data posture."
+    },
+    {
+      "id": "option_b",
+      "label": "Required families only; keep normalized only",
+      "effect": "Limits fixtures to activities, sleep, and body composition, and presents `keep-normalized-only` as the default future retention posture.",
+      "risk": "Lower implementation size, but less evidence for Garmin wellness categories and less ability to re-preview raw rows after verification."
+    },
+    {
+      "id": "option_c",
+      "label": "Add wellness plus hydration; keep raw and normalized",
+      "effect": "Adds wellness/HRV/stress plus hydration-shaped synthetic rows and presents `keep-raw-and-normalized` as the default future retention posture.",
+      "risk": "Broadest evidence surface, but hydration was lower-confidence in the public research set and raw retention is the least conservative future real-data default."
+    }
+  ],
+  "recommended_option_id": "option_a",
+  "timeout_behavior": "pause",
+  "asked": {
+    "surface": "codex-mobile-thread",
+    "asked_at": "2026-06-04Ttime-not-recorded",
+    "message_reference": "Mission 013 ChatGPT thread; sponsor asked to answer from phone via Codex mobile app if possible."
+  },
+  "answer": {
+    "answered": false,
+    "answered_at": "not_recorded",
+    "answered_by": "not_recorded",
+    "answer_text": "",
+    "selected_option_id": "",
+    "interpretation": "",
+    "confidence": "not_recorded"
+  },
+  "mission_delta": {
+    "required": false,
+    "delta_reference": "",
+    "summary": "No answer received yet."
+  },
+  "continuation_decision": "not_decided"
+}
