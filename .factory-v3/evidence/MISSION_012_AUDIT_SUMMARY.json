@@ -1,0 +1,71 @@
+{
+  "adapter_count": 5,
+  "api_checks": {
+    "adapter_count": 5,
+    "audit_event_count": 12,
+    "audit_reverted_session_count": 1,
+    "audit_synthetic_only": true,
+    "initial_review_summary": {
+      "accepted": 0,
+      "needs_clarification": 3,
+      "rejected": 0
+    },
+    "manual_export_count": 9,
+    "preview_rows": 3,
+    "preview_status": "previewed",
+    "reviewed_commit_status": "committed",
+    "reviewed_summary": {
+      "accepted": 3,
+      "needs_clarification": 0,
+      "rejected": 0
+    },
+    "rollback_reason": "synthetic QA rollback",
+    "rollback_status": "reverted"
+  },
+  "browser_qa": {
+    "notes_reference": ".factory-v3/evidence/MISSION_012_BROWSER_NOTES.md",
+    "status": "pass"
+  },
+  "commands_run": [
+    "python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790"
+  ],
+  "generated_at": "2026-06-04T10:33:24Z",
+  "local_only": true,
+  "manifest_validation": {
+    "adapter_count": 5,
+    "errors": [],
+    "export_count": 9,
+    "synthetic_only": true,
+    "valid": true
+  },
+  "manual_export_fixture_count": 9,
+  "mission_id": "MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION",
+  "no_package_install": true,
+  "residual_risks": [],
+  "status": "pass",
+  "synthetic_only": true,
+  "workbench_checks": {
+    "api_calls": {
+      "audit": true,
+      "commit_reviewed": true,
+      "review": true,
+      "rollback": true
+    },
+    "diff_rendering": true,
+    "required_test_ids": {
+      "commit-manual-import": true,
+      "commit-reviewed-manual-import": true,
+      "manual-export-selector": true,
+      "manual-import-audit": true,
+      "manual-import-conflicts": true,
+      "manual-import-mapping": true,
+      "manual-import-preview": true,
+      "preview-manual-import": true,
+      "rollback-manual-import": true,
+      "source-adapter-lab": true,
+      "view-imports": true
+    },
+    "responsive_diff": true,
+    "review_controls": true
+  }
+}

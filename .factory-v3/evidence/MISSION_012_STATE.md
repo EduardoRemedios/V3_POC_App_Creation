@@ -5,10 +5,10 @@
 - Mission status: active
 
 ## Current Phase
-Workbench UI changes implemented and targeted API/workbench/storage tests passing. Verification, Browser QA, design evidence, and closeout remain pending.
+Verification harnesses, full tests, QA audit, Browser QA, and real-data approval design evidence completed. Final record and closeout remain pending.
 
 ## Last Checkpoint
-Checkpoint 007: workbench UI implemented.
+Checkpoint 008: verification and Browser QA completed.
 
 ## Active Plan
 Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the authority granted by `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`.
@@ -35,9 +35,14 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Added workbench controls for reviewed commit and rollback.
 - Added side-by-side raw/normalized diff rendering and per-row review controls.
 - Added workbench metadata and Mission 012 workbench tests.
+- Checkpoint 007 committed as `f0408b3`.
+- Added Mission 012 review/rollback QA harness and verifier script.
+- Added Garmin manual export/import future approval design evidence.
+- Ran full unit suite, Mission 012 QA harness, JSON checks, and Browser QA.
+- Added Mission 012 audit summary and browser notes.
 
 ## Pending Phases
-- Verification, Browser QA, and closeout.
+- Final closeout and mission record.
 
 ## Open Human Decision Interrupts
 - HDI-012-001 status: `applied`.
@@ -53,16 +58,21 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - `python3 -B -m unittest tests.test_mission_011_manual_imports tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 9 tests.
 - `python3 -B -m unittest tests.test_mission_011_api tests.test_mission_011_manual_imports tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 14 tests.
 - `python3 -B -m unittest tests.test_mission_011_workbench tests.test_mission_011_api tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback tests.test_mission_012_workbench`: PASS, 15 tests.
+- `python3 -B -m unittest discover -s tests`: PASS, 157 tests.
+- `python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790`: PASS.
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json`: PASS.
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`: PASS.
+- Browser QA: PASS, recorded in `.factory-v3/evidence/MISSION_012_BROWSER_NOTES.md`.
 
 ## Current Budget State
-- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on authored evidence, implementation, and targeted tests.
-- Tool-call budget: 7 tool calls since checkpoint 006 commit, counting source reads, UI edits, test creation, targeted test execution, and evidence update.
-- Wall-clock time since last checkpoint: approximately 15 minutes from checkpoint 006 commit through workbench test verification.
-- Context/buffer concern: manageable for verification and Browser QA checkpoint.
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on verification script authoring, full tests, Browser QA, and evidence updates.
+- Tool-call budget: 18 tool calls since checkpoint 007 commit, counting harness reads, script/design/browser-note edits, full tests, QA runs, JSON checks, browser setup/interactions, viewport check, screenshot capture, and server lifecycle.
+- Wall-clock time since last checkpoint: approximately 35 minutes from checkpoint 007 commit through verification and Browser QA evidence.
+- Context/buffer concern: manageable for final record, verifier run, and closeout checkpoint.
 - Stop threshold reached: NO
 
 ## Next Action
-Run full unit verification, Mission 012 QA harness, Mission 012 verifier, JSON checks, and Browser QA.
+Write Mission 012 record and closeout, run `scripts/verify_mission_012.py`, then commit final closeout.
 
 ## Reentry Rule
 Resume only from this state file, authored mission artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

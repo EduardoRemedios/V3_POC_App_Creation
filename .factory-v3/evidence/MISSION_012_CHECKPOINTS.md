@@ -391,7 +391,7 @@ Wire side-by-side raw/normalized diff, review controls, reviewed commit, rollbac
 - Checkpoint ID: M012-CP007
 - Checkpoint status: complete
 - Commit before: 7638737
-- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+- Commit after: f0408b3
 
 ## Current Phase
 Workbench UI implemented.
@@ -443,3 +443,71 @@ The import lab now surfaces reviewed commit and rollback controls, side-by-side 
 
 ## Next Planned Action
 Run full unit verification, Mission 012 QA harness, Mission 012 verifier, JSON checks, and Browser QA.
+
+## Checkpoint 008
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP008
+- Checkpoint status: complete
+- Commit before: f0408b3
+- Commit after: pending until the final closeout commit is created; the final checkpoint must resolve this hash from git log.
+
+## Current Phase
+Verification and Browser QA completed.
+
+## Objective Progress
+Mission 012 verification harnesses and design evidence were added. Full unit tests passed, Mission 012 review/rollback QA passed and wrote the audit summary, JSON parse checks passed, and Browser QA passed for desktop and responsive import review/rollback flows. Browser QA confirmed raw/normalized diff rendering, row review controls, reviewed commit, rollback provenance, audit counts, no runtime errors, no console errors, and no mobile horizontal overflow.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json`
+- `.factory-v3/evidence/MISSION_012_BROWSER_NOTES.md`
+- `.factory-v3/evidence/MISSION_012_REAL_DATA_APPROVAL_DESIGN.md`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+- `scripts/mission_012_review_rollback_qa.py`
+- `scripts/verify_mission_012.py`
+
+## Commands Run Since Last Checkpoint
+- `sed -n '1,240p' scripts/verify_mission_011.py`
+- `sed -n '1,240p' scripts/mission_011_import_lab_qa.py`
+- `sed -n '1,220p' .factory-v3/templates/V3_POC_MISSION_RECORD_TEMPLATE.json`
+- Browser skill reads for `.codex/.../control-in-app-browser/SKILL.md`
+- `python3 -B -m unittest discover -s tests`
+- `python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json`
+- `python3 -B -m ppos_core.api --db /tmp/ppos_mission_012_browser.sqlite --host 127.0.0.1 --port 8790`
+- Codex in-app Browser desktop flow against `/workbench/?view=imports&manual_export=manual_activity_csv_clean`
+- Codex in-app Browser responsive flow at 390x844 viewport
+- `python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest discover -s tests` | PASS | 157 tests passed. |
+| `python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790` | PASS | `.factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json` status `pass`. |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json` | PASS | Audit summary JSON parses. |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` | PASS | Interrupt JSON parses with status `applied`. |
+| Browser QA | PASS | `.factory-v3/evidence/MISSION_012_BROWSER_NOTES.md`. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on verification script authoring, full tests, Browser QA, and evidence updates.
+- Tool-call count since last checkpoint: 18, counting harness reads, script/design/browser-note edits, full tests, QA runs, JSON checks, browser setup/interactions, viewport check, screenshot capture, and server lifecycle.
+- Wall-clock time since last checkpoint: approximately 35 minutes from checkpoint 007 commit through verification and Browser QA evidence.
+- Context/buffer concern: manageable for final record, verifier run, and closeout checkpoint.
+- Stop threshold reached: NO
+
+## Open Risks
+- Final mission record and closeout still need to be written.
+- Mission verifier must be run after record and closeout exist.
+- Checkpoint 008 commit-after hash must be resolved in the final checkpoint from git log.
+
+## Pending Human Decisions
+- None.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Write Mission 012 record and closeout, run `scripts/verify_mission_012.py`, then commit final closeout.
