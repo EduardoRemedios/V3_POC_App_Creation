@@ -222,7 +222,7 @@ Halt if:
 - Checkpoint ID: M012-CP004
 - Checkpoint status: complete
 - Commit before: 0e8695e
-- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+- Commit after: ec020ac
 
 ## Current Phase
 Fresh-session resume completed; HDI-012-001 applied.
@@ -277,3 +277,60 @@ The resume session read the mission envelope, implementation plan, state file, c
 
 ## Next Planned Action
 Implement the synthetic review/rollback model, starting with SQLite migration and storage behavior.
+
+## Checkpoint 005
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP005
+- Checkpoint status: complete
+- Commit before: ec020ac
+- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+
+## Current Phase
+Review/rollback storage model implemented.
+
+## Objective Progress
+Manual import preview rows now persist operator review states (`accepted`, `rejected`, `needs_clarification`) with notes and review timestamps. Synthetic manual import sessions now support rollback metadata and append-only audit events, preserving rollback provenance without deleting audit history. Reviewed commit requires a previewed session with no rows needing clarification and at least one accepted row. The legacy commit path remains compatible by auto-accepting rows for Mission 011 behavior.
+
+## Files Changed Since Last Checkpoint
+- `ppos_core/migrations/004_mission_012.sql`
+- `ppos_core/storage.py`
+- `tests/test_mission_012_review_workflow.py`
+- `tests/test_mission_012_rollback.py`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `sed -n '1,240p' ppos_core/storage.py`
+- `sed -n '640,840p' ppos_core/storage.py`
+- `sed -n '1,220p' ppos_core/api.py`
+- `sed -n '1,140p' ppos_core/migrations/003_mission_011.sql && sed -n '1,140p' ppos_core/schema.py`
+- `sed -n '1,140p' tests/test_mission_011_manual_imports.py && sed -n '1,120p' tests/test_mission_011_api.py`
+- `sed -n '1,260p' ppos_core/manual_imports.py`
+- `python3 -B -m unittest tests.test_mission_011_manual_imports tests.test_mission_012_review_workflow tests.test_mission_012_rollback`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest tests.test_mission_011_manual_imports tests.test_mission_012_review_workflow tests.test_mission_012_rollback` | PASS | 9 tests passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate-to-high based on source reads, storage edits, and targeted tests.
+- Tool-call count since last checkpoint: 10, counting wrapped subcalls, file edits, and targeted test execution.
+- Wall-clock time since last checkpoint: approximately 20 minutes from checkpoint 004 commit through storage test verification.
+- Context/buffer concern: none for persistence/API checkpoint.
+- Stop threshold reached: NO
+
+## Open Risks
+- API routes and workbench UI still need to expose review, rollback, and diff behavior.
+- Checkpoint 005 commit-after hash must be resolved in the next checkpoint from git log.
+
+## Pending Human Decisions
+- None.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Wire review, reviewed commit, rollback, and audit provenance through API endpoints.

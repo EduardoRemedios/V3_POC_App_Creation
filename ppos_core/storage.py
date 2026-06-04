@@ -126,8 +126,108 @@ def preview_manual_import(conn: sqlite3.Connection, export_id: str, commit: bool
         raise ValueError("manual import preview has validation errors and cannot be committed")
     status = "committed" if commit else "previewed"
     with conn:
-        _persist_manual_import_preview(conn, preview, status)
+        _persist_manual_import_preview(conn, preview, status, default_review_state="accepted" if commit else "needs_clarification")
     return get_manual_import_session(conn, preview["session_id"])
+
+
+def update_manual_import_row_review(
+    conn: sqlite3.Connection, session_id: str, row_index: int, review_state: str, review_note: str = ""
+) -> dict[str, Any]:
+    migrate(conn)
+    if review_state not in {"accepted", "rejected", "needs_clarification"}:
+        raise ValueError("manual import review_state must be accepted, rejected, or needs_clarification")
+    session = get_manual_import_session(conn, session_id)
+    if session["status"] not in {"previewed", "committed"}:
+        raise ValueError(f"manual import session cannot be reviewed while status is {session['status']}")
+    row = conn.execute(
+        "SELECT id FROM manual_import_preview_rows WHERE session_id = ? AND row_index = ?",
+        (session_id, row_index),
+    ).fetchone()
+    if row is None:
+        raise KeyError(f"manual import row not found: {session_id} row {row_index}")
+    now = _now()
+    with conn:
+        conn.execute(
+            """
+            UPDATE manual_import_preview_rows
+            SET review_state = ?, review_note = ?, reviewed_at = ?
+            WHERE session_id = ? AND row_index = ?
+            """,
+            (review_state, review_note, now, session_id, row_index),
+        )
+        _update_manual_import_review_summary(conn, session_id)
+        _insert_manual_import_audit_event(
+            conn,
+            session_id,
+            "row_reviewed",
+            {
+                "row_index": row_index,
+                "review_state": review_state,
+                "review_note": review_note,
+                "synthetic_only": True,
+            },
+        )
+    return get_manual_import_session(conn, session_id)
+
+
+def commit_reviewed_manual_import(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
+    migrate(conn)
+    session = get_manual_import_session(conn, session_id)
+    if session["status"] != "previewed":
+        raise ValueError(f"manual import session must be previewed before reviewed commit, got {session['status']}")
+    if not session["summary"]["can_commit"]:
+        raise ValueError("manual import preview has validation errors and cannot be committed")
+    review = session["review_summary"]
+    if review.get("needs_clarification", 0):
+        raise ValueError("manual import session has rows needing clarification")
+    if not review.get("accepted", 0):
+        raise ValueError("manual import session has no accepted rows to commit")
+    now = _now()
+    with conn:
+        conn.execute(
+            """
+            UPDATE manual_import_sessions
+            SET status = ?, committed_at = ?, reverted_at = NULL, rollback_reason = NULL
+            WHERE id = ?
+            """,
+            ("committed", now, session_id),
+        )
+        _insert_manual_import_audit_event(
+            conn,
+            session_id,
+            "committed",
+            {
+                "commit_mode": "reviewed",
+                "accepted_rows": review.get("accepted", 0),
+                "rejected_rows": review.get("rejected", 0),
+                "synthetic_only": True,
+            },
+        )
+    return get_manual_import_session(conn, session_id)
+
+
+def rollback_manual_import(conn: sqlite3.Connection, session_id: str, reason: str = "") -> dict[str, Any]:
+    migrate(conn)
+    session = get_manual_import_session(conn, session_id)
+    if session["status"] != "committed":
+        raise ValueError(f"manual import session must be committed before rollback, got {session['status']}")
+    now = _now()
+    with conn:
+        conn.execute(
+            """
+            UPDATE manual_import_sessions
+            SET status = ?, reverted_at = ?, rollback_reason = ?
+            WHERE id = ?
+            """,
+            ("reverted", now, reason, session_id),
+        )
+        _insert_manual_import_audit_event(
+            conn,
+            session_id,
+            "rolled_back",
+            {"reason": reason, "synthetic_only": True, "rollback_mode": "status_marker_with_audit_history"},
+        )
+    return get_manual_import_session(conn, session_id)
 
 
 def list_manual_import_sessions(conn: sqlite3.Connection) -> list[dict[str, Any]]:
@@ -175,8 +275,11 @@ def manual_import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
         "manual_export_count": len(manual_export_catalog()),
         "session_count": len(sessions),
         "committed_session_count": sum(1 for session in sessions if session["status"] == "committed"),
+        "reverted_session_count": sum(1 for session in sessions if session["status"] == "reverted"),
         "issue_count": sum(session["issue_count"] for session in sessions),
         "conflict_count": sum(session["conflict_count"] for session in sessions),
+        "review_summary": _aggregate_manual_import_reviews(sessions),
+        "audit_event_count": conn.execute("SELECT COUNT(*) AS count FROM manual_import_audit_events").fetchone()["count"],
         "sessions": [
             {
                 "session_id": session["id"],
@@ -186,6 +289,9 @@ def manual_import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
                 "row_count": session["row_count"],
                 "issue_count": session["issue_count"],
                 "conflict_count": session["conflict_count"],
+                "review_summary": session["review_summary"],
+                "reverted_at": session.get("reverted_at"),
+                "rollback_reason": session.get("rollback_reason"),
             }
             for session in sessions
         ],
@@ -659,7 +765,9 @@ def _sync_api_contract_cases(conn: sqlite3.Connection) -> None:
         )
 
 
-def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, Any], status: str) -> None:
+def _persist_manual_import_preview(
+    conn: sqlite3.Connection, preview: dict[str, Any], status: str, default_review_state: str
+) -> None:
     session_id = preview["session_id"]
     now = _now()
     conn.execute("DELETE FROM manual_import_source_files WHERE session_id = ?", (session_id,))
@@ -670,8 +778,8 @@ def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, 
     conn.execute(
         """
         INSERT OR REPLACE INTO manual_import_sessions
-        (id, export_id, adapter_id, status, synthetic_only, row_count, issue_count, conflict_count, created_at, committed_at, summary_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (id, export_id, adapter_id, status, synthetic_only, row_count, issue_count, conflict_count, created_at, committed_at, summary_json, reverted_at, rollback_reason, review_summary_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             session_id,
@@ -685,6 +793,9 @@ def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, 
             now,
             now if status == "committed" else None,
             _dump(preview["summary"]),
+            None,
+            None,
+            _dump(_review_summary_for_rows(preview["summary"]["row_count"], default_review_state)),
         ),
     )
     conn.execute(
@@ -707,8 +818,8 @@ def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, 
         conn.execute(
             """
             INSERT OR REPLACE INTO manual_import_preview_rows
-            (id, session_id, row_index, source_record_id, domain, observed_at, raw_json, normalized_json, provenance_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (id, session_id, row_index, source_record_id, domain, observed_at, raw_json, normalized_json, provenance_json, review_state, review_note, reviewed_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 f"{session_id}_row_{row['row_index']}",
@@ -720,6 +831,9 @@ def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, 
                 _dump(row["raw"]),
                 _dump(row["normalized"]),
                 _dump(row["provenance"]),
+                default_review_state,
+                "",
+                now if default_review_state == "accepted" else None,
             ),
         )
     for index, issue in enumerate(preview["issues"], start=1):
@@ -772,12 +886,24 @@ def _persist_manual_import_preview(conn: sqlite3.Connection, preview: dict[str, 
                 _dump(conflict["row_indexes"]),
             ),
         )
+    _insert_manual_import_audit_event(
+        conn,
+        session_id,
+        "committed" if status == "committed" else "previewed",
+        {
+            "export_id": preview["export"]["export_id"],
+            "row_count": preview["summary"]["row_count"],
+            "default_review_state": default_review_state,
+            "synthetic_only": True,
+        },
+    )
 
 
 def _manual_session_row(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
     data = _row(row)
     data["synthetic_only"] = bool(data["synthetic_only"])
     data["summary"] = json.loads(data.pop("summary_json"))
+    data["review_summary"] = json.loads(data.pop("review_summary_json") or "{}")
     rows = conn.execute(
         "SELECT * FROM manual_import_preview_rows WHERE session_id = ? ORDER BY row_index", (data["id"],)
     ).fetchall()
@@ -816,7 +942,66 @@ def _manual_session_row(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str,
     ]
     for item in data["conflicts"]:
         item.pop("related_rows_json")
+    events = conn.execute(
+        "SELECT * FROM manual_import_audit_events WHERE session_id = ? ORDER BY created_at, id", (data["id"],)
+    ).fetchall()
+    data["audit_events"] = [
+        {
+            **_row(item),
+            "payload": json.loads(item["payload_json"]),
+        }
+        for item in events
+    ]
+    for item in data["audit_events"]:
+        item.pop("payload_json")
     return data
+
+
+def _review_summary_for_rows(row_count: int, state: str) -> dict[str, int]:
+    summary = {"accepted": 0, "rejected": 0, "needs_clarification": 0}
+    summary[state] = row_count
+    return summary
+
+
+def _update_manual_import_review_summary(conn: sqlite3.Connection, session_id: str) -> None:
+    counts = {"accepted": 0, "rejected": 0, "needs_clarification": 0}
+    rows = conn.execute(
+        """
+        SELECT review_state, COUNT(*) AS count
+        FROM manual_import_preview_rows
+        WHERE session_id = ?
+        GROUP BY review_state
+        """,
+        (session_id,),
+    ).fetchall()
+    for row in rows:
+        counts[row["review_state"]] = row["count"]
+    conn.execute("UPDATE manual_import_sessions SET review_summary_json = ? WHERE id = ?", (_dump(counts), session_id))
+
+
+def _aggregate_manual_import_reviews(sessions: list[dict[str, Any]]) -> dict[str, int]:
+    totals = {"accepted": 0, "rejected": 0, "needs_clarification": 0}
+    for session in sessions:
+        for state in totals:
+            totals[state] += int(session["review_summary"].get(state, 0))
+    return totals
+
+
+def _insert_manual_import_audit_event(
+    conn: sqlite3.Connection, session_id: str, event_type: str, payload: dict[str, Any]
+) -> None:
+    created_at = _now()
+    count = conn.execute(
+        "SELECT COUNT(*) AS count FROM manual_import_audit_events WHERE session_id = ?", (session_id,)
+    ).fetchone()["count"]
+    conn.execute(
+        """
+        INSERT INTO manual_import_audit_events
+        (id, session_id, event_type, created_at, payload_json)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (f"{session_id}_event_{count + 1:03d}", session_id, event_type, created_at, _dump(payload)),
+    )
 
 
 def _upsert_evidence_pack(

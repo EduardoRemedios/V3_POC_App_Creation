@@ -5,10 +5,10 @@
 - Mission status: active
 
 ## Current Phase
-Fresh-session resume completed from authored artifacts. HDI-012-001 is applied as `option_a`; implementation may continue inside the synthetic-only Mission 012 authority.
+Review/rollback storage model implemented and targeted storage tests passing. API and workbench wiring remain pending.
 
 ## Last Checkpoint
-Checkpoint 004: fresh-session resume completed after sponsor answer.
+Checkpoint 005: review/rollback model implemented.
 
 ## Active Plan
 Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the authority granted by `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`.
@@ -24,9 +24,12 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Answer-record checkpoint commit exists as `0e8695e`.
 - Fresh resume session read the mission envelope, implementation plan, state file, checkpoints file, interrupt JSON, and current repository state before applying HDI-012-001.
 - HDI-012-001 applied as `option_a`; no plan delta required.
+- Checkpoint 004 committed as `ec020ac`.
+- Added Mission 012 migration for review state, rollback metadata, and manual-import audit events.
+- Added storage functions for row review, reviewed commit, and rollback.
+- Added Mission 012 review workflow and rollback unit tests.
 
 ## Pending Phases
-- Review/rollback model.
 - Persistence/API changes.
 - Workbench UI changes.
 - Verification, Browser QA, and closeout.
@@ -41,18 +44,18 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - None.
 
 ## Current Verification State
-- No source or app behavior changes have been made.
 - `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`: PASS after answer recording and before applied update; rerun required after applied update.
+- `python3 -B -m unittest tests.test_mission_011_manual_imports tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 9 tests.
 
 ## Current Budget State
-- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate based on visible thread, template reads, authored evidence, and answer recording.
-- Tool-call budget: 16 tool calls since checkpoint 003 answer-record commit, counting wrapped subcalls, artifact reads, repository-state inspection, JSON parse check, and resume evidence edits.
-- Wall-clock time since last checkpoint: approximately 15 minutes from fresh-session request intake through resume evidence update.
-- Context/buffer concern: none for review/rollback implementation checkpoint.
+- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate-to-high based on authored evidence, source reads, storage implementation, and targeted tests.
+- Tool-call budget: 10 tool calls since checkpoint 004 commit, counting wrapped subcalls, source reads, file edits, and targeted test execution.
+- Wall-clock time since last checkpoint: approximately 20 minutes from checkpoint 004 commit through storage test verification.
+- Context/buffer concern: none for persistence/API checkpoint.
 - Stop threshold reached: NO
 
 ## Next Action
-Implement the synthetic review/rollback model, starting with SQLite migration and storage behavior.
+Wire review, reviewed commit, rollback, and audit provenance through API endpoints.
 
 ## Reentry Rule
 Resume only from this state file, authored mission artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.
