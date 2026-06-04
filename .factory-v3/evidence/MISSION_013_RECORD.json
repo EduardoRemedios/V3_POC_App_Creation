@@ -44,7 +44,7 @@
     "qa_script": "PASS: 17 checks",
     "json_parse_checks": "PASS",
     "browser_qa": "PASS desktop; responsive resize attempted but viewport stayed 1280x720",
-    "final_verifier": "pending until CP011 hash is resolved"
+    "final_verifier": "PASS"
   },
   "budget": {
     "mission_012_tool_call_baseline": 77,
@@ -66,7 +66,7 @@
     {"checkpoint": "M013-CP008", "commit": "89c282b"},
     {"checkpoint": "M013-CP009", "commit": "cbf8980"},
     {"checkpoint": "M013-CP010", "commit": "afc34ef"},
-    {"checkpoint": "M013-CP011", "commit": "pending"}
+    {"checkpoint": "M013-CP011", "commit": "4877627"}
   ],
   "adaptive_mission_control": {
     "checkpoints_required": true,

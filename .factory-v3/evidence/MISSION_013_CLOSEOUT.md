@@ -29,7 +29,7 @@ COMPLETE.
 | `python3 -B -m unittest discover -s tests` | PASS | 170 tests passed. |
 | JSON parse checks for HDI001, HDI002, Garmin manifest, audit summary | PASS | `python3 -m json.tool` passed for each. |
 | Browser QA on `http://127.0.0.1:8800/workbench/` | PASS with mobile limitation | Desktop approval/import/consume/rollback flow passed with no browser console/window errors; responsive resize attempt stayed at 1280x720. |
-| `python3 -B scripts/verify_mission_013.py` | pending | Run after CP011 commit hash is resolved. |
+| `python3 -B scripts/verify_mission_013.py` | PASS | Mission 013 verifier passed after CP011 hash resolution. |
 
 ## Dependency Review
 - New dependencies used: none.
@@ -65,7 +65,7 @@ COMPLETE.
 - CP008: `89c282b` fresh resume and rollback verification.
 - CP009: `cbf8980` imported fact surfaces.
 - CP010: `afc34ef` verification and Browser QA.
-- CP011: pending until closeout checkpoint commit exists.
+- CP011: `4877627` final closeout checkpoint.
 
 ## Long-Mission Friction Observations
 - The deliberate resume boundary worked: stale CP007 `commit_after` was resolved from git log in the fresh session before new work.

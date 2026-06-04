@@ -2,17 +2,17 @@
 
 ## Mission
 - Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
-- Mission status: active
+- Mission status: complete
 - Profile: V3-POC-STANDALONE
 - Data mode: synthetic only
 - V3-only: YES
 - V2 allowed: NO
 
 ## Current Phase
-Final verifier and closeout commit.
+Mission complete; final closeout commit pending.
 
 ## Last Checkpoint
-M013-CP011 is complete and ready for the closeout checkpoint commit; CP010 was committed as `afc34ef`.
+M013-CP011 committed as `4877627`; final verifier passed.
 
 ## Active Plan
 Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`.
@@ -44,11 +44,11 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Full stdlib unit suite passed after Mission 013 surface work: `python3 -B -m unittest discover -s tests` ran 170 tests and passed.
 - JSON parse checks passed for both required interrupts, Garmin fixture manifest, and Mission 013 audit summary.
 - Browser QA passed for desktop Imports flow; responsive/mobile resize was attempted but the in-app browser viewport remained 1280x720, so that limitation is recorded in `.factory-v3/evidence/MISSION_013_BROWSER_NOTES.md`.
-- Closeout and mission record were authored; final verifier remains pending until CP011 commit hash is resolved.
+- Closeout and mission record were authored; CP011 commit hash was resolved as `4877627`.
+- Final verifier passed: `python3 -B scripts/verify_mission_013.py`.
 
 ## Pending Phases
-- Resolve CP011 commit hash after checkpoint commit.
-- Run final verifier and commit final closeout hash resolution.
+- Commit final closeout hash resolution and verifier result.
 
 ## Open Human Decision Interrupts
 - HDI-013-001: applied as `option_a`; no longer blocking.
@@ -99,7 +99,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
   - checkpoint-context reads via `sed -n '321,760p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md` and `sed -n '761,1240p' .factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
 
 ## Next Action
-Commit M013-CP011, resolve its commit hash in checkpoints/record, run final verifier, then commit final closeout.
+Commit final closeout.
 
 ## Reentry Rule
 Resume only from this state file, authored Mission 013 artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

@@ -859,7 +859,7 @@ Halt if:
 - Checkpoint ID: M013-CP011
 - Checkpoint status: complete
 - Commit before: afc34ef
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: 4877627
 
 ## Current Phase
 Final closeout authored.
@@ -882,7 +882,8 @@ Mission closeout and record were authored. The closeout records completion statu
 ## Verification Since Last Checkpoint
 | Command | Result | Evidence |
 | --- | --- | --- |
-| Closeout/record authored | pending_verifier | Final verifier will run after CP011 commit hash is resolved. |
+| Closeout/record authored | ready_for_verifier | Final verifier will run after CP011 commit hash is resolved. |
+| `python3 -B scripts/verify_mission_013.py` | PASS | Mission 013 verifier passed after CP011 hash resolution. |
 
 ## Budget State
 - Token budget: no explicit numeric budget set by sponsor; qualitative context use is high but closeout is bounded.
@@ -892,8 +893,7 @@ Mission closeout and record were authored. The closeout records completion statu
 - Stop threshold reached: NO
 
 ## Open Risks
-- CP011 `commit_after` must be resolved after this checkpoint commit.
-- Final verifier has not yet run.
+- Final verifier passed; final closeout commit remains.
 
 ## Pending Human Decisions
 - None. HDI-013-001 and HDI-013-002 are both applied.
@@ -902,7 +902,7 @@ Mission closeout and record were authored. The closeout records completion statu
 - None.
 
 ## Next Planned Action
-Commit checkpoint 011, resolve its commit hash in checkpoints and record, run final verifier, and commit final closeout.
+Commit final closeout.
 
 ## Reentry Instruction
 Resume from:

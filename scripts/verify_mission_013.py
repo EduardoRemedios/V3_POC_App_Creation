@@ -121,7 +121,7 @@ def _check_audit(failures: list[str]) -> None:
 
 def _check_git_log(failures: list[str]) -> None:
     log = subprocess.check_output(["git", "log", "--oneline", "-n", "40"], text=True)
-    for checkpoint in range(1, 10):
+    for checkpoint in range(1, 12):
         marker = f"Mission 013 checkpoint {checkpoint:03d}"
         if marker not in log:
             failures.append(f"git log missing {marker}")
