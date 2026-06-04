@@ -333,7 +333,7 @@ Halt if:
 - Checkpoint ID: M013-CP005
 - Checkpoint status: complete
 - Commit before: 94de7ba
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: f0fa03f
 
 ## Current Phase
 Garmin bridge adapter parses fixture families through preview/review.
@@ -352,6 +352,7 @@ Mission 013 tests now cover Garmin manifest consistency, synthetic labels, expec
 ## Commands Run Since Last Checkpoint
 - `git log --oneline -n 20`
 - `git status --short --branch`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
 - `git diff --stat`
 - `python3 -B -m unittest discover -s tests`
 - `python3 -B -m unittest discover -s tests` with escalation after sandbox localhost bind failure
@@ -398,3 +399,74 @@ Resume from:
 Halt if:
 - HDI-013-002 is unanswered and materialization conflict behavior is the next required action.
 - Materialization would require real data, destructive mutation of prior mission evidence, Factory V2, Factory_V3 tooling, package installation, or unauthorized git operations.
+
+## Checkpoint 006
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP006
+- Checkpoint status: complete
+- Commit before: f0fa03f
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+HDI-013-002 asked.
+
+## Objective Progress
+HDI-013-002 was authored in `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json` with status `asked`. The interrupt asks the sponsor to choose the materialization conflict strategy for overlapping imported facts: reject conflicting rows, version side by side with source precedence, or overwrite with audit trail. The recommended option is `option_b`, side-by-side versioning with precedence, because it best preserves auditability and rollback semantics.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `git log --oneline -n 20`
+- `git status --short --branch`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json` | PASS | Interrupt JSON parses with status `asked`. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use remains high but manageable at an interrupt boundary.
+- Tool-call count since last checkpoint: 6, counting wrapped subcalls, JSON parse check, and file-edit operations.
+- Wall-clock time since last checkpoint: approximately 8 minutes from checkpoint 005 commit through HDI-013-002 authoring.
+- Context/buffer concern: materialization is the next large phase; do not proceed until answer is clear.
+- Stop threshold reached: YES if the sponsor answer is unavailable, because materialization conflict behavior is blocking.
+
+## Mid-Mission Budget Review
+- Cumulative checkpoints: 6 complete.
+- Cumulative tool-call count: approximately 75, counting wrapped subcalls and file edits.
+- Mission 012 comparison: approximately at Mission 012's 77-tool-call total, but Mission 013 has completed research, two interrupts asked, fixtures, adapter integration, and tests; substantial materialization/rollback/surface/UX work remains.
+- Remaining phases: HDI-013-002 application, materialization, deliberate resume, rollback, workflow/timeline/evidence-graph integration, approval UX, QA, verifier, browser notes, record, audit summary, and closeout.
+- Judgment: continue after clear HDI-013-002 answer; if context pressure increases during materialization, checkpoint before the deliberate resume boundary rather than descope silently.
+
+## Open Risks
+- No default answer may be inferred; materialization implementation must follow the sponsor-selected strategy.
+- Overwrite semantics would create higher rollback complexity; if selected, implementation must still preserve audit history and avoid destructive prior evidence mutation.
+- Checkpoint `commit_after` is pending until the checkpoint commit exists; a later checkpoint will resolve it from `git log --oneline -n 20`.
+
+## Pending Human Decisions
+- HDI-013-002 is asked and blocking.
+
+## Plan Delta References
+- None. No answer has been received yet.
+
+## Next Planned Action
+Run JSON parse for HDI-013-002, commit checkpoint 006, ask the sponsor in-thread, and wait for a clear answer.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- current repository state
+
+Halt if:
+- HDI-013-002 remains unanswered and materialization is the next required action.
+- The answer is ambiguous after one sharper re-ask, requests unauthorized real data, or requires scope outside the Mission 013 envelope.

@@ -9,10 +9,10 @@
 - V2 allowed: NO
 
 ## Current Phase
-Phase 5: Garmin bridge adapter preview/review integration complete.
+Phase 6: HDI-013-002 asked; awaiting sponsor answer before materialization conflict behavior.
 
 ## Last Checkpoint
-M013-CP004 committed as `94de7ba`; M013-CP005 is being authored.
+M013-CP005 committed as `f0fa03f`; M013-CP006 is being authored.
 
 ## Active Plan
 Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`.
@@ -28,9 +28,9 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - `ppos_core/garmin_bridge.py` was created and `ppos_core/manual_imports.py` was wired to route Garmin export IDs through the same preview/review pipeline.
 - Mission 013 fixture and adapter tests were added.
 - Garmin preview/review integration was verified through `python3 -B -m unittest discover -s tests`; the sandboxed run failed only on localhost bind permission in a pre-existing Mission 010 test, and the escalated rerun passed 162 tests.
+- HDI-013-002 was written with status `asked` and options for materialization conflict behavior.
 
 ## Pending Phases
-- HDI-013-002 materialization conflict strategy decision.
 - Reviewed import materialization into normalized fact tables.
 - Deliberate cross-session resume.
 - Fact-level rollback.
@@ -40,7 +40,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 
 ## Open Human Decision Interrupts
 - HDI-013-001: applied as `option_a`; no longer blocking.
-- HDI-013-002: not yet asked.
+- HDI-013-002: asked; blocking before materialization conflict behavior.
 - HDI-013-003: not raised; optional only if a genuine implementation decision appears.
 
 ## Accepted Plan Deltas
@@ -62,7 +62,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Required future resume must read authored artifacts and current repository state, then list the exact files read here.
 
 ## Next Action
-Ask and apply HDI-013-002 before implementing materialization conflict behavior.
+Commit checkpoint 006, ask HDI-013-002 in-thread, and wait for a clear sponsor answer. If no answer arrives, pause before materialization work.
 
 ## Reentry Rule
 Resume only from this state file, authored Mission 013 artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

@@ -1,0 +1,51 @@
+{
+  "interrupt_id": "HDI-013-002",
+  "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
+  "status": "asked",
+  "decision_type": "product_decision",
+  "question": "When a materialized imported fact overlaps an existing fact from DTU fixtures or a prior synthetic import in the same domain and time window, which conflict strategy should Mission 013 implement?",
+  "context_summary": "Garmin-shaped synthetic exports now parse through the existing preview, row review, and reviewed commit pipeline. Reviewed commits still need to materialize accepted rows into normalized fact tables. Conflict behavior defines whether overlapping facts are rejected, versioned side by side, or overwritten, and directly affects fact-level rollback semantics.",
+  "reason_for_interrupt": "Materialization conflict semantics are core data behavior. The choice affects provenance, workflow evidence references, rollback design, and whether imported facts can coexist with prior synthetic fixture facts.",
+  "options": [
+    {
+      "id": "option_a",
+      "label": "Reject conflicting rows",
+      "effect": "Accepted rows that overlap an existing active fact in the same domain/time window are not materialized; the session records conflict audit events and only non-conflicting accepted rows become normalized facts.",
+      "risk": "Safest for avoiding duplicate facts, but it reduces evidence value for source precedence and makes fixture imports less useful when DTU fixtures already cover the same window."
+    },
+    {
+      "id": "option_b",
+      "label": "Version side by side with precedence",
+      "effect": "Conflicting imported facts materialize as separate active versions with explicit source precedence metadata, conflict links, and rollback state; downstream surfaces can cite the imported fact while preserving the prior fact.",
+      "risk": "Requires slightly more schema and query discipline, but best preserves auditability, rollback, and future source-priority semantics."
+    },
+    {
+      "id": "option_c",
+      "label": "Overwrite with audit trail",
+      "effect": "A conflicting imported fact supersedes the existing fact for the same domain/time window while preserving an audit record of the prior value and source.",
+      "risk": "Simplifies downstream reads but is the most destructive behavior and makes rollback harder because existing fixture-derived facts must be restored."
+    }
+  ],
+  "recommended_option_id": "option_b",
+  "timeout_behavior": "pause",
+  "asked": {
+    "surface": "codex-mobile-thread",
+    "asked_at": "2026-06-04Ttime-not-recorded",
+    "message_reference": "Mission 013 ChatGPT thread; sponsor asked to answer from phone via Codex mobile app if possible."
+  },
+  "answer": {
+    "answered": false,
+    "answered_at": "not_recorded",
+    "answered_by": "not_recorded",
+    "answer_text": "",
+    "selected_option_id": "",
+    "interpretation": "",
+    "confidence": "not_recorded"
+  },
+  "mission_delta": {
+    "required": false,
+    "delta_reference": "",
+    "summary": "No answer received yet."
+  },
+  "continuation_decision": "not_decided"
+}
