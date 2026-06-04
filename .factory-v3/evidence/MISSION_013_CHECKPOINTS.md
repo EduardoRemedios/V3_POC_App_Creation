@@ -407,7 +407,7 @@ Halt if:
 - Checkpoint ID: M013-CP006
 - Checkpoint status: complete
 - Commit before: f0fa03f
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: 5248ee2
 
 ## Current Phase
 HDI-013-002 asked.
@@ -470,3 +470,96 @@ Resume from:
 Halt if:
 - HDI-013-002 remains unanswered and materialization is the next required action.
 - The answer is ambiguous after one sharper re-ask, requests unauthorized real data, or requires scope outside the Mission 013 envelope.
+
+## Checkpoint 007
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP007
+- Checkpoint status: complete
+- Commit before: 5248ee2
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+HDI-013-002 applied; materialization implemented; deliberate resume boundary.
+
+## Objective Progress
+The sponsor answered HDI-013-002 with `option_b` from the phone via Codex mobile thread. The interrupt JSON now records status `applied`, the verbatim answer, selected option, interpretation, high confidence, and no plan delta required. Materialization now follows side-by-side versioning with source precedence: reviewed accepted rows materialize into `source_records`, `normalized_facts`, and `fact_provenance`, while `manual_import_materialized_facts` records source identity, source file hash, observed/ingested time, mapping reference, mapping confidence, reviewed-synthetic confidence, conflict strategy, precedence rank, conflict group, active state, and provenance JSON. Overlapping facts are preserved and linked through `manual_import_materialization_conflicts`. Rollback un-materializes imported normalized/source rows and marks materialized ledger rows inactive with rollback reason.
+
+This checkpoint is also the required deliberate cross-session resume boundary. The mission will stop after committing it; the next session must resume from authored artifacts and current repository state only.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `ppos_core/migrations/005_mission_013.sql`
+- `ppos_core/storage.py`
+- `tests/test_mission_013_materialization.py`
+- `tests/test_mission_013_fact_rollback.py`
+
+## Commands Run Since Last Checkpoint
+- Sponsor answer received in-thread: `option_b, answered from phone via Codex mobile thread.`
+- `sed -n '1,260p' ppos_core/timeline.py`
+- `sed -n '1,320p' ppos_core/evidence_graph.py`
+- `sed -n '1,320p' ppos_core/workflows.py`
+- `sed -n '1,260p' ppos_core/reports.py`
+- `sed -n '1,220p' tests/test_mission_012_rollback.py`
+- `ls ppos_core/migrations`
+- `sed -n '130,270p' ppos_core/storage.py && sed -n '880,1030p' ppos_core/storage.py`
+- `sed -n '260,320p' ppos_core/storage.py`
+- `python3 -B -m unittest tests.test_mission_013_materialization tests.test_mission_013_fact_rollback tests.test_mission_013_bridge_adapter tests.test_mission_013_garmin_fixtures`
+- `python3 -B -m unittest discover -s tests`
+- `git log --oneline -n 20`
+- `git status --short --branch`
+- `git diff --stat`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest tests.test_mission_013_materialization tests.test_mission_013_fact_rollback tests.test_mission_013_bridge_adapter tests.test_mission_013_garmin_fixtures` | PASS | 8 Mission 013 tests passed. |
+| `python3 -B -m unittest discover -s tests` | PASS | 165 tests passed. |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json` | PASS | HDI-013-002 parses with status `applied`. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is high and this is a natural stop boundary.
+- Tool-call count since last checkpoint: 22, counting wrapped subcalls, file edits, failed broad patch attempt, focused patches, tests, JSON parse check, and status/log checks.
+- Wall-clock time since last checkpoint: approximately 45 minutes from checkpoint 006 commit through HDI application, migration/storage implementation, tests, and boundary checkpoint authoring.
+- Context/buffer concern: high enough that the required fresh-session resume should occur now before workflow/timeline/evidence-graph and approval UX work.
+- Stop threshold reached: YES, intentionally, for the required deliberate cross-session resume boundary.
+
+## Open Risks
+- Workflow/timeline/evidence-graph integration remains pending after the fresh-session resume.
+- Approval UX and Browser QA remain pending.
+- Checkpoint `commit_after` is pending until the checkpoint commit exists; the fresh resume session will resolve it from `git log --oneline -n 20`.
+
+## Pending Human Decisions
+- None. HDI-013-001 and HDI-013-002 are both applied.
+
+## Plan Delta References
+- None. HDI-013-002 selected the recommended option and stayed inside approved scope.
+
+## Next Planned Action
+Stop this session after committing checkpoint 007. The fresh session resumes from authored artifacts only and records exactly what it read before continuing.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json`
+- `fixtures/garmin_exports/manifest.json`
+- `ppos_core/garmin_bridge.py`
+- `ppos_core/manual_imports.py`
+- `ppos_core/storage.py`
+- `ppos_core/migrations/005_mission_013.sql`
+- `tests/test_mission_013_materialization.py`
+- `tests/test_mission_013_fact_rollback.py`
+- current repository state
+
+Halt if:
+- Authored state conflicts with repository state.
+- Any continuation requires real data, real export files, Factory V2, Factory_V3 tooling, package installation, unauthorized git operations, or destructive mutation of prior mission evidence.

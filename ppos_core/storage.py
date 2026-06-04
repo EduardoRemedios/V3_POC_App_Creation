@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sqlite3
 from datetime import datetime, timezone
@@ -192,6 +193,7 @@ def commit_reviewed_manual_import(conn: sqlite3.Connection, session_id: str) -> 
             """,
             ("committed", now, session_id),
         )
+        materialized = _materialize_manual_import_facts(conn, session_id)
         _insert_manual_import_audit_event(
             conn,
             session_id,
@@ -200,6 +202,9 @@ def commit_reviewed_manual_import(conn: sqlite3.Connection, session_id: str) -> 
                 "commit_mode": "reviewed",
                 "accepted_rows": review.get("accepted", 0),
                 "rejected_rows": review.get("rejected", 0),
+                "materialized_count": materialized["materialized_count"],
+                "conflict_count": materialized["conflict_count"],
+                "conflict_strategy": materialized["conflict_strategy"],
                 "synthetic_only": True,
             },
         )
@@ -213,6 +218,7 @@ def rollback_manual_import(conn: sqlite3.Connection, session_id: str, reason: st
         raise ValueError(f"manual import session must be committed before rollback, got {session['status']}")
     now = _now()
     with conn:
+        _rollback_materialized_import_facts(conn, session_id, reason, now)
         conn.execute(
             """
             UPDATE manual_import_sessions
@@ -225,7 +231,7 @@ def rollback_manual_import(conn: sqlite3.Connection, session_id: str, reason: st
             conn,
             session_id,
             "rolled_back",
-            {"reason": reason, "synthetic_only": True, "rollback_mode": "status_marker_with_audit_history"},
+            {"reason": reason, "synthetic_only": True, "rollback_mode": "fact_unmaterialize_with_audit_history"},
         )
     return get_manual_import_session(conn, session_id)
 
@@ -242,6 +248,18 @@ def get_manual_import_session(conn: sqlite3.Connection, session_id: str) -> dict
     if row is None:
         raise KeyError(f"manual import session not found: {session_id}")
     return _manual_session_row(conn, row)
+
+
+def list_manual_import_materialized_facts(conn: sqlite3.Connection, session_id: str | None = None) -> list[dict[str, Any]]:
+    migrate(conn)
+    if session_id:
+        rows = conn.execute(
+            "SELECT * FROM manual_import_materialized_facts WHERE session_id = ? ORDER BY row_index",
+            (session_id,),
+        ).fetchall()
+    else:
+        rows = conn.execute("SELECT * FROM manual_import_materialized_facts ORDER BY session_id, row_index").fetchall()
+    return [_materialized_fact_row(row) for row in rows]
 
 
 def get_manual_import_mapping(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
@@ -280,6 +298,12 @@ def manual_import_audit_summary(conn: sqlite3.Connection) -> dict[str, Any]:
         "conflict_count": sum(session["conflict_count"] for session in sessions),
         "review_summary": _aggregate_manual_import_reviews(sessions),
         "audit_event_count": conn.execute("SELECT COUNT(*) AS count FROM manual_import_audit_events").fetchone()["count"],
+        "materialized_fact_count": conn.execute(
+            "SELECT COUNT(*) AS count FROM manual_import_materialized_facts WHERE active = 1"
+        ).fetchone()["count"],
+        "reverted_materialized_fact_count": conn.execute(
+            "SELECT COUNT(*) AS count FROM manual_import_materialized_facts WHERE active = 0"
+        ).fetchone()["count"],
         "sessions": [
             {
                 "session_id": session["id"],
@@ -899,6 +923,159 @@ def _persist_manual_import_preview(
     )
 
 
+def _materialize_manual_import_facts(conn: sqlite3.Connection, session_id: str) -> dict[str, Any]:
+    session = get_manual_import_session(conn, session_id)
+    if conn.execute(
+        "SELECT 1 FROM manual_import_materialized_facts WHERE session_id = ? AND active = 1",
+        (session_id,),
+    ).fetchone():
+        raise ValueError(f"manual import session already has active materialized facts: {session_id}")
+    source_file = session["source_files"][0] if session["source_files"] else {}
+    accepted_rows = [row for row in session["rows"] if row["review_state"] == "accepted"]
+    materialized_count = 0
+    conflict_count = 0
+    conflict_strategy = "version_side_by_side_with_source_precedence"
+    for row in accepted_rows:
+        source_record_id = f"{session_id}_source_{row['row_index']}"
+        fact_id = f"{session_id}_fact_{row['row_index']}"
+        existing = conn.execute(
+            """
+            SELECT id, fixture_id FROM normalized_facts
+            WHERE domain = ? AND observed_at = ? AND id != ?
+            ORDER BY fixture_id, id
+            """,
+            (row["domain"], row["observed_at"], fact_id),
+        ).fetchall()
+        conflict_group_id = _conflict_group_id(row["domain"], row["observed_at"]) if existing else ""
+        now = _now()
+        mapping_confidence = _mapping_confidence(conn, session_id, row["row_index"])
+        mapping_reference = row["provenance"].get("mapping_reference", "manual_import_mapping_rows")
+        source_identity = row["provenance"].get("source_family", "synthetic_manual_import")
+        provenance = {
+            **row["provenance"],
+            "manual_import_session_id": session_id,
+            "row_index": row["row_index"],
+            "source_file_hash": source_file.get("sha256", ""),
+            "observed_at": row["observed_at"],
+            "ingested_at": now,
+            "mapping_reference": mapping_reference,
+            "mapping_confidence": mapping_confidence,
+            "confidence": "reviewed_synthetic",
+            "conflict_strategy": conflict_strategy,
+            "conflict_group_id": conflict_group_id,
+            "source_precedence": "imported_garmin_reviewed",
+            "synthetic_only": True,
+        }
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO source_records
+            (id, fixture_id, source, source_record_id, domain, observed_at, ingested_at, payload_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                source_record_id,
+                session_id,
+                source_identity,
+                row["source_record_id"],
+                row["domain"],
+                row["observed_at"],
+                now,
+                _dump(row["raw"]),
+            ),
+        )
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO normalized_facts(id, fixture_id, domain, observed_at, value_json)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (fact_id, session_id, row["domain"], row["observed_at"], _dump(row["normalized"])),
+        )
+        conn.execute(
+            "INSERT OR REPLACE INTO fact_provenance(fact_id, source_record_id, fixture_id) VALUES (?, ?, ?)",
+            (fact_id, source_record_id, session_id),
+        )
+        materialized_id = f"{session_id}_materialized_{row['row_index']}"
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO manual_import_materialized_facts
+            (id, session_id, row_index, fact_id, source_record_id, fixture_id, domain, observed_at, source_identity, source_file_hash, mapping_reference, mapping_confidence, confidence, conflict_strategy, precedence_rank, conflict_group_id, active, materialized_at, reverted_at, rollback_reason, provenance_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                materialized_id,
+                session_id,
+                row["row_index"],
+                fact_id,
+                source_record_id,
+                session_id,
+                row["domain"],
+                row["observed_at"],
+                source_identity,
+                source_file.get("sha256", ""),
+                mapping_reference,
+                mapping_confidence,
+                "reviewed_synthetic",
+                conflict_strategy,
+                20,
+                conflict_group_id,
+                1,
+                now,
+                None,
+                None,
+                _dump(provenance),
+            ),
+        )
+        for index, existing_fact in enumerate(existing, start=1):
+            conflict_count += 1
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO manual_import_materialization_conflicts
+                (id, session_id, materialized_fact_id, existing_fact_id, existing_fixture_id, domain, observed_at, conflict_strategy, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    f"{materialized_id}_conflict_{index}",
+                    session_id,
+                    materialized_id,
+                    existing_fact["id"],
+                    existing_fact["fixture_id"],
+                    row["domain"],
+                    row["observed_at"],
+                    conflict_strategy,
+                    now,
+                ),
+            )
+        materialized_count += 1
+    if materialized_count:
+        refresh_evidence_graph(conn, session_id)
+    return {
+        "materialized_count": materialized_count,
+        "conflict_count": conflict_count,
+        "conflict_strategy": conflict_strategy,
+    }
+
+
+def _rollback_materialized_import_facts(conn: sqlite3.Connection, session_id: str, reason: str, now: str) -> None:
+    rows = conn.execute(
+        "SELECT * FROM manual_import_materialized_facts WHERE session_id = ? AND active = 1",
+        (session_id,),
+    ).fetchall()
+    for row in rows:
+        conn.execute("DELETE FROM fact_provenance WHERE fact_id = ? AND fixture_id = ?", (row["fact_id"], session_id))
+        conn.execute("DELETE FROM normalized_facts WHERE id = ? AND fixture_id = ?", (row["fact_id"], session_id))
+        conn.execute("DELETE FROM source_records WHERE id = ? AND fixture_id = ?", (row["source_record_id"], session_id))
+        conn.execute(
+            """
+            UPDATE manual_import_materialized_facts
+            SET active = 0, reverted_at = ?, rollback_reason = ?
+            WHERE id = ?
+            """,
+            (now, reason, row["id"]),
+        )
+    if rows:
+        refresh_evidence_graph(conn, session_id)
+
+
 def _manual_session_row(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
     data = _row(row)
     data["synthetic_only"] = bool(data["synthetic_only"])
@@ -954,6 +1131,7 @@ def _manual_session_row(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str,
     ]
     for item in data["audit_events"]:
         item.pop("payload_json")
+    data["materialized_facts"] = list_manual_import_materialized_facts(conn, data["id"])
     return data
 
 
@@ -977,6 +1155,33 @@ def _update_manual_import_review_summary(conn: sqlite3.Connection, session_id: s
     for row in rows:
         counts[row["review_state"]] = row["count"]
     conn.execute("UPDATE manual_import_sessions SET review_summary_json = ? WHERE id = ?", (_dump(counts), session_id))
+
+
+def _mapping_confidence(conn: sqlite3.Connection, session_id: str, row_index: int) -> str:
+    rows = conn.execute(
+        "SELECT confidence FROM manual_import_mapping_rows WHERE session_id = ? AND row_index = ?",
+        (session_id, row_index),
+    ).fetchall()
+    confidences = {row["confidence"] for row in rows}
+    if not confidences:
+        return "unknown"
+    if confidences == {"high"}:
+        return "high"
+    if "high" in confidences:
+        return "mixed"
+    return "low"
+
+
+def _conflict_group_id(domain: str, observed_at: str) -> str:
+    stable = f"{domain}|{observed_at}".encode("utf-8")
+    return "materialization_conflict_" + hashlib.sha256(stable).hexdigest()[:16]
+
+
+def _materialized_fact_row(row: sqlite3.Row) -> dict[str, Any]:
+    data = _row(row)
+    data["active"] = bool(data["active"])
+    data["provenance"] = json.loads(data.pop("provenance_json"))
+    return data
 
 
 def _aggregate_manual_import_reviews(sessions: list[dict[str, Any]]) -> dict[str, int]:

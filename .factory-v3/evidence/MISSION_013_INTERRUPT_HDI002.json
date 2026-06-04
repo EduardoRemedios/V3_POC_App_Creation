@@ -1,7 +1,7 @@
 {
   "interrupt_id": "HDI-013-002",
   "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
-  "status": "asked",
+  "status": "applied",
   "decision_type": "product_decision",
   "question": "When a materialized imported fact overlaps an existing fact from DTU fixtures or a prior synthetic import in the same domain and time window, which conflict strategy should Mission 013 implement?",
   "context_summary": "Garmin-shaped synthetic exports now parse through the existing preview, row review, and reviewed commit pipeline. Reviewed commits still need to materialize accepted rows into normalized fact tables. Conflict behavior defines whether overlapping facts are rejected, versioned side by side, or overwritten, and directly affects fact-level rollback semantics.",
@@ -34,18 +34,18 @@
     "message_reference": "Mission 013 ChatGPT thread; sponsor asked to answer from phone via Codex mobile app if possible."
   },
   "answer": {
-    "answered": false,
-    "answered_at": "not_recorded",
-    "answered_by": "not_recorded",
-    "answer_text": "",
-    "selected_option_id": "",
-    "interpretation": "",
-    "confidence": "not_recorded"
+    "answered": true,
+    "answered_at": "2026-06-04Ttime-not-recorded",
+    "answered_by": "Eduardo dos Remedios",
+    "answer_text": "option_b, answered from phone via Codex mobile thread.",
+    "selected_option_id": "option_b",
+    "interpretation": "Implement side-by-side materialized fact versioning with source precedence metadata. Existing facts are preserved; imported facts materialize as distinct active versions with conflict links, provenance, and rollback state.",
+    "confidence": "high"
   },
   "mission_delta": {
     "required": false,
     "delta_reference": "",
-    "summary": "No answer received yet."
+    "summary": "No plan delta required. The sponsor selected the recommended option and did not expand beyond the approved Mission 013 envelope."
   },
-  "continuation_decision": "not_decided"
+  "continuation_decision": "continue"
 }
