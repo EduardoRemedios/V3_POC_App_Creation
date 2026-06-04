@@ -42,6 +42,7 @@ WORKBENCH_MOUNTS = {
     "manual_import_preview": "#manual-import-preview",
     "manual_import_mapping": "#manual-import-mapping",
     "manual_import_conflicts": "#manual-import-conflicts",
+    "manual_import_audit": "#manual-import-audit",
 }
 
 
@@ -109,6 +110,9 @@ def bootstrap_payload(conn: sqlite3.Connection) -> dict[str, Any]:
             "GET /api/manual-exports/{export_id}",
             "POST /api/manual-imports/preview",
             "POST /api/manual-imports/commit-synthetic",
+            "POST /api/manual-imports/review-row",
+            "POST /api/manual-imports/commit-reviewed",
+            "POST /api/manual-imports/rollback",
             "GET /api/manual-imports/sessions",
             "GET /api/manual-imports/sessions/{session_id}",
             "GET /api/manual-imports/{session_id}/mapping",

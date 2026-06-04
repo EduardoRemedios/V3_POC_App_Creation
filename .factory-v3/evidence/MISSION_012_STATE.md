@@ -5,10 +5,10 @@
 - Mission status: active
 
 ## Current Phase
-Persistence/API changes implemented and targeted API/storage tests passing. Workbench UI wiring remains pending.
+Workbench UI changes implemented and targeted API/workbench/storage tests passing. Verification, Browser QA, design evidence, and closeout remain pending.
 
 ## Last Checkpoint
-Checkpoint 006: persistence/API implemented.
+Checkpoint 007: workbench UI implemented.
 
 ## Active Plan
 Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the authority granted by `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`.
@@ -31,9 +31,12 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Checkpoint 005 committed as `5c7330b`.
 - Added API endpoints for row review, reviewed commit, and rollback.
 - Added Mission 012 API tests.
+- Checkpoint 006 committed as `7638737`.
+- Added workbench controls for reviewed commit and rollback.
+- Added side-by-side raw/normalized diff rendering and per-row review controls.
+- Added workbench metadata and Mission 012 workbench tests.
 
 ## Pending Phases
-- Workbench UI changes.
 - Verification, Browser QA, and closeout.
 
 ## Open Human Decision Interrupts
@@ -49,16 +52,17 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`: PASS after answer recording and before applied update; rerun required after applied update.
 - `python3 -B -m unittest tests.test_mission_011_manual_imports tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 9 tests.
 - `python3 -B -m unittest tests.test_mission_011_api tests.test_mission_011_manual_imports tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 14 tests.
+- `python3 -B -m unittest tests.test_mission_011_workbench tests.test_mission_011_api tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback tests.test_mission_012_workbench`: PASS, 15 tests.
 
 ## Current Budget State
-- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on authored evidence, storage/API implementation, and targeted tests.
-- Tool-call budget: 5 tool calls since checkpoint 005 commit, counting API edits, test creation, targeted test execution, and evidence update.
-- Wall-clock time since last checkpoint: approximately 10 minutes from checkpoint 005 commit through API test verification.
-- Context/buffer concern: manageable for workbench UI checkpoint and focused verification.
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on authored evidence, implementation, and targeted tests.
+- Tool-call budget: 7 tool calls since checkpoint 006 commit, counting source reads, UI edits, test creation, targeted test execution, and evidence update.
+- Wall-clock time since last checkpoint: approximately 15 minutes from checkpoint 006 commit through workbench test verification.
+- Context/buffer concern: manageable for verification and Browser QA checkpoint.
 - Stop threshold reached: NO
 
 ## Next Action
-Wire side-by-side raw/normalized diff, review controls, reviewed commit, rollback, and audit provenance into the workbench UI.
+Run full unit verification, Mission 012 QA harness, Mission 012 verifier, JSON checks, and Browser QA.
 
 ## Reentry Rule
 Resume only from this state file, authored mission artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

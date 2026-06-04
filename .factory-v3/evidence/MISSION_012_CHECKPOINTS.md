@@ -342,7 +342,7 @@ Wire review, reviewed commit, rollback, and audit provenance through API endpoin
 - Checkpoint ID: M012-CP006
 - Checkpoint status: complete
 - Commit before: 5c7330b
-- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+- Commit after: 7638737
 
 ## Current Phase
 Persistence/API changes implemented.
@@ -383,3 +383,63 @@ The local API now exposes Mission 012 manual-import review and rollback behavior
 
 ## Next Planned Action
 Wire side-by-side raw/normalized diff, review controls, reviewed commit, rollback, and audit provenance into the workbench UI.
+
+## Checkpoint 007
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP007
+- Checkpoint status: complete
+- Commit before: 7638737
+- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+
+## Current Phase
+Workbench UI implemented.
+
+## Objective Progress
+The import lab now surfaces reviewed commit and rollback controls, side-by-side raw/normalized preview diffs, per-row review buttons for accepted/rejected/needs-clarification states, review summaries, rollback provenance, and audit-event counts. Workbench bootstrap metadata lists the new API routes and audit mount. Targeted tests verify Mission 011 compatibility and Mission 012 workbench markers.
+
+## Files Changed Since Last Checkpoint
+- `ppos_core/workbench.py`
+- `workbench/index.html`
+- `workbench/app.js`
+- `workbench/styles.css`
+- `tests/test_mission_012_workbench.py`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `sed -n '150,210p' workbench/index.html`
+- `sed -n '1,120p' workbench/app.js && sed -n '400,520p' workbench/app.js`
+- `sed -n '1,260p' workbench/styles.css`
+- `sed -n '1,80p' tests/test_mission_011_workbench.py`
+- `sed -n '260,520p' workbench/styles.css`
+- `sed -n '420,560p' workbench/app.js`
+- `sed -n '560,640p' workbench/app.js`
+- `sed -n '1,160p' ppos_core/workbench.py`
+- `python3 -B -m unittest tests.test_mission_011_workbench tests.test_mission_011_api tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback tests.test_mission_012_workbench`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest tests.test_mission_011_workbench tests.test_mission_011_api tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback tests.test_mission_012_workbench` | PASS | 15 tests passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on authored evidence, implementation, and targeted tests.
+- Tool-call count since last checkpoint: 7, counting source reads, UI edits, test creation, targeted test execution, and evidence update.
+- Wall-clock time since last checkpoint: approximately 15 minutes from checkpoint 006 commit through workbench test verification.
+- Context/buffer concern: manageable for verification and Browser QA checkpoint.
+- Stop threshold reached: NO
+
+## Open Risks
+- Full test suite, QA script, verifier, JSON checks, and Browser QA remain pending.
+- Checkpoint 007 commit-after hash must be resolved in the next checkpoint from git log.
+
+## Pending Human Decisions
+- None.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Run full unit verification, Mission 012 QA harness, Mission 012 verifier, JSON checks, and Browser QA.

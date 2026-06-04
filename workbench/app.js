@@ -6,6 +6,7 @@ const state = {
   busy: false,
   lastError: null,
   scenario: [],
+  currentManualImportSession: null,
 };
 
 window.__PPOS_WORKBENCH_QA__ = {
@@ -43,6 +44,15 @@ const api = {
   manualExports: () => fetchJson("/api/manual-exports"),
   previewManualImport: (exportId) => fetchJson("/api/manual-imports/preview", { export_id: exportId }),
   commitManualImport: (exportId) => fetchJson("/api/manual-imports/commit-synthetic", { export_id: exportId }),
+  reviewManualImportRow: (sessionId, rowIndex, reviewState) =>
+    fetchJson("/api/manual-imports/review-row", {
+      session_id: sessionId,
+      row_index: rowIndex,
+      review_state: reviewState,
+    }),
+  commitReviewedManualImport: (sessionId) => fetchJson("/api/manual-imports/commit-reviewed", { session_id: sessionId }),
+  rollbackManualImport: (sessionId) =>
+    fetchJson("/api/manual-imports/rollback", { session_id: sessionId, reason: "synthetic operator rollback from workbench" }),
   manualImportMapping: (sessionId) => fetchJson(`/api/manual-imports/${sessionId}/mapping`),
   manualImportConflicts: (sessionId) => fetchJson(`/api/manual-imports/${sessionId}/conflicts`),
   manualImportAudit: () => fetchJson("/api/manual-imports/audit-summary"),
@@ -408,6 +418,9 @@ async function init() {
     document.querySelector("#import-fixture").addEventListener("click", () => selectFixture(state.selectedFixtureId));
     document.querySelector("#preview-manual-import").addEventListener("click", previewSelectedManualImport);
     document.querySelector("#commit-manual-import").addEventListener("click", commitSelectedManualImport);
+    document.querySelector("#commit-reviewed-manual-import").addEventListener("click", commitReviewedManualImport);
+    document.querySelector("#rollback-manual-import").addEventListener("click", rollbackManualImport);
+    document.querySelector("#manual-import-preview").addEventListener("click", reviewManualImportRowFromButton);
     const urlFixture = new URLSearchParams(window.location.search).get("fixture");
     const urlView = new URLSearchParams(window.location.search).get("view");
     const savedFixture = urlFixture || localStorage.getItem(STORAGE_KEY);
@@ -461,17 +474,18 @@ async function commitSelectedManualImport() {
 }
 
 function renderManualImportSession(session) {
+  state.currentManualImportSession = session;
   document.querySelector("#manual-import-preview").innerHTML = [
     card("Session", `${session.id} / ${session.status}`),
     card("Rows", String(session.row_count)),
     card("Issues", String(session.issue_count)),
     card("Conflicts", String(session.conflict_count)),
+    card("Review", reviewSummaryText(session.review_summary)),
+    card("Rollback", session.reverted_at ? `${session.reverted_at} / ${session.rollback_reason || "recorded"}` : "not reverted"),
     ...session.issues.slice(0, 12).map((issue) =>
       `<div class="item ${issue.severity === "error" ? "danger" : "warning"}"><strong>${escapeHtml(issue.issue_type)}</strong><br>${escapeHtml(issue.field)}: ${escapeHtml(issue.message)}</div>`
     ),
-    ...session.rows.slice(0, 10).map((row) =>
-      `<div class="item"><strong>${escapeHtml(row.domain)} / row ${row.row_index}</strong><br>${escapeHtml(row.source_record_id)} -> ${escapeHtml(JSON.stringify(row.normalized))}</div>`
-    ),
+    ...session.rows.slice(0, 10).map(renderManualImportRowDiff),
   ].join("");
   document.querySelector("#manual-import-mapping").innerHTML = session.mappings
     .slice(0, 28)
@@ -482,6 +496,84 @@ function renderManualImportSession(session) {
     : '<div class="item">No conflicts detected</div>';
 }
 
+async function commitReviewedManualImport() {
+  await withOperation("Committing reviewed synthetic import", async () => {
+    activateView("imports");
+    const session = requireManualImportSession();
+    const result = await api.commitReviewedManualImport(session.id);
+    renderManualImportSession(result.session);
+    await renderManualImportAudit();
+    setStatus(`Committed reviewed synthetic import: ${session.id}`);
+  });
+}
+
+async function rollbackManualImport() {
+  await withOperation("Rolling back synthetic import", async () => {
+    activateView("imports");
+    const session = requireManualImportSession();
+    const result = await api.rollbackManualImport(session.id);
+    renderManualImportSession(result.session);
+    await renderManualImportAudit();
+    setStatus(`Rolled back synthetic import: ${session.id}`);
+  });
+}
+
+async function reviewManualImportRowFromButton(event) {
+  const button = event.target.closest("[data-review-state]");
+  if (!button) {
+    return;
+  }
+  await withOperation("Updating manual import row review", async () => {
+    const session = requireManualImportSession();
+    const rowIndex = Number(button.dataset.rowIndex);
+    const result = await api.reviewManualImportRow(session.id, rowIndex, button.dataset.reviewState);
+    renderManualImportSession(result.session);
+    await renderManualImportAudit();
+    setStatus(`Marked row ${rowIndex} ${button.dataset.reviewState}`);
+  });
+}
+
+function requireManualImportSession() {
+  if (!state.currentManualImportSession) {
+    throw new Error("Preview or commit a synthetic manual import first.");
+  }
+  return state.currentManualImportSession;
+}
+
+function renderManualImportRowDiff(row) {
+  return `
+    <div class="item import-row" data-testid="manual-import-row-diff">
+      <div class="row-heading">
+        <strong>${escapeHtml(row.domain)} / row ${row.row_index}</strong>
+        <span class="badge">${escapeHtml(row.review_state || "needs_clarification")}</span>
+      </div>
+      <div>${escapeHtml(row.source_record_id)}</div>
+      <div class="diff-grid" data-testid="manual-import-raw-normalized-diff">
+        <div>
+          <strong>Raw</strong>
+          <pre>${escapeHtml(JSON.stringify(row.raw, null, 2))}</pre>
+        </div>
+        <div>
+          <strong>Normalized</strong>
+          <pre>${escapeHtml(JSON.stringify(row.normalized, null, 2))}</pre>
+        </div>
+      </div>
+      <div class="review-actions" data-testid="manual-import-review-actions">
+        <button data-row-index="${row.row_index}" data-review-state="accepted">Accept</button>
+        <button data-row-index="${row.row_index}" data-review-state="rejected">Reject</button>
+        <button data-row-index="${row.row_index}" data-review-state="needs_clarification">Clarify</button>
+      </div>
+    </div>
+  `;
+}
+
+function reviewSummaryText(summary) {
+  if (!summary) {
+    return "not reviewed";
+  }
+  return `accepted ${summary.accepted || 0} / rejected ${summary.rejected || 0} / clarify ${summary.needs_clarification || 0}`;
+}
+
 async function renderManualImportAudit() {
   const audit = await api.manualImportAudit();
   const summary = audit.manual_import_audit;
@@ -489,8 +581,12 @@ async function renderManualImportAudit() {
     card("Adapters", String(summary.adapter_count)),
     card("Synthetic exports", String(summary.manual_export_count)),
     card("Sessions", String(summary.session_count)),
+    card("Committed", String(summary.committed_session_count || 0)),
+    card("Reverted", String(summary.reverted_session_count || 0)),
     card("Issues", String(summary.issue_count)),
     card("Conflicts", String(summary.conflict_count)),
+    card("Review states", reviewSummaryText(summary.review_summary)),
+    card("Audit events", String(summary.audit_event_count || 0)),
   ].join("");
 }
 
