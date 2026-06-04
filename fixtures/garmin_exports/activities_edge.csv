@@ -1,7 +1,6 @@
 synthetic_label,record_id,source_file_type,activity_name,activity_type,start_time,timezone,duration_seconds,distance_meters,calories_kcal,average_hr_bpm,training_load
 SYNTHETIC_MISSION_013_GARMIN_SHAPE,ga_edge_001,fit,Duplicate tempo run,running,2026-02-06T06:55:00+00:00,Atlantic/Canary,2880,7600,540,151,82
-SYNTHETIC_MISSION_013_GARMIN_SHAPE,ga_edge_002,fit,Duplicate tempo run copy,running,2026-02-06T06:55:00+00:00,Atlantic/Canary,2880,7600,540,151,82
+SYNTHETIC_MISSION_013_GARMIN_SHAPE,ga_edge_002,fit,Duplicate tempo run,running,2026-02-06T06:55:00+00:00,Atlantic/Canary,2880,7600,540,151,82
 SYNTHETIC_MISSION_013_GARMIN_SHAPE,ga_edge_003,gpx,UTC boundary walk,walking,2026-02-07T00:10:00+00:00,UTC,1800,2200,140,98,12
 SYNTHETIC_MISSION_013_GARMIN_SHAPE,ga_edge_004,tcx,Missing time ride,cycling,,Atlantic/Canary,3600,28000,700,138,75
 SYNTHETIC_MISSION_013_GARMIN_SHAPE,ga_edge_005,csv,Malformed duration swim,swimming,2026-02-08T10:30:00+00:00,Atlantic/Canary,not_a_number,1200,260,124,36
-

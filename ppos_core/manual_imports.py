@@ -12,7 +12,6 @@ from typing import Any, Callable
 
 from .garmin_bridge import (
     garmin_adapter_catalog,
-    garmin_export_catalog,
     get_garmin_export,
     is_garmin_export,
     preview_garmin_export,
@@ -99,18 +98,7 @@ def load_manual_export_manifest() -> dict[str, Any]:
 
 
 def manual_export_catalog() -> list[dict[str, Any]]:
-    manifest = load_manual_export_manifest()
-    exports = []
-    for entry in manifest["exports"]:
-        path = Path(entry["path"])
-        exports.append(
-            {
-                **entry,
-                "exists": path.exists(),
-                "sha256": file_sha256(path) if path.exists() else None,
-            }
-        )
-    return exports + garmin_export_catalog()
+    return _legacy_manual_export_catalog()
 
 
 def get_manual_export(export_id: str) -> dict[str, Any]:

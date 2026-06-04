@@ -242,7 +242,7 @@ Halt if:
 - Checkpoint ID: M013-CP004
 - Checkpoint status: complete
 - Commit before: 18005d7
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: 94de7ba
 
 ## Current Phase
 HDI-013-001 applied; Garmin fixture pack built.
@@ -325,3 +325,76 @@ Resume from:
 
 Halt if:
 - Garmin preview/review integration cannot proceed without real export files, package installation, Factory V2, Factory_V3 tooling, or unauthorized commands.
+
+## Checkpoint 005
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP005
+- Checkpoint status: complete
+- Commit before: 94de7ba
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+Garmin bridge adapter parses fixture families through preview/review.
+
+## Objective Progress
+Mission 013 tests now cover Garmin manifest consistency, synthetic labels, expected preview counts, edge-case detection, and the existing preview → review → reviewed-commit pipeline through `preview_manual_import`, `update_manual_import_row_review`, and `commit_reviewed_manual_import`. The Garmin duplicate fixture was corrected so duplicate signatures are stable. Legacy Mission 011 catalog behavior was preserved by keeping `/api/manual-exports` and `manual_export_catalog()` scoped to the original nine manual exports, while Garmin export IDs still route through the shared manual import preview/review functions.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `fixtures/garmin_exports/activities_edge.csv`
+- `ppos_core/manual_imports.py`
+- `tests/test_mission_013_garmin_fixtures.py`
+- `tests/test_mission_013_bridge_adapter.py`
+
+## Commands Run Since Last Checkpoint
+- `git log --oneline -n 20`
+- `git status --short --branch`
+- `git diff --stat`
+- `python3 -B -m unittest discover -s tests`
+- `python3 -B -m unittest discover -s tests` with escalation after sandbox localhost bind failure
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest discover -s tests` | FAIL in sandbox | Garmin failures were fixed; remaining error was `PermissionError: [Errno 1] Operation not permitted` when a pre-existing Mission 010 harness test tried to bind `127.0.0.1:8771`. |
+| `python3 -B -m unittest discover -s tests` with escalation | PASS | 162 tests ran and passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is high enough to warrant tight checkpointing before materialization work.
+- Tool-call count since last checkpoint: 12, counting wrapped subcalls, file edits, test runs, and status/log checks.
+- Wall-clock time since last checkpoint: approximately 25 minutes from checkpoint 004 commit through test authoring, failure triage, fixes, and passing unit verification.
+- Context/buffer concern: materialization plus HDI-013-002 is a larger phase; keep the interrupt and implementation in a distinct checkpoint.
+- Stop threshold reached: NO
+
+## Open Risks
+- Materialized imports are not implemented yet; reviewed commits currently update session status only.
+- HDI-013-002 must be asked before conflict behavior is implemented.
+- Checkpoint `commit_after` is pending until the checkpoint commit exists; a later checkpoint will resolve it from `git log --oneline -n 20`.
+
+## Pending Human Decisions
+- HDI-013-002 remains pending and blocks materialization conflict strategy.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Write HDI-013-002, checkpoint and commit it as asked, ask the sponsor in-thread, then implement materialization per the answer.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `fixtures/garmin_exports/manifest.json`
+- `ppos_core/garmin_bridge.py`
+- `ppos_core/manual_imports.py`
+- current repository state
+
+Halt if:
+- HDI-013-002 is unanswered and materialization conflict behavior is the next required action.
+- Materialization would require real data, destructive mutation of prior mission evidence, Factory V2, Factory_V3 tooling, package installation, or unauthorized git operations.

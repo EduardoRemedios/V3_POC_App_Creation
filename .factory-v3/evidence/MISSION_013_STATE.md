@@ -9,10 +9,10 @@
 - V2 allowed: NO
 
 ## Current Phase
-Phase 4: HDI-013-001 applied; Garmin fixture pack built; manifest parse checks pending.
+Phase 5: Garmin bridge adapter preview/review integration complete.
 
 ## Last Checkpoint
-M013-CP002 committed as `fcb585c`; M013-CP003 is being authored.
+M013-CP004 committed as `94de7ba`; M013-CP005 is being authored.
 
 ## Active Plan
 Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`.
@@ -26,9 +26,10 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - HDI-013-001 was answered from the phone via Codex mobile thread and applied as `option_a`; no plan delta was required.
 - `fixtures/garmin_exports/` was created with activities, sleep, body-composition, and wellness/HRV/stress synthetic fixture families.
 - `ppos_core/garmin_bridge.py` was created and `ppos_core/manual_imports.py` was wired to route Garmin export IDs through the same preview/review pipeline.
+- Mission 013 fixture and adapter tests were added.
+- Garmin preview/review integration was verified through `python3 -B -m unittest discover -s tests`; the sandboxed run failed only on localhost bind permission in a pre-existing Mission 010 test, and the escalated rerun passed 162 tests.
 
 ## Pending Phases
-- Garmin bridge adapter integration.
 - HDI-013-002 materialization conflict strategy decision.
 - Reviewed import materialization into normalized fact tables.
 - Deliberate cross-session resume.
@@ -46,10 +47,10 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - None.
 
 ## Current Verification State
-- Planning checkpoint only; no app behavior changed yet.
-- No Mission 013 tests or scripts have been run yet.
 - Research evidence authored; citation URLs recorded in the research note.
-- HDI-013-001 interrupt JSON updated to `applied`; manifest parse checks are the next verification step.
+- HDI-013-001 interrupt JSON parses with status `applied`.
+- Garmin manifest and JSON fixtures parse.
+- `python3 -B -m unittest discover -s tests`: PASS with escalation after sandbox blocked localhost bind; 162 tests passed.
 
 ## Current Budget State
 - Token budget: no explicit numeric token budget set by sponsor.
@@ -61,7 +62,7 @@ Use the Mission 013 envelope and `.factory-v3/evidence/MISSION_013_IMPLEMENTATIO
 - Required future resume must read authored artifacts and current repository state, then list the exact files read here.
 
 ## Next Action
-Run JSON parse checks for the interrupt and Garmin manifest/JSON fixture files, then commit checkpoint 004.
+Ask and apply HDI-013-002 before implementing materialization conflict behavior.
 
 ## Reentry Rule
 Resume only from this state file, authored Mission 013 artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.
