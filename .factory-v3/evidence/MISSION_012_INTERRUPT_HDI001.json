@@ -1,7 +1,7 @@
 {
   "interrupt_id": "HDI-012-001",
   "mission_id": "MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION",
-  "status": "asked",
+  "status": "answered",
   "decision_type": "product_decision",
   "question": "Which real-data bridge should the future approval workflow be designed around, and which should Mission 013+ research first?",
   "context_summary": "This mission remains synthetic-only. The answer authorizes design evidence and future research prioritization only; it does not authorize real-data use, credentials, exports, API calls, scraping, OCR/vision, or implementation. Options are compared against data value, implementation cost, privacy risk, credential risk, verification ability, and personal-use suitability.",
@@ -58,18 +58,18 @@
     "message_reference": ".factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json"
   },
   "answer": {
-    "answered": false,
-    "answered_at": "not_recorded",
-    "answered_by": "not_recorded",
-    "answer_text": "",
-    "selected_option_id": "",
-    "interpretation": "",
-    "confidence": "not_recorded"
+    "answered": true,
+    "answered_at": "2026-06-04 (thread reply; exact timestamp not exposed in authored artifact)",
+    "answered_by": "Eduardo dos Remedios",
+    "answer_text": "ok i agree its option A.",
+    "selected_option_id": "option_a",
+    "interpretation": "Sponsor selected option_a: manual Garmin export/import. This authorizes Mission 012 design evidence and Mission 013+ research prioritization around a future file-based Garmin bridge only. It does not authorize real data, credentials, exports, API calls, scraping, OCR/vision, or any real-data bridge implementation.",
+    "confidence": "high"
   },
   "mission_delta": {
     "required": false,
     "delta_reference": "",
-    "summary": "No plan delta can be evaluated until the sponsor answer is recorded."
+    "summary": "No plan delta required: option_a is the recommended option and fits the approved Mission 012 design-only scope without expanding implementation authority."
   },
-  "continuation_decision": "not_decided"
+  "continuation_decision": "continue"
 }

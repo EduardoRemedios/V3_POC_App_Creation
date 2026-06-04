@@ -78,7 +78,7 @@ Halt if:
 - Checkpoint ID: M012-CP002
 - Checkpoint status: complete
 - Commit before: 5c7bb71
-- Commit after: pending until the immediately following checkpoint commit is created; the fresh resume checkpoint must resolve this hash from git log.
+- Commit after: 5820c31
 
 ## Current Phase
 HDI-012-001 asked; mission paused for required cross-session resume.
@@ -135,3 +135,21 @@ Resume from:
 Halt if:
 - `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` status is still `asked`.
 - The answer is ambiguous, outside the option set without clear interpretation, or requests unauthorized real-data implementation.
+
+## Post-Pause Answer Record
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Record status: answer recorded, implementation still paused pending fresh-session resume.
+
+## Answer Source
+- Surface: thread fallback after file-surface interrupt was asked.
+- Sponsor answer text: `ok i agree its option A.`
+- Selected option: `option_a` manual Garmin export/import.
+- Interpretation: The future real-data approval workflow design and Mission 013+ research priority should be shaped around a file-based Garmin export/import bridge. This does not authorize real data, credentials, exports, API calls, scraping, OCR/vision, or implementation.
+
+## Plan Delta References
+- None required. The sponsor selected the recommended option, and it stays inside approved design-only Mission 012 scope.
+
+## Next Planned Action
+Start a fresh session to satisfy the required cross-session resume. The resume session must read authored artifacts and current repository state before changing HDI-012-001 from `answered` to `applied`.
