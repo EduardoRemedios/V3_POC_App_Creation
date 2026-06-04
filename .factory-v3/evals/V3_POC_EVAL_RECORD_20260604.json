@@ -1,0 +1,124 @@
+{
+  "eval": {
+    "schema_version": "v0.1-poc-eval",
+    "status": "APPROVED_BY_SPONSOR",
+    "scope_note": "Interim adjudication at the Mission 011 checkpoint. The POC is still in progress; this record adjudicates standalone V3 execution evidence through Mission 011, not a final POC completion.",
+    "decision": "PASS_WITH_LIMITATIONS",
+    "evaluated_date": "2026-06-04",
+    "judge": "Eduardo dos Remedios (sponsor)",
+    "poc_project": "V3_POC_App_Creation - Personal Performance OS (synthetic-only local workbench)",
+    "commit_or_artifact_reference": "32e8282 Complete Mission 011 source adapter lab",
+    "approval": {
+      "approved_by": "Eduardo dos Remedios",
+      "approved_date": "2026-06-04",
+      "decision_confirmed": "PASS_WITH_LIMITATIONS",
+      "scores_confirmed_as_drafted": true,
+      "operator_friction_confirmed": 1,
+      "approval_channel": "Sponsor statement in Cowork session, 2026-06-04"
+    }
+  },
+  "scores": {
+    "v3_only_compliance": 2,
+    "mission_clarity": 2,
+    "scope_discipline": 2,
+    "app_completeness": 1,
+    "verification_quality": 2,
+    "deployment_evidence": 1,
+    "evidence_replay": 2,
+    "halt_behavior": 1,
+    "adaptive_mission_control": 1,
+    "dependency_discipline": 2,
+    "operator_friction": 1
+  },
+  "score_rationale": {
+    "v3_only_compliance": "Every closeout (002-011) records 'Factory V2 used: NO' with explicit rg no-go scans for factoryctl/stage-lint/pack-lint/STAGE_* as command evidence. Evidence is clear and consistent.",
+    "mission_clarity": "All eleven missions have envelopes with explicit objective, authorized files, allowed commands, verification, stop rules; 007-011 add phases, checkpoint rules, and duration bands.",
+    "scope_discipline": "All closeouts record 'Out-of-scope changes: none' with file lists mapped to mission authority; Missions 008/009 explain undershooting optional file-count targets rather than padding. Self-attested but detailed and internally consistent.",
+    "app_completeness": "Per-mission approved targets were all met, but the named POC scope (private health/fitness tracker usable by the sponsor) is partially met: synthetic-only workbench exists; real-data bridge, Telegram surface, ambient delivery, and multimodal capture remain unbuilt by design.",
+    "verification_quality": "148 passing tests, per-mission verifier scripts (e.g. 48 checks in Mission 011), QA harnesses with generated audit JSON, browser desktop/mobile QA, JSON parse checks. Appropriate and passing.",
+    "deployment_evidence": "Partial/private smoke only: localhost stdlib API server plus browser QA. No separately approved private deployment mission with deployment boundary, secrets policy, or rollback has run.",
+    "evidence_replay": "Mission records, closeouts, checkpoints (007-011), mission state (010-011), audit JSONs, and browser notes allow reconstruction of intent, authority, work, and verification. Known gap: record schema divergence (007-009 flat shape vs v0.1-poc-standalone) complicates tooling but not human replay.",
+    "halt_behavior": "No halt rule was ever triggered; no mission continued after failure (good), but clean-halt behavior is untested in practice. One in-scope verify-script failure in Mission 007 was fixed within authority. Positive halt/recovery evidence is absent.",
+    "adaptive_mission_control": "Checkpoints exist for 007-011 and authored mission state for 010-011, but zero human decision interrupts, zero plan deltas, no cross-session resume after a real context break, and budget fields recorded as 'not explicitly set' throughout.",
+    "dependency_discipline": "Zero packages installed across all missions; Garmin/Telegram/Hermes/OCR/voice/scheduler touched as research or design only, labeled in every closeout; Missions 002/004 research spikes recorded before any dependency posture decision.",
+    "operator_friction": "Draft score - sponsor judgment required. Authoring overhead per mission (envelope, plan, checkpoints, state, closeout, record) is meaningful, and the record schema drifted mid-POC, suggesting friction. Sponsor may revise to 2 if the workflow feels usable as a first baseline."
+  },
+  "total_score": 17,
+  "max_score": 22,
+  "required_pass_checks": {
+    "factory_v2_not_used": true,
+    "no_dimension_zero": true,
+    "total_score_at_least_18": false,
+    "app_verification_replay_minimum_met": true,
+    "garmin_or_hermes_use_labeled": true
+  },
+  "decision_rationale": "PASS_NAMED_POC is unavailable: total 17 < 18, and the named scope includes private deployment which remains unproven regardless of total. V3 demonstrably governed a non-trivial standalone build/test workflow with Codex across ten executed missions with zero V2 use, so NO_GO outcomes do not apply. PASS_WITH_LIMITATIONS: V3 worked; limitations below must be recorded before any baseline release claim.",
+  "limitations": [
+    "Deployment: local-only smoke evidence; no approved private deployment mission has run.",
+    "Real data: synthetic-only by design; no real-data boundary has been exercised.",
+    "Negative paths: no failed-verification halt, recovery, fallback, stale-reentry, or unresolved-interrupt evidence exists.",
+    "Interrupts: no human decision interrupt has ever been raised; the interrupt lifecycle is unproven.",
+    "Cross-session resume: continuation from artifacts after a genuine context break is unproven.",
+    "Budget: token/usage burn was never measured; checkpoint budget fields are unfilled.",
+    "Git authority: no mission held commit authority; mission evidence was committed outside mission scope after closeout.",
+    "Record schema: missions 007-009 use a flat record shape inconsistent with v0.1-poc-standalone; a versioned validator does not yet exist."
+  ],
+  "evidence": {
+    "mission_records": [
+      ".factory-v3/evidence/MISSION_002_RECORD.json",
+      ".factory-v3/evidence/MISSION_003_RECORD.json",
+      ".factory-v3/evidence/MISSION_004_RECORD.json",
+      ".factory-v3/evidence/MISSION_005_RECORD.json",
+      ".factory-v3/evidence/MISSION_006_RECORD.json",
+      ".factory-v3/evidence/MISSION_007_RECORD.json",
+      ".factory-v3/evidence/MISSION_008_RECORD.json",
+      ".factory-v3/evidence/MISSION_009_RECORD.json",
+      ".factory-v3/evidence/MISSION_010_RECORD.json",
+      ".factory-v3/evidence/MISSION_011_RECORD.json"
+    ],
+    "closeouts": [
+      ".factory-v3/evidence/MISSION_002_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_003_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_004_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_005_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_006_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_007_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_008_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_009_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_010_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_011_CLOSEOUT.md"
+    ],
+    "verification_outputs": [
+      "tests/ (148 passing via python3 -B -m unittest discover -s tests)",
+      "scripts/verify_mission_007.py through scripts/verify_mission_011.py",
+      ".factory-v3/evidence/MISSION_009_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      ".factory-v3/evidence/MISSION_011_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_010_BROWSER_NOTES.md",
+      ".factory-v3/evidence/MISSION_011_BROWSER_NOTES.md"
+    ],
+    "deployment_outputs": [
+      "Local smoke only: ppos_core.api localhost servers used for QA harnesses and browser QA; no deployment mission evidence exists."
+    ],
+    "dependency_research": [
+      ".factory-v3/evidence/MISSION_002_RESEARCH_NOTES.md",
+      ".factory-v3/evidence/MISSION_004_SOURCE_ADAPTER_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_009_RESEARCH_SPIKES.md",
+      ".factory-v3/canons/DEPENDENCY_RESEARCH.md"
+    ]
+  },
+  "residual_risks": [
+    "Self-attested scope/compliance evidence has no independent audit path yet.",
+    "Synthetic adapters prove preview/validation behavior, not real file compatibility.",
+    "Browser screenshot/viewport evidence was limited in Mission 011.",
+    "Halt and recovery behavior could regress unnoticed until deliberately exercised."
+  ],
+  "recommended_next_steps": [
+    "Back-port this adjudication into Factory_V3 (PROJECT_STATE.md, ROADMAP.md, ROADMAP_TO_FULL_VISION.md): POC has standalone execution evidence through Mission 011, PASS_WITH_LIMITATIONS.",
+    "Mission 012: manual-import hardening hosting the first real human decision interrupt (real-data approval design), budget instrumentation, scoped git commit authority, and a deliberate cross-session resume.",
+    "Versioned mission-record validator in Factory_V3 covering v0.1, v0.1-poc-standalone with/without adaptive_mission_control, and the flat 007-009 shape.",
+    "Deliberate negative-path missions: failed-verification halt, recovery, stale reentry, fallback/no-go.",
+    "Separately approved private deployment mission with deployment boundary, secrets policy, rollback, and smoke verification.",
+    "Re-run this eval as a final adjudication once deployment and negative-path evidence exist."
+  ]
+}
