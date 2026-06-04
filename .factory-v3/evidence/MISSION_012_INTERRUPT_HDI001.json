@@ -1,0 +1,75 @@
+{
+  "interrupt_id": "HDI-012-001",
+  "mission_id": "MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION",
+  "status": "asked",
+  "decision_type": "product_decision",
+  "question": "Which real-data bridge should the future approval workflow be designed around, and which should Mission 013+ research first?",
+  "context_summary": "This mission remains synthetic-only. The answer authorizes design evidence and future research prioritization only; it does not authorize real-data use, credentials, exports, API calls, scraping, OCR/vision, or implementation. Options are compared against data value, implementation cost, privacy risk, credential risk, verification ability, and personal-use suitability.",
+  "reason_for_interrupt": "Mission 012 must record the first real-data bridge decision as a genuine human decision interrupt before design evidence can be shaped around the selected future bridge.",
+  "options": [
+    {
+      "id": "option_a",
+      "label": "Manual Garmin export/import",
+      "effect": "Design the future approval workflow around a file-based Garmin export/import bridge and prioritize Mission 013+ research on synthetic handling of that bridge shape.",
+      "risk": "Good data value and verification ability with no credential handling, but still personal fitness data in future missions and requires careful retention, source labeling, and rollback design. Recommended for POC personal-use suitability."
+    },
+    {
+      "id": "option_b",
+      "label": "Apple Health export/HealthKit bridge",
+      "effect": "Design around Apple Health export or HealthKit-style access and prioritize future research there.",
+      "risk": "High data value but broader sensitive health scope, platform constraints, and higher privacy/consent complexity; HealthKit may introduce device/platform integration concerns."
+    },
+    {
+      "id": "option_c",
+      "label": "Health Connect bridge",
+      "effect": "Design around a Health Connect-style bridge and prioritize future research there.",
+      "risk": "High potential value for Android ecosystems but platform-specific, privacy-sensitive, and likely more integration complexity than file-based import."
+    },
+    {
+      "id": "option_d",
+      "label": "Strava activity API",
+      "effect": "Design around a Strava API activity bridge and prioritize future research there.",
+      "risk": "Clear activity data value and verifiability, but introduces OAuth, credential, API-rate, and third-party policy risks that are outside this mission's implementation authority."
+    },
+    {
+      "id": "option_e",
+      "label": "Medical PDF upload",
+      "effect": "Design around medical PDF upload approval and prioritize future research there.",
+      "risk": "Potentially high value but highest privacy and interpretation risk; may imply OCR/document parsing and medical-data retention concerns that are explicitly out of scope for this mission."
+    },
+    {
+      "id": "option_f",
+      "label": "Nutrition image upload",
+      "effect": "Design around nutrition image upload approval and prioritize future research there.",
+      "risk": "Useful but weaker verification and likely OCR/vision implications; image handling can introduce privacy and retention risks beyond the synthetic import hardening scope."
+    },
+    {
+      "id": "option_g",
+      "label": "Defer the decision",
+      "effect": "Do not pick a first bridge; Mission 012 records deferral and future research remains unprioritized.",
+      "risk": "Lowest immediate implementation risk but weakens the POC evidence objective and may require a later decision interrupt before Mission 013+ can proceed."
+    }
+  ],
+  "recommended_option_id": "option_a",
+  "timeout_behavior": "pause",
+  "asked": {
+    "surface": "file",
+    "asked_at": "2026-06-04T11:18:22+01:00",
+    "message_reference": ".factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json"
+  },
+  "answer": {
+    "answered": false,
+    "answered_at": "not_recorded",
+    "answered_by": "not_recorded",
+    "answer_text": "",
+    "selected_option_id": "",
+    "interpretation": "",
+    "confidence": "not_recorded"
+  },
+  "mission_delta": {
+    "required": false,
+    "delta_reference": "",
+    "summary": "No plan delta can be evaluated until the sponsor answer is recorded."
+  },
+  "continuation_decision": "not_decided"
+}

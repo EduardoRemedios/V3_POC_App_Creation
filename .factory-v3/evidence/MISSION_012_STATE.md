@@ -2,13 +2,13 @@
 
 ## Mission
 - Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
-- Mission status: active
+- Mission status: paused
 
 ## Current Phase
-Mission plan authored; HDI-012-001 file-surface interrupt preparation is next.
+HDI-012-001 asked through the file surface; mission is paused for required cross-session resume.
 
 ## Last Checkpoint
-Checkpoint 001: mission plan authored.
+Checkpoint 002: HDI-012-001 asked and mission paused.
 
 ## Active Plan
 Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the authority granted by `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`.
@@ -17,9 +17,10 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Mission 012 envelope approved and present in the repository.
 - Initial repository state inspected.
 - Implementation plan authored.
+- Checkpoint 001 committed as `5c7bb71`.
+- HDI-012-001 asked through `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`.
 
 ## Pending Phases
-- Ask HDI-012-001 and pause the session.
 - Fresh-session resume after sponsor answer.
 - Review/rollback model.
 - Persistence/API changes.
@@ -27,24 +28,26 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Verification, Browser QA, and closeout.
 
 ## Open Human Decision Interrupts
-- HDI-012-001 is required and not yet asked in this state revision.
+- HDI-012-001 status: `asked`.
+- Timeout behavior: pause.
+- Sponsor must edit `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` and set status to `answered` before continuation.
 
 ## Accepted Plan Deltas
 - None.
 
 ## Current Verification State
 - No source or app behavior changes have been made.
-- Verification not run; this checkpoint covers mission planning only.
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`: PASS.
 
 ## Current Budget State
-- Token budget: no explicit numeric budget set by sponsor; approximate context use low-to-moderate based on visible thread and artifact reads.
-- Tool-call budget: 14 tool calls since mission request, counting wrapped subcalls and time lookup.
-- Wall-clock time since last checkpoint: approximately 10 minutes from request intake to initial plan authoring.
-- Context/buffer concern: none for asking the interrupt and producing the required pause checkpoint.
-- Stop threshold reached: NO
+- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate based on visible thread, template reads, and authored evidence.
+- Tool-call budget: 8 tool calls since checkpoint 001, counting wrapped subcalls and file-edit operations through interrupt authoring.
+- Wall-clock time since last checkpoint: approximately 5 minutes from checkpoint 001 commit to interrupt authoring.
+- Context/buffer concern: none for clean resume from disk artifacts.
+- Stop threshold reached: YES, intentionally, because the mission requires stopping at HDI-012-001 while status is `asked`.
 
 ## Next Action
-Write `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`, update state to paused, append the pre-pause checkpoint, commit authorized files, and end the session.
+End the session after the pause commit. Resume only after the sponsor edits `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` to status `answered` with a clear selected option.
 
 ## Reentry Rule
 Resume only from this state file, authored mission artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.
