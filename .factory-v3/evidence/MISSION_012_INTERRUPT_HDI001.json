@@ -1,7 +1,7 @@
 {
   "interrupt_id": "HDI-012-001",
   "mission_id": "MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION",
-  "status": "answered",
+  "status": "applied",
   "decision_type": "product_decision",
   "question": "Which real-data bridge should the future approval workflow be designed around, and which should Mission 013+ research first?",
   "context_summary": "This mission remains synthetic-only. The answer authorizes design evidence and future research prioritization only; it does not authorize real-data use, credentials, exports, API calls, scraping, OCR/vision, or implementation. Options are compared against data value, implementation cost, privacy risk, credential risk, verification ability, and personal-use suitability.",
@@ -71,5 +71,21 @@
     "delta_reference": "",
     "summary": "No plan delta required: option_a is the recommended option and fits the approved Mission 012 design-only scope without expanding implementation authority."
   },
-  "continuation_decision": "continue"
+  "continuation_decision": "continue",
+  "applied": {
+    "applied_at": "2026-06-04 (fresh resume session; exact timestamp not exposed in authored artifact)",
+    "applied_by": "Codex fresh resume session",
+    "applied_surface": "authored artifacts",
+    "resume_artifacts_read": [
+      ".factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md",
+      ".factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md",
+      ".factory-v3/evidence/MISSION_012_STATE.md",
+      ".factory-v3/evidence/MISSION_012_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json",
+      "git status --short --branch",
+      "git log --oneline --decorate -8",
+      "git diff --stat"
+    ],
+    "application_summary": "Applied option_a for Mission 012 design evidence and Mission 013+ research prioritization around a future file-based Garmin export/import bridge. No real-data behavior, credentials, exports, API calls, scraping, OCR/vision, or real-data bridge implementation is authorized."
+  }
 }

@@ -153,3 +153,127 @@ Halt if:
 
 ## Next Planned Action
 Start a fresh session to satisfy the required cross-session resume. The resume session must read authored artifacts and current repository state before changing HDI-012-001 from `answered` to `applied`.
+
+## Checkpoint 003
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP003
+- Checkpoint status: complete
+- Commit before: 5820c31
+- Commit after: 0e8695e
+
+## Current Phase
+HDI-012-001 answer recorded; mission still paused for required fresh-session resume.
+
+## Objective Progress
+The sponsor's thread answer was recorded in `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` as `option_a`, with high confidence and no plan delta required. No source or app behavior changes were made.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`
+
+## Commands Run Since Last Checkpoint
+- Authored-artifact reads and answer recording from the prior session.
+- `git commit -m "Mission 012 checkpoint 003: bridge answer recorded"`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` | not_run_after_answer_recording | State file requires rerun after the answer edit. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate based on visible thread, template reads, authored evidence, and answer recording.
+- Tool-call count since last checkpoint: 7, counting wrapped subcalls, artifact reads, and answer file edit.
+- Wall-clock time since last checkpoint: approximately 5 minutes from checkpoint 002 commit to answer recording.
+- Context/buffer concern: none for clean resume from disk artifacts.
+- Stop threshold reached: YES, intentionally, because the mission required a fresh-session resume before implementation.
+
+## Open Risks
+- Fresh-session resume must be completed from authored artifacts before implementation continues.
+
+## Pending Human Decisions
+- None. HDI-012-001 is answered as `option_a`.
+
+## Plan Delta References
+- None required. The sponsor selected the recommended option and did not expand mission scope.
+
+## Next Planned Action
+Start a fresh session and apply HDI-012-001 from authored artifacts only.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`
+- `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`
+- current repository state
+
+Halt if:
+- `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` status is not `answered`.
+- The answer is ambiguous, outside the option set without clear interpretation, or requests unauthorized real-data implementation.
+
+## Checkpoint 004
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP004
+- Checkpoint status: complete
+- Commit before: 0e8695e
+- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+
+## Current Phase
+Fresh-session resume completed; HDI-012-001 applied.
+
+## Objective Progress
+The resume session read the mission envelope, implementation plan, state file, checkpoints file, interrupt JSON, and current repository state before continuation. HDI-012-001 was applied as `option_a`, shaping design evidence and Mission 013+ research priority around a future file-based Garmin export/import bridge. No real-data behavior or implementation authority was added, and no plan delta was required.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`
+
+## Commands Run Since Last Checkpoint
+- `pwd && rg --files -g '*012*' -g '*mission*' -g '*Mission*' -g '*checkpoint*' -g '*interrupt*' -g '*state*'`
+- `git status --short --branch`
+- `find . -maxdepth 4 -type f \( -iname '*012*' -o -iname '*mission*' -o -iname '*checkpoint*' -o -iname '*interrupt*' -o -iname '*state*' \) | sed 's#^./##' | sort`
+- `sed -n '1,260p' .factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`
+- `sed -n '1,260p' .factory-v3/evidence/MISSION_012_STATE.md`
+- `sed -n '1,320p' .factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+- `cat .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`
+- `git log --oneline --decorate -8 && git status --short && git diff --stat && git diff -- . ':(exclude).factory-v3/.DS_Store'`
+- `sed -n '321,620p' .factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+- `git show --stat --oneline --name-only 0e8695e`
+- `sed -n '1,320p' .factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md`
+- `git diff 5820c31..0e8695e -- .factory-v3/evidence/MISSION_012_STATE.md .factory-v3/evidence/MISSION_012_CHECKPOINTS.md .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`
+- `sed -n '1,240p' .factory-v3/templates/V3_HUMAN_DECISION_INTERRUPT_TEMPLATE.json`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json >/dev/null && echo PASS`
+- `git rev-parse --short HEAD && git status --short --branch && git diff --stat`
+- `rg -n "manual_import|import session|rollback|review|preview|commit" ppos_core tests scripts workbench fixtures/manual_exports`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json` | PASS before applied update | Interrupt JSON parsed after answer recording. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate from authored-artifact reads, repository-state inspection, and source orientation.
+- Tool-call count since last checkpoint: 16, counting wrapped subcalls and file-edit operations through resume evidence update.
+- Wall-clock time since last checkpoint: approximately 15 minutes from fresh-session request intake through resume evidence update.
+- Context/buffer concern: none for the review/rollback implementation checkpoint.
+- Stop threshold reached: NO
+
+## Open Risks
+- Checkpoint 004 commit-after hash must be resolved in the next checkpoint from git log.
+- Source implementation must preserve synthetic-only boundaries and non-destructive audit history.
+
+## Pending Human Decisions
+- None.
+
+## Plan Delta References
+- None. Applying `option_a` did not change approved mission scope.
+
+## Next Planned Action
+Implement the synthetic review/rollback model, starting with SQLite migration and storage behavior.

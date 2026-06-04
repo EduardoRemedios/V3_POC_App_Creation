@@ -54,12 +54,13 @@ Do not use Factory V2, real exports, credentials, package installation, live API
 ## Checkpoint Cadence
 - M012-CP001: mission plan authored.
 - M012-CP002: HDI-012-001 asked and mission paused.
-- M012-CP003: fresh-session resume completed after sponsor answer.
-- M012-CP004: review/rollback implementation completed.
-- M012-CP005: persistence/API completed.
-- M012-CP006: workbench UI completed.
-- M012-CP007: verification and Browser QA completed.
-- M012-CP008: final closeout completed.
+- M012-CP003: bridge answer recorded while still paused for fresh-session resume.
+- M012-CP004: fresh-session resume completed after sponsor answer.
+- M012-CP005: review/rollback implementation completed.
+- M012-CP006: persistence/API completed.
+- M012-CP007: workbench UI completed.
+- M012-CP008: verification and Browser QA completed.
+- M012-CP009: final closeout completed.
 
 ## Plan Delta Rule
 If the sponsor answer changes mission scope, create `.factory-v3/evidence/MISSION_012_PLAN_DELTA_001.md` before implementation proceeds. If no scope change is required, record why no delta was required in the interrupt and mission record.
