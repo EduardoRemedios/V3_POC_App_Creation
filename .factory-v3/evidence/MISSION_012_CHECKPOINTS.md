@@ -451,7 +451,7 @@ Run full unit verification, Mission 012 QA harness, Mission 012 verifier, JSON c
 - Checkpoint ID: M012-CP008
 - Checkpoint status: complete
 - Commit before: f0408b3
-- Commit after: pending until the final closeout commit is created; the final checkpoint must resolve this hash from git log.
+- Commit after: c691891
 
 ## Current Phase
 Verification and Browser QA completed.
@@ -511,3 +511,54 @@ Mission 012 verification harnesses and design evidence were added. Full unit tes
 
 ## Next Planned Action
 Write Mission 012 record and closeout, run `scripts/verify_mission_012.py`, then commit final closeout.
+
+## Checkpoint 009
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP009
+- Checkpoint status: complete
+- Commit before: c691891
+- Commit after: pending at closeout authoring time; final response records the successful closeout commit hash.
+
+## Current Phase
+Final closeout authored.
+
+## Objective Progress
+Mission record and closeout were authored with interrupt lifecycle, resume evidence, budget summary, checkpoint commits, scope discipline, verification summary, and recommended Mission 013.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_012_RECORD.json`
+- `.factory-v3/evidence/MISSION_012_CLOSEOUT.md`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `git log --oneline -12`
+- `git status --short --branch`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json | sed -n '1,180p'`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_012_RECORD.json` | PASS | Record JSON parses. |
+| `python3 -B scripts/verify_mission_012.py` | PASS | 71 verification checks passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on final record/closeout synthesis and pending verifier.
+- Tool-call count since last checkpoint: 6, counting git state reads, audit read, final record/closeout edit, JSON parse, verifier run, and final evidence update.
+- Wall-clock time since last checkpoint: approximately 20 minutes from checkpoint 008 commit through final verifier.
+- Context/buffer concern: none for final verifier and commit.
+- Stop threshold reached: NO
+
+## Open Risks
+- The final closeout commit hash cannot be embedded in the same commit without a follow-up hash-only commit. The final response records the closeout commit hash after it succeeds.
+
+## Pending Human Decisions
+- None.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Commit final closeout.

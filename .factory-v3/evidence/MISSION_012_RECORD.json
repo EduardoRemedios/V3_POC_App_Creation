@@ -1,0 +1,186 @@
+{
+  "record": {
+    "schema_version": "v0.1-poc-standalone",
+    "record_type": "factory_v3_poc_mission_record",
+    "profile_id": "V3-POC-STANDALONE",
+    "decision_state": "completed_with_v3",
+    "created_date": "2026-06-04",
+    "mission_reference": ".factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md",
+    "closeout_reference": ".factory-v3/evidence/MISSION_012_CLOSEOUT.md",
+    "v3_only": true,
+    "factory_v2_used": false
+  },
+  "mission": {
+    "repository": "V3_POC_App_Creation",
+    "branch": "main",
+    "commit_before": "d3cefe6",
+    "commit_after": "pending_final_closeout_commit",
+    "coding_harness": "Codex",
+    "objective": "Harden the synthetic manual-import lab into an operator review workflow with raw/normalized diff, commit rollback, review states, and a structured real-data bridge decision interrupt.",
+    "deployment_target": "local_only",
+    "data_mode": "synthetic"
+  },
+  "authority": {
+    "authorized_files": [
+      ".factory-v3/evidence/MISSION_012_*",
+      "ppos_core/manual_imports.py",
+      "ppos_core/migrations/004_mission_012.sql",
+      "ppos_core/storage.py",
+      "ppos_core/api.py",
+      "ppos_core/workbench.py",
+      "workbench/index.html",
+      "workbench/app.js",
+      "workbench/styles.css",
+      "scripts/mission_012_review_rollback_qa.py",
+      "scripts/verify_mission_012.py",
+      "tests/test_mission_012_review_workflow.py",
+      "tests/test_mission_012_rollback.py",
+      "tests/test_mission_012_api.py",
+      "tests/test_mission_012_workbench.py"
+    ],
+    "forbidden_scope": [
+      "Factory V2",
+      "real data",
+      "credentials",
+      "live third-party integration",
+      "package installation",
+      "public deployment"
+    ],
+    "allowed_commands": [
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790",
+      "python3 -B scripts/verify_mission_012.py",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_012_RECORD.json",
+      "python3 -B -m ppos_core.api --db /tmp/ppos_mission_012_browser.sqlite --host 127.0.0.1 --port 8790"
+    ],
+    "dependency_policy": "New dependencies allowed: NO",
+    "approved_dependencies": []
+  },
+  "execution": {
+    "files_changed": [
+      ".factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_012_BROWSER_NOTES.md",
+      ".factory-v3/evidence/MISSION_012_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_012_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md",
+      ".factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json",
+      ".factory-v3/evidence/MISSION_012_REAL_DATA_APPROVAL_DESIGN.md",
+      ".factory-v3/evidence/MISSION_012_RECORD.json",
+      ".factory-v3/evidence/MISSION_012_STATE.md",
+      "ppos_core/migrations/004_mission_012.sql",
+      "ppos_core/storage.py",
+      "ppos_core/api.py",
+      "ppos_core/workbench.py",
+      "workbench/index.html",
+      "workbench/app.js",
+      "workbench/styles.css",
+      "scripts/mission_012_review_rollback_qa.py",
+      "scripts/verify_mission_012.py",
+      "tests/test_mission_012_review_workflow.py",
+      "tests/test_mission_012_rollback.py",
+      "tests/test_mission_012_api.py",
+      "tests/test_mission_012_workbench.py"
+    ],
+    "commands_run": [
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_012_RECORD.json",
+      "python3 -B scripts/verify_mission_012.py"
+    ],
+    "verification": {
+      "commands": [
+        {
+          "command": "python3 -B -m unittest discover -s tests",
+          "result": "pass",
+          "summary": "157 tests passed"
+        },
+        {
+          "command": "python3 -B scripts/mission_012_review_rollback_qa.py --db /tmp/ppos_mission_012_qa.sqlite --host 127.0.0.1 --port 8790",
+          "result": "pass",
+          "summary": "Audit summary status pass; review, reviewed commit, rollback, diff, and audit checks passed"
+        },
+        {
+          "command": "Browser QA",
+          "result": "pass",
+          "summary": "Desktop and responsive import review/rollback flows passed with no runtime or console errors"
+        }
+      ],
+      "result": "pass",
+      "summary": "Mission 012 app behavior, evidence, interrupt lifecycle, and synthetic-only boundaries verified."
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "found": false,
+      "description": ""
+    }
+  },
+  "adaptive_mission_control": {
+    "checkpoints": [
+      "M012-CP001",
+      "M012-CP002",
+      "M012-CP003",
+      "M012-CP004",
+      "M012-CP005",
+      "M012-CP006",
+      "M012-CP007",
+      "M012-CP008",
+      "M012-CP009"
+    ],
+    "mission_state_reference": ".factory-v3/evidence/MISSION_012_STATE.md",
+    "human_decision_interrupts": [
+      {
+        "interrupt_id": "HDI-012-001",
+        "status": "applied",
+        "selected_option_id": "option_a",
+        "reference": ".factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json"
+      }
+    ],
+    "plan_deltas": [],
+    "verification_side_effects": [
+      ".factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_012_BROWSER_NOTES.md"
+    ],
+    "git": {
+      "allowed": true,
+      "commands": [
+        "git add <authorized paths>",
+        "git commit -m \"Mission 012 checkpoint <NNN>: <summary>\"",
+        "git commit -m \"Mission 012 closeout\""
+      ],
+      "commit_before": "d3cefe6",
+      "commit_after": "pending_final_closeout_commit",
+      "remote_policy": "no push, pull, fetch, branch, merge, rebase, tag, reset, checkout, remote, or init",
+      "pushed": false
+    }
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "touched": true,
+      "mode": "research_only",
+      "approval_reference": "HDI-012-001 option_a design-only approval"
+    },
+    "hermes": {
+      "touched": false,
+      "mode": "not_used",
+      "surfaces": [],
+      "approval_reference": ""
+    }
+  },
+  "reviews": {
+    "scope_discipline": "pass",
+    "verification_quality": "pass",
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "Reviewed commit requires all rows to leave needs_clarification before commit.",
+      "Rollback is status-marker based with audit events, not destructive audit deletion.",
+      "Future Garmin work remains design/research only until a successor mission grants real-data authority."
+    ]
+  }
+}

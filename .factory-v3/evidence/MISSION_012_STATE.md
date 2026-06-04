@@ -5,10 +5,10 @@
 - Mission status: active
 
 ## Current Phase
-Verification harnesses, full tests, QA audit, Browser QA, and real-data approval design evidence completed. Final record and closeout remain pending.
+Final record, closeout, and Mission 012 verifier completed. Final closeout commit pending.
 
 ## Last Checkpoint
-Checkpoint 008: verification and Browser QA completed.
+Checkpoint 009: final closeout authored.
 
 ## Active Plan
 Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the authority granted by `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`.
@@ -40,9 +40,13 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Added Garmin manual export/import future approval design evidence.
 - Ran full unit suite, Mission 012 QA harness, JSON checks, and Browser QA.
 - Added Mission 012 audit summary and browser notes.
+- Checkpoint 008 committed as `c691891`.
+- Authored Mission 012 record and closeout.
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_RECORD.json`: PASS.
+- `python3 -B scripts/verify_mission_012.py`: PASS, 71 checks.
 
 ## Pending Phases
-- Final closeout and mission record.
+- Final closeout commit.
 
 ## Open Human Decision Interrupts
 - HDI-012-001 status: `applied`.
@@ -63,16 +67,18 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - `python3 -m json.tool .factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json`: PASS.
 - `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`: PASS.
 - Browser QA: PASS, recorded in `.factory-v3/evidence/MISSION_012_BROWSER_NOTES.md`.
+- `python3 -m json.tool .factory-v3/evidence/MISSION_012_RECORD.json`: PASS.
+- `python3 -B scripts/verify_mission_012.py`: PASS, 71 checks.
 
 ## Current Budget State
-- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on verification script authoring, full tests, Browser QA, and evidence updates.
-- Tool-call budget: 18 tool calls since checkpoint 007 commit, counting harness reads, script/design/browser-note edits, full tests, QA runs, JSON checks, browser setup/interactions, viewport check, screenshot capture, and server lifecycle.
-- Wall-clock time since last checkpoint: approximately 35 minutes from checkpoint 007 commit through verification and Browser QA evidence.
-- Context/buffer concern: manageable for final record, verifier run, and closeout checkpoint.
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on final record/closeout synthesis and pending verifier.
+- Tool-call budget: 6 tool calls since checkpoint 008 commit, counting git state reads, audit read, final record/closeout edit, JSON parse, verifier run, and final evidence update.
+- Wall-clock time since last checkpoint: approximately 20 minutes from checkpoint 008 commit through final verifier.
+- Context/buffer concern: none for final verifier and commit.
 - Stop threshold reached: NO
 
 ## Next Action
-Write Mission 012 record and closeout, run `scripts/verify_mission_012.py`, then commit final closeout.
+Commit final closeout.
 
 ## Reentry Rule
 Resume only from this state file, authored mission artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.
