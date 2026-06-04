@@ -285,7 +285,7 @@ Implement the synthetic review/rollback model, starting with SQLite migration an
 - Checkpoint ID: M012-CP005
 - Checkpoint status: complete
 - Commit before: ec020ac
-- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+- Commit after: 5c7330b
 
 ## Current Phase
 Review/rollback storage model implemented.
@@ -334,3 +334,52 @@ Manual import preview rows now persist operator review states (`accepted`, `reje
 
 ## Next Planned Action
 Wire review, reviewed commit, rollback, and audit provenance through API endpoints.
+
+## Checkpoint 006
+
+## Mission
+- Mission ID: MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION
+- Checkpoint ID: M012-CP006
+- Checkpoint status: complete
+- Commit before: 5c7330b
+- Commit after: pending until the immediately following checkpoint commit is created; the next checkpoint must resolve this hash from git log.
+
+## Current Phase
+Persistence/API changes implemented.
+
+## Objective Progress
+The local API now exposes Mission 012 manual-import review and rollback behavior through endpoints for row review, reviewed commit, and rollback. Targeted API tests verify successful row review, reviewed commit, reviewed-commit blocking when rows still need clarification, rollback status/provenance, and Mission 011 API compatibility.
+
+## Files Changed Since Last Checkpoint
+- `ppos_core/api.py`
+- `tests/test_mission_012_api.py`
+- `.factory-v3/evidence/MISSION_012_STATE.md`
+- `.factory-v3/evidence/MISSION_012_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `python3 -B -m unittest tests.test_mission_011_api tests.test_mission_011_manual_imports tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -B -m unittest tests.test_mission_011_api tests.test_mission_011_manual_imports tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback` | PASS | 14 tests passed. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on authored evidence, storage/API implementation, and targeted tests.
+- Tool-call count since last checkpoint: 5, counting API edits, test creation, targeted test execution, and evidence update.
+- Wall-clock time since last checkpoint: approximately 10 minutes from checkpoint 005 commit through API test verification.
+- Context/buffer concern: manageable for workbench UI checkpoint and focused verification.
+- Stop threshold reached: NO
+
+## Open Risks
+- Workbench UI still needs side-by-side diff, review controls, rollback action, and audit provenance rendering.
+- Checkpoint 006 commit-after hash must be resolved in the next checkpoint from git log.
+
+## Pending Human Decisions
+- None.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Wire side-by-side raw/normalized diff, review controls, reviewed commit, rollback, and audit provenance into the workbench UI.

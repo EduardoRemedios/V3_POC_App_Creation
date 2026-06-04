@@ -5,10 +5,10 @@
 - Mission status: active
 
 ## Current Phase
-Review/rollback storage model implemented and targeted storage tests passing. API and workbench wiring remain pending.
+Persistence/API changes implemented and targeted API/storage tests passing. Workbench UI wiring remains pending.
 
 ## Last Checkpoint
-Checkpoint 005: review/rollback model implemented.
+Checkpoint 006: persistence/API implemented.
 
 ## Active Plan
 Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the authority granted by `.factory-v3/missions/MISSION_012_SYNTHETIC_IMPORT_HARDENING_AND_REAL_DATA_BRIDGE_DECISION.md`.
@@ -28,9 +28,11 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 - Added Mission 012 migration for review state, rollback metadata, and manual-import audit events.
 - Added storage functions for row review, reviewed commit, and rollback.
 - Added Mission 012 review workflow and rollback unit tests.
+- Checkpoint 005 committed as `5c7330b`.
+- Added API endpoints for row review, reviewed commit, and rollback.
+- Added Mission 012 API tests.
 
 ## Pending Phases
-- Persistence/API changes.
 - Workbench UI changes.
 - Verification, Browser QA, and closeout.
 
@@ -46,16 +48,17 @@ Execute `.factory-v3/evidence/MISSION_012_IMPLEMENTATION_PLAN.md` within the aut
 ## Current Verification State
 - `python3 -m json.tool .factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json`: PASS after answer recording and before applied update; rerun required after applied update.
 - `python3 -B -m unittest tests.test_mission_011_manual_imports tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 9 tests.
+- `python3 -B -m unittest tests.test_mission_011_api tests.test_mission_011_manual_imports tests.test_mission_012_api tests.test_mission_012_review_workflow tests.test_mission_012_rollback`: PASS, 14 tests.
 
 ## Current Budget State
-- Token budget: no explicit numeric budget set by sponsor; approximate context use moderate-to-high based on authored evidence, source reads, storage implementation, and targeted tests.
-- Tool-call budget: 10 tool calls since checkpoint 004 commit, counting wrapped subcalls, source reads, file edits, and targeted test execution.
-- Wall-clock time since last checkpoint: approximately 20 minutes from checkpoint 004 commit through storage test verification.
-- Context/buffer concern: none for persistence/API checkpoint.
+- Token budget: no explicit numeric budget set by sponsor; approximate context use high based on authored evidence, storage/API implementation, and targeted tests.
+- Tool-call budget: 5 tool calls since checkpoint 005 commit, counting API edits, test creation, targeted test execution, and evidence update.
+- Wall-clock time since last checkpoint: approximately 10 minutes from checkpoint 005 commit through API test verification.
+- Context/buffer concern: manageable for workbench UI checkpoint and focused verification.
 - Stop threshold reached: NO
 
 ## Next Action
-Wire review, reviewed commit, rollback, and audit provenance through API endpoints.
+Wire side-by-side raw/normalized diff, review controls, reviewed commit, rollback, and audit provenance into the workbench UI.
 
 ## Reentry Rule
 Resume only from this state file, authored mission artifacts, current repository state, and the latest checkpoint. Halt if any derived summary conflicts with authored artifacts or disk state.

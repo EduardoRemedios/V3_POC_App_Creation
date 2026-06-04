@@ -43,12 +43,15 @@ from .storage import (
     list_source_records,
     manual_import_audit_summary,
     migrate,
+    commit_reviewed_manual_import,
     get_manual_export_detail,
     get_manual_import_conflicts,
     get_manual_import_mapping,
     get_manual_import_session,
     preview_manual_import,
+    rollback_manual_import,
     run_and_persist_workflow,
+    update_manual_import_row_review,
     validate_snapshot_payload,
 )
 from .workbench import bootstrap_payload
@@ -133,6 +136,23 @@ class WorkbenchAPI:
             if method == "POST" and parts == ["api", "manual-imports", "commit-synthetic"]:
                 export_id = _required(body, "export_id")
                 return 200, {"session": preview_manual_import(self.conn, export_id, commit=True)}
+            if method == "POST" and parts == ["api", "manual-imports", "review-row"]:
+                session_id = _required(body, "session_id")
+                row_index = int(_required(body, "row_index"))
+                review_state = _required(body, "review_state")
+                review_note = str((body or {}).get("review_note", ""))
+                return 200, {
+                    "session": update_manual_import_row_review(
+                        self.conn, session_id, row_index, review_state, review_note
+                    )
+                }
+            if method == "POST" and parts == ["api", "manual-imports", "commit-reviewed"]:
+                session_id = _required(body, "session_id")
+                return 200, {"session": commit_reviewed_manual_import(self.conn, session_id)}
+            if method == "POST" and parts == ["api", "manual-imports", "rollback"]:
+                session_id = _required(body, "session_id")
+                reason = str((body or {}).get("reason", ""))
+                return 200, {"session": rollback_manual_import(self.conn, session_id, reason)}
             if method == "GET" and parts == ["api", "manual-imports", "sessions"]:
                 return 200, {"sessions": list_manual_import_sessions(self.conn)}
             if method == "GET" and len(parts) == 4 and parts[:3] == ["api", "manual-imports", "sessions"]:
