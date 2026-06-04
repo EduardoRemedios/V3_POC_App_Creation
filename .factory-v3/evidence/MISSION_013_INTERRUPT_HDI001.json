@@ -1,7 +1,7 @@
 {
   "interrupt_id": "HDI-013-001",
   "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
-  "status": "asked",
+  "status": "applied",
   "decision_type": "product_decision",
   "question": "Which Garmin-shaped fixture families beyond the required activities, sleep, and body-composition families should Mission 013 include, and which default retention posture should the synthetic future-real-import approval UX present?",
   "context_summary": "Public Garmin documentation supports the required activity, sleep/wellness, and body-composition shape. It also publicly lists wellness domains such as HRV, stress, respiration, Body Battery, pulse ox, steps, calories, and heart rate. Mission 013 remains synthetic-only and does not enable real imports.",
@@ -34,18 +34,18 @@
     "message_reference": "Mission 013 ChatGPT thread; sponsor asked to answer from phone via Codex mobile app if possible."
   },
   "answer": {
-    "answered": false,
-    "answered_at": "not_recorded",
-    "answered_by": "not_recorded",
-    "answer_text": "",
-    "selected_option_id": "",
-    "interpretation": "",
-    "confidence": "not_recorded"
+    "answered": true,
+    "answered_at": "2026-06-04Ttime-not-recorded",
+    "answered_by": "Eduardo dos Remedios",
+    "answer_text": "option_a, answered from phone via Codex mobile thread",
+    "selected_option_id": "option_a",
+    "interpretation": "Add a compact wellness/HRV/stress Garmin-shaped synthetic fixture family beyond required activities, sleep, and body composition. Present `keep-raw-until-verified` as the default retention posture in the synthetic future-real-import approval UX.",
+    "confidence": "high"
   },
   "mission_delta": {
     "required": false,
     "delta_reference": "",
-    "summary": "No answer received yet."
+    "summary": "No plan delta required. The sponsor selected the recommended option and did not expand beyond the approved Mission 013 envelope."
   },
-  "continuation_decision": "not_decided"
+  "continuation_decision": "continue"
 }

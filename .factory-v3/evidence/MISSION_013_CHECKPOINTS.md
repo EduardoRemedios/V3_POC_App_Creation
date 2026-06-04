@@ -165,7 +165,7 @@ Halt if:
 - Checkpoint ID: M013-CP003
 - Checkpoint status: complete
 - Commit before: fcb585c
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: 18005d7
 
 ## Current Phase
 HDI-013-001 asked.
@@ -234,3 +234,94 @@ Resume from:
 Halt if:
 - HDI-013-001 remains unanswered and fixture creation is the next required action.
 - The answer is ambiguous after one sharper re-ask, requests unauthorized real data, or requires scope outside the Mission 013 envelope.
+
+## Checkpoint 004
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP004
+- Checkpoint status: complete
+- Commit before: 18005d7
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+HDI-013-001 applied; Garmin fixture pack built.
+
+## Objective Progress
+The sponsor answered HDI-013-001 with `option_a` from the phone via Codex mobile thread. The interrupt JSON now records status `applied`, the verbatim answer, selected option, interpretation, high confidence, and no plan delta required. The Garmin fixture pack was created under `fixtures/garmin_exports/` with required activities, sleep, and body-composition families plus the selected wellness/HRV/stress family. Each required family has clean and edge cases, and the pack includes duplicates, timezone boundary, unit conflicts, missing fields, and malformed rows. All fixtures carry synthetic labels and the manifest records `keep-raw-until-verified` as the selected retention default.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `fixtures/garmin_exports/manifest.json`
+- `fixtures/garmin_exports/activities_clean.csv`
+- `fixtures/garmin_exports/activities_edge.csv`
+- `fixtures/garmin_exports/sleep_clean.json`
+- `fixtures/garmin_exports/sleep_edge.json`
+- `fixtures/garmin_exports/body_composition_clean.csv`
+- `fixtures/garmin_exports/body_composition_edge.csv`
+- `fixtures/garmin_exports/wellness_hrv_stress.json`
+- `ppos_core/garmin_bridge.py`
+- `ppos_core/manual_imports.py`
+
+## Commands Run Since Last Checkpoint
+- Sponsor answer received in-thread: `option_a, answered from phone via Codex mobile thread`
+- `sed -n '1,240p' tests/test_mission_011_manual_imports.py`
+- `sed -n '1,220p' tests/test_mission_012_review_workflow.py`
+- `sed -n '1,220p' fixtures/manual_exports/manifest.json`
+- `sed -n '1,220p' ppos_core/schema.py`
+- `sed -n '1,220p' ppos_core/workbench.py`
+- `rg -n "def _persist_manual_import_preview|def _manual_session_row|manual_import_sessions" ppos_core/storage.py ppos_core/migrations/003_mission_011.sql`
+- `sed -n '1,140p' ppos_core/migrations/003_mission_011.sql`
+- `sed -n '748,940p' ppos_core/storage.py`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `python3 -m json.tool fixtures/garmin_exports/manifest.json`
+- `python3 -m json.tool fixtures/garmin_exports/sleep_clean.json`
+- `python3 -m json.tool fixtures/garmin_exports/sleep_edge.json`
+- `python3 -m json.tool fixtures/garmin_exports/wellness_hrv_stress.json`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `python3 -m json.tool .factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json` | PASS | HDI-013-001 parses with status `applied`. |
+| `python3 -m json.tool fixtures/garmin_exports/manifest.json` | PASS | Garmin fixture manifest parses. |
+| `python3 -m json.tool fixtures/garmin_exports/sleep_clean.json` | PASS | Sleep clean JSON fixture parses. |
+| `python3 -m json.tool fixtures/garmin_exports/sleep_edge.json` | PASS | Sleep edge JSON fixture parses. |
+| `python3 -m json.tool fixtures/garmin_exports/wellness_hrv_stress.json` | PASS | Wellness/HRV/stress JSON fixture parses. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is moderate-to-high from fixture and parser authoring.
+- Tool-call count since last checkpoint: 16, counting wrapped subcalls, file-edit operations, and JSON parse checks.
+- Wall-clock time since last checkpoint: approximately 30 minutes from checkpoint 003 commit through HDI application, fixture creation, parser integration, and parse checks.
+- Context/buffer concern: manageable for the next adapter preview/review checkpoint, but implementation scope is now substantial enough that checkpoint discipline should stay tight.
+- Stop threshold reached: NO
+
+## Open Risks
+- `ppos_core/garmin_bridge.py` has not yet been exercised by unit tests; the next checkpoint must validate preview contracts and review persistence.
+- The legacy manual export validator was intentionally kept stable for Mission 011 assertions while the catalog can include Garmin exports; Mission 013 tests should cover that split.
+- Checkpoint `commit_after` is pending until the checkpoint commit exists; a later checkpoint will resolve it from `git log --oneline -n 20`.
+
+## Pending Human Decisions
+- HDI-013-002 remains pending for materialization conflict strategy.
+
+## Plan Delta References
+- None. HDI-013-001 selected the recommended option and stayed inside approved scope.
+
+## Next Planned Action
+Add Mission 013 fixture/adapter tests and verify Garmin-shaped synthetic exports parse through preview, review-state mutation, and reviewed commit.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/missions/MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS.md`
+- `.factory-v3/evidence/MISSION_013_IMPLEMENTATION_PLAN.md`
+- `.factory-v3/evidence/MISSION_013_GARMIN_EXPORT_SHAPE_RESEARCH.md`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+- `.factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json`
+- `fixtures/garmin_exports/manifest.json`
+- `ppos_core/garmin_bridge.py`
+- current repository state
+
+Halt if:
+- Garmin preview/review integration cannot proceed without real export files, package installation, Factory V2, Factory_V3 tooling, or unauthorized commands.

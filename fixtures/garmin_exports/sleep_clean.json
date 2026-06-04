@@ -1,0 +1,32 @@
+{
+  "schema_version": "mission_013_garmin_sleep_v1",
+  "synthetic_only": true,
+  "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+  "records": [
+    {
+      "record_id": "gs_clean_001",
+      "local_date": "2026-02-03",
+      "sleep_start": "2026-02-02T22:46:00+00:00",
+      "sleep_end": "2026-02-03T06:34:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 7.8,
+      "sleep_score": 84,
+      "hrv_rmssd_ms": 54,
+      "resting_hr_bpm": 49,
+      "respiration_avg_brpm": 13.4
+    },
+    {
+      "record_id": "gs_clean_002",
+      "local_date": "2026-02-04",
+      "sleep_start": "2026-02-03T23:05:00+00:00",
+      "sleep_end": "2026-02-04T06:48:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 7.72,
+      "sleep_score": 81,
+      "hrv_rmssd_ms": 51,
+      "resting_hr_bpm": 50,
+      "respiration_avg_brpm": 13.9
+    }
+  ]
+}
+

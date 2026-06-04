@@ -1,0 +1,44 @@
+{
+  "schema_version": "mission_013_garmin_wellness_v1",
+  "synthetic_only": true,
+  "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+  "records": [
+    {
+      "record_id": "gw_001",
+      "measured_at": "2026-02-03T06:35:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "hrv_rmssd_ms": 54,
+      "stress_avg": 22,
+      "body_battery": 78,
+      "resting_hr_bpm": 49
+    },
+    {
+      "record_id": "gw_002",
+      "measured_at": "2026-02-04T06:50:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "hrv_rmssd_ms": 51,
+      "stress_avg": 28,
+      "body_battery": 73,
+      "resting_hr_bpm": 50
+    },
+    {
+      "record_id": "gw_003",
+      "measured_at": "2026-02-05T00:03:00+00:00",
+      "timezone": "UTC",
+      "hrv_rmssd_ms": 45,
+      "stress_avg": 39,
+      "body_battery": 61,
+      "resting_hr_bpm": 54
+    },
+    {
+      "record_id": "gw_004",
+      "measured_at": "2026-02-06T06:44:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "hrv_rmssd_ms": "not_a_number",
+      "stress_avg": 48,
+      "body_battery": 52,
+      "resting_hr_bpm": 58
+    }
+  ]
+}
+

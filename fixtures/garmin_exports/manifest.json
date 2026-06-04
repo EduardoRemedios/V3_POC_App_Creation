@@ -1,0 +1,85 @@
+{
+  "schema_version": "mission_013_garmin_exports_v1",
+  "synthetic_only": true,
+  "source_label": "synthetic_garmin_manual_export",
+  "hdi_selection": {
+    "interrupt_id": "HDI-013-001",
+    "selected_option_id": "option_a",
+    "optional_families": ["wellness_hrv_stress"],
+    "default_retention_posture": "keep-raw-until-verified"
+  },
+  "description": "Garmin-shaped synthetic manual export fixtures. No real Garmin files, no account data, no public sample exports.",
+  "exports": [
+    {
+      "export_id": "garmin_activities_clean_csv",
+      "adapter_id": "garmin_bridge_activities_csv",
+      "path": "fixtures/garmin_exports/activities_clean.csv",
+      "family": "activities",
+      "case_type": "clean",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["activity_summary", "fit_tcx_csv_shape", "training_load"],
+      "expected": {"preview_rows": 3, "validation_errors": 0, "validation_warnings": 0, "duplicates": 0}
+    },
+    {
+      "export_id": "garmin_activities_edge_csv",
+      "adapter_id": "garmin_bridge_activities_csv",
+      "path": "fixtures/garmin_exports/activities_edge.csv",
+      "family": "activities",
+      "case_type": "edge",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["duplicate_detection", "timezone_boundary", "missing_required_field", "malformed_numeric"],
+      "expected": {"preview_rows": 5, "validation_errors": 2, "validation_warnings": 2, "duplicates": 1}
+    },
+    {
+      "export_id": "garmin_sleep_clean_json",
+      "adapter_id": "garmin_bridge_sleep_json",
+      "path": "fixtures/garmin_exports/sleep_clean.json",
+      "family": "sleep",
+      "case_type": "clean",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["sleep_window", "local_date", "recovery"],
+      "expected": {"preview_rows": 2, "validation_errors": 0, "validation_warnings": 0, "duplicates": 0}
+    },
+    {
+      "export_id": "garmin_sleep_edge_json",
+      "adapter_id": "garmin_bridge_sleep_json",
+      "path": "fixtures/garmin_exports/sleep_edge.json",
+      "family": "sleep",
+      "case_type": "edge",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["duplicate_detection", "timezone_boundary", "missing_required_field", "malformed_numeric"],
+      "expected": {"preview_rows": 4, "validation_errors": 2, "validation_warnings": 2, "duplicates": 1}
+    },
+    {
+      "export_id": "garmin_body_composition_clean_csv",
+      "adapter_id": "garmin_bridge_body_composition_csv",
+      "path": "fixtures/garmin_exports/body_composition_clean.csv",
+      "family": "body_composition",
+      "case_type": "clean",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["index_scale_shape", "unit_normalization"],
+      "expected": {"preview_rows": 3, "validation_errors": 0, "validation_warnings": 1, "duplicates": 0}
+    },
+    {
+      "export_id": "garmin_body_composition_edge_csv",
+      "adapter_id": "garmin_bridge_body_composition_csv",
+      "path": "fixtures/garmin_exports/body_composition_edge.csv",
+      "family": "body_composition",
+      "case_type": "edge",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["unit_conflict", "missing_required_field", "malformed_numeric"],
+      "expected": {"preview_rows": 4, "validation_errors": 2, "validation_warnings": 3, "duplicates": 0}
+    },
+    {
+      "export_id": "garmin_wellness_hrv_stress_json",
+      "adapter_id": "garmin_bridge_wellness_json",
+      "path": "fixtures/garmin_exports/wellness_hrv_stress.json",
+      "family": "wellness_hrv_stress",
+      "case_type": "option_a",
+      "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+      "risk_tags": ["hrv", "stress", "body_battery", "optional_family"],
+      "expected": {"preview_rows": 4, "validation_errors": 1, "validation_warnings": 1, "duplicates": 0}
+    }
+  ]
+}
+

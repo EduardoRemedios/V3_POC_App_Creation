@@ -10,6 +10,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from .garmin_bridge import (
+    garmin_adapter_catalog,
+    garmin_export_catalog,
+    get_garmin_export,
+    is_garmin_export,
+    preview_garmin_export,
+)
+
 
 MANUAL_EXPORT_ROOT = Path("fixtures/manual_exports")
 MANIFEST_PATH = MANUAL_EXPORT_ROOT / "manifest.json"
@@ -71,7 +79,7 @@ ADAPTERS: dict[str, Adapter] = {
 
 
 def adapter_catalog() -> list[dict[str, Any]]:
-    return [
+    legacy = [
         {
             "adapter_id": adapter.adapter_id,
             "label": adapter.label,
@@ -83,6 +91,7 @@ def adapter_catalog() -> list[dict[str, Any]]:
         }
         for adapter in ADAPTERS.values()
     ]
+    return legacy + garmin_adapter_catalog()
 
 
 def load_manual_export_manifest() -> dict[str, Any]:
@@ -101,17 +110,21 @@ def manual_export_catalog() -> list[dict[str, Any]]:
                 "sha256": file_sha256(path) if path.exists() else None,
             }
         )
-    return exports
+    return exports + garmin_export_catalog()
 
 
 def get_manual_export(export_id: str) -> dict[str, Any]:
-    for entry in manual_export_catalog():
+    for entry in _legacy_manual_export_catalog():
         if entry["export_id"] == export_id:
             return entry
+    if is_garmin_export(export_id):
+        return get_garmin_export(export_id)
     raise KeyError(f"manual export not found: {export_id}")
 
 
 def preview_manual_export(export_id: str) -> dict[str, Any]:
+    if is_garmin_export(export_id):
+        return preview_garmin_export(export_id)
     export = get_manual_export(export_id)
     adapter = ADAPTERS[export["adapter_id"]]
     path = Path(export["path"])
@@ -174,6 +187,21 @@ def validate_manual_export_manifest() -> dict[str, Any]:
         "adapter_count": len(ADAPTERS),
         "synthetic_only": manifest.get("synthetic_only") is True,
     }
+
+
+def _legacy_manual_export_catalog() -> list[dict[str, Any]]:
+    manifest = load_manual_export_manifest()
+    exports = []
+    for entry in manifest["exports"]:
+        path = Path(entry["path"])
+        exports.append(
+            {
+                **entry,
+                "exists": path.exists(),
+                "sha256": file_sha256(path) if path.exists() else None,
+            }
+        )
+    return exports
 
 
 def session_id(export_id: str) -> str:

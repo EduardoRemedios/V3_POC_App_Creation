@@ -1,0 +1,6 @@
+synthetic_label,record_id,measured_at,timezone,weight_kg,weight_lb,body_fat_percent,muscle_mass_kg,bone_mass_kg,unit_system
+SYNTHETIC_MISSION_013_GARMIN_SHAPE,gb_edge_001,2026-02-06T06:35:00+00:00,Atlantic/Canary,78.0,185.0,15.9,60.8,3.2,mixed
+SYNTHETIC_MISSION_013_GARMIN_SHAPE,gb_edge_002,,Atlantic/Canary,77.9,,15.8,60.8,3.2,metric
+SYNTHETIC_MISSION_013_GARMIN_SHAPE,gb_edge_003,2026-02-07T06:32:00+00:00,UTC,not_a_number,,15.7,60.7,3.2,metric
+SYNTHETIC_MISSION_013_GARMIN_SHAPE,gb_edge_004,2026-02-08T06:28:00+00:00,Atlantic/Canary,,171.2,15.5,60.6,3.2,imperial
+

@@ -1,0 +1,56 @@
+{
+  "schema_version": "mission_013_garmin_sleep_v1",
+  "synthetic_only": true,
+  "synthetic_label": "SYNTHETIC_MISSION_013_GARMIN_SHAPE",
+  "records": [
+    {
+      "record_id": "gs_edge_001",
+      "local_date": "2026-02-06",
+      "sleep_start": "2026-02-05T23:20:00+00:00",
+      "sleep_end": "2026-02-06T06:10:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 6.83,
+      "sleep_score": 72,
+      "hrv_rmssd_ms": 42,
+      "resting_hr_bpm": 55,
+      "respiration_avg_brpm": 14.2
+    },
+    {
+      "record_id": "gs_edge_002",
+      "local_date": "2026-02-06",
+      "sleep_start": "2026-02-05T23:20:00+00:00",
+      "sleep_end": "2026-02-06T06:10:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": 6.83,
+      "sleep_score": 72,
+      "hrv_rmssd_ms": 42,
+      "resting_hr_bpm": 55,
+      "respiration_avg_brpm": 14.2
+    },
+    {
+      "record_id": "gs_edge_003",
+      "local_date": "2026-02-07",
+      "sleep_start": "2026-02-07T00:05:00+00:00",
+      "sleep_end": "2026-02-07T06:20:00+00:00",
+      "timezone": "UTC",
+      "sleep_hours": 6.25,
+      "sleep_score": 67,
+      "hrv_rmssd_ms": 39,
+      "resting_hr_bpm": 58,
+      "respiration_avg_brpm": 15.1
+    },
+    {
+      "record_id": "gs_edge_004",
+      "local_date": "2026-02-08",
+      "sleep_start": "",
+      "sleep_end": "2026-02-08T06:35:00+00:00",
+      "timezone": "Atlantic/Canary",
+      "sleep_hours": "not_a_number",
+      "sleep_score": 60,
+      "hrv_rmssd_ms": 35,
+      "resting_hr_bpm": 61,
+      "respiration_avg_brpm": 15.4
+    }
+  ]
+}
+
