@@ -1,0 +1,86 @@
+{
+  "schema_version": "v0.1-poc-standalone",
+  "mission_id": "MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS",
+  "profile_id": "V3-POC-STANDALONE",
+  "decision": "COMPLETE",
+  "synthetic_only": true,
+  "v3_only": true,
+  "factory_v2_used": false,
+  "real_data_used": false,
+  "live_integrations_used": false,
+  "new_dependencies_used": false,
+  "objective_completed": true,
+  "interrupts": [
+    {
+      "interrupt_id": "HDI-013-001",
+      "status": "applied",
+      "surface": "codex-mobile-thread",
+      "answered_by": "Eduardo dos Remedios",
+      "answer_text": "option_a, answered from phone via Codex mobile thread",
+      "selected_option_id": "option_a",
+      "plan_delta_required": false
+    },
+    {
+      "interrupt_id": "HDI-013-002",
+      "status": "applied",
+      "surface": "codex-mobile-thread",
+      "answered_by": "Eduardo dos Remedios",
+      "answer_text": "option_b, answered from phone via Codex mobile thread.",
+      "selected_option_id": "option_b",
+      "plan_delta_required": false
+    }
+  ],
+  "resume_evidence": {
+    "required_resume_completed": true,
+    "boundary_checkpoint": "M013-CP007",
+    "boundary_commit": "9d43abd",
+    "fresh_resume_checkpoint": "M013-CP008",
+    "fresh_resume_commit": "89c282b",
+    "state_lists_exact_reads": true
+  },
+  "verification": {
+    "focused_mission_013_tests": "PASS: 13 tests",
+    "full_unittest_discover": "PASS: 170 tests",
+    "qa_script": "PASS: 17 checks",
+    "json_parse_checks": "PASS",
+    "browser_qa": "PASS desktop; responsive resize attempted but viewport stayed 1280x720",
+    "final_verifier": "pending until CP011 hash is resolved"
+  },
+  "budget": {
+    "mission_012_tool_call_baseline": 77,
+    "mission_012_wall_clock_minutes_baseline": 115,
+    "estimated_tool_calls_through_cp010": 205,
+    "estimated_wall_clock_minutes_through_cp010": 288,
+    "estimated_closeout_tool_calls": 24,
+    "estimated_closeout_wall_clock_minutes": 40,
+    "sizing_verdict": "exceeded roughly 2x Mission 012 without padding"
+  },
+  "checkpoint_commits": [
+    {"checkpoint": "M013-CP001", "commit": "7f6f8d1"},
+    {"checkpoint": "M013-CP002", "commit": "fcb585c"},
+    {"checkpoint": "M013-CP003", "commit": "18005d7"},
+    {"checkpoint": "M013-CP004", "commit": "94de7ba"},
+    {"checkpoint": "M013-CP005", "commit": "f0fa03f"},
+    {"checkpoint": "M013-CP006", "commit": "5248ee2"},
+    {"checkpoint": "M013-CP007", "commit": "9d43abd"},
+    {"checkpoint": "M013-CP008", "commit": "89c282b"},
+    {"checkpoint": "M013-CP009", "commit": "cbf8980"},
+    {"checkpoint": "M013-CP010", "commit": "afc34ef"},
+    {"checkpoint": "M013-CP011", "commit": "pending"}
+  ],
+  "adaptive_mission_control": {
+    "checkpoints_required": true,
+    "checkpoints_recorded": 11,
+    "mission_state_file": ".factory-v3/evidence/MISSION_013_STATE.md",
+    "human_decision_interrupts_allowed": true,
+    "human_decision_interrupts_required": ["HDI-013-001", "HDI-013-002"],
+    "human_decision_interrupts_applied": ["HDI-013-001", "HDI-013-002"],
+    "plan_delta_required_before_scope_change": true,
+    "plan_deltas_applied": [],
+    "cross_session_resume_required": true,
+    "cross_session_resume_completed": true,
+    "verification_side_effects_allowed": true,
+    "halt_rules_triggered": []
+  },
+  "recommended_mission_014": "Harden imported-fact query semantics, conflict drill-down, source precedence display, and disabled real-data approval checklist ergonomics."
+}

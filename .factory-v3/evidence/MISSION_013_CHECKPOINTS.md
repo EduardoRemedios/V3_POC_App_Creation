@@ -773,7 +773,7 @@ Halt if:
 - Checkpoint ID: M013-CP010
 - Checkpoint status: complete
 - Commit before: cbf8980
-- Commit after: pending until checkpoint commit hash is available
+- Commit after: afc34ef
 
 ## Current Phase
 Mission 013 QA script, stdlib verification, JSON checks, and Browser QA complete.
@@ -846,6 +846,70 @@ Resume from:
 - `.factory-v3/evidence/MISSION_013_BROWSER_NOTES.md`
 - `scripts/mission_013_bridge_qa.py`
 - `scripts/verify_mission_013.py`
+- current repository state
+
+Halt if:
+- Authored state conflicts with repository state.
+- Any final verification requires real data, real export files, Factory V2, Factory_V3 tooling, package installation, push/pull/fetch/merge/rebase/reset/checkout, or unauthorized files.
+
+## Checkpoint 011
+
+## Mission
+- Mission ID: MISSION_013_GARMIN_BRIDGE_SHAPE_MATERIALIZATION_AND_REMOTE_INTERRUPTS
+- Checkpoint ID: M013-CP011
+- Checkpoint status: complete
+- Commit before: afc34ef
+- Commit after: pending until checkpoint commit hash is available
+
+## Current Phase
+Final closeout authored.
+
+## Objective Progress
+Mission closeout and record were authored. The closeout records completion status, verification results, human decision interrupt lifecycle, resume evidence, budget comparison against Mission 012, checkpoint commits, long-mission friction observations, residual risks, and the recommended Mission 014. The record uses `schema_version: v0.1-poc-standalone` and includes the required `adaptive_mission_control` block.
+
+## Files Changed Since Last Checkpoint
+- `.factory-v3/evidence/MISSION_013_CLOSEOUT.md`
+- `.factory-v3/evidence/MISSION_013_RECORD.json`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
+
+## Commands Run Since Last Checkpoint
+- `sed -n '1,260p' .factory-v3/templates/V3_POC_CLOSEOUT_TEMPLATE.md`
+- `git log --oneline -n 15`
+- `git status --short --branch`
+- `python3 -m json.tool .factory-v3/evidence/MISSION_013_AUDIT_SUMMARY.json`
+
+## Verification Since Last Checkpoint
+| Command | Result | Evidence |
+| --- | --- | --- |
+| Closeout/record authored | pending_verifier | Final verifier will run after CP011 commit hash is resolved. |
+
+## Budget State
+- Token budget: no explicit numeric budget set by sponsor; qualitative context use is high but closeout is bounded.
+- Tool-call count since last checkpoint: 10, counting wrapped subcalls, closeout/record file edits, status/log/template reads, and checkpoint evidence edits.
+- Wall-clock time since last checkpoint: approximately 25 minutes from checkpoint 010 commit through closeout and record authoring.
+- Context/buffer concern: enough for CP011 commit, hash resolution, final verifier, and final closeout commit.
+- Stop threshold reached: NO
+
+## Open Risks
+- CP011 `commit_after` must be resolved after this checkpoint commit.
+- Final verifier has not yet run.
+
+## Pending Human Decisions
+- None. HDI-013-001 and HDI-013-002 are both applied.
+
+## Plan Delta References
+- None.
+
+## Next Planned Action
+Commit checkpoint 011, resolve its commit hash in checkpoints and record, run final verifier, and commit final closeout.
+
+## Reentry Instruction
+Resume from:
+- `.factory-v3/evidence/MISSION_013_CLOSEOUT.md`
+- `.factory-v3/evidence/MISSION_013_RECORD.json`
+- `.factory-v3/evidence/MISSION_013_STATE.md`
+- `.factory-v3/evidence/MISSION_013_CHECKPOINTS.md`
 - current repository state
 
 Halt if:
