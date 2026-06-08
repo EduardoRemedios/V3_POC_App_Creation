@@ -1,0 +1,198 @@
+{
+  "adaptive_mission_control": {
+    "checkpoints": [
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md#M016-CP001",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md#M016-CP002",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md#M016-CP003",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md#M016-CP004",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md#M016-CP005"
+    ],
+    "git": {
+      "allowed": true,
+      "commands": [
+        "git status --short",
+        "git rev-parse HEAD",
+        "git add .factory-v3/missions/MISSION_016_FAILED_VERIFICATION_RECOVERY.md .factory-v3/evidence/MISSION_016_STATE.md .factory-v3/evidence/MISSION_016_CHECKPOINTS.md .factory-v3/evidence/MISSION_016_CLOSEOUT.md .factory-v3/evidence/MISSION_016_RECORD.json fixtures/mission_016/recovery_gate.json scripts/verify_mission_016_recovery.py",
+        "git commit -m \"Record Mission 016 failed verification recovery evidence\"",
+        "git push origin main"
+      ],
+      "commit_before": "c48dd02ad1262ea74c72fa0f121e56f253f1c4e2",
+      "commit_after": "reported_after_commit",
+      "pushed": "reported_after_push",
+      "remote_policy": "origin main only"
+    },
+    "human_decision_interrupts": [],
+    "mission_state_reference": ".factory-v3/evidence/MISSION_016_STATE.md",
+    "plan_deltas": [],
+    "verification_side_effects": [
+      ".factory-v3/evidence/MISSION_016_STATE.md",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_016_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_016_RECORD.json",
+      "fixtures/mission_016/recovery_gate.json"
+    ]
+  },
+  "authority": {
+    "allowed_commands": [
+      "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "git status --short",
+      "git rev-parse HEAD",
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B scripts/verify_mission_016_recovery.py",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_016_RECORD.json",
+      "git diff --check",
+      "git add .factory-v3/missions/MISSION_016_FAILED_VERIFICATION_RECOVERY.md .factory-v3/evidence/MISSION_016_STATE.md .factory-v3/evidence/MISSION_016_CHECKPOINTS.md .factory-v3/evidence/MISSION_016_CLOSEOUT.md .factory-v3/evidence/MISSION_016_RECORD.json fixtures/mission_016/recovery_gate.json scripts/verify_mission_016_recovery.py",
+      "git commit -m \"Record Mission 016 failed verification recovery evidence\"",
+      "git push origin main"
+    ],
+    "approved_dependencies": [],
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_016_FAILED_VERIFICATION_RECOVERY.md",
+      ".factory-v3/evidence/MISSION_016_STATE.md",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_016_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_016_RECORD.json",
+      "fixtures/mission_016/recovery_gate.json",
+      "scripts/verify_mission_016_recovery.py"
+    ],
+    "dependency_policy": "No new dependencies.",
+    "forbidden_scope": [
+      "app source behavior change",
+      "production code refactor",
+      "database migration",
+      "real data",
+      "credentials or tokens",
+      "live integrations",
+      "new dependencies",
+      "deployment",
+      "Factory V2",
+      "Factory_V3 tooling for POC validation",
+      "recovery of Mission 015"
+    ],
+    "recovery_authorized": true,
+    "recovery_scope": [
+      "classify seeded verifier failure",
+      "correct fixtures/mission_016/recovery_gate.json only",
+      "re-run mission verifier",
+      "re-run full tests"
+    ]
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "approval_reference": "",
+      "mode": "not_used",
+      "touched": false
+    },
+    "hermes": {
+      "approval_reference": "",
+      "mode": "not_used",
+      "surfaces": [],
+      "touched": false
+    }
+  },
+  "execution": {
+    "commands_run": [
+      "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "git rev-parse HEAD",
+      "git status --short",
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B scripts/verify_mission_016_recovery.py",
+      "python3 -B scripts/verify_mission_016_recovery.py",
+      "python3 -B -m unittest discover -s tests",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_016_RECORD.json"
+    ],
+    "files_changed": [
+      ".factory-v3/missions/MISSION_016_FAILED_VERIFICATION_RECOVERY.md",
+      ".factory-v3/evidence/MISSION_016_STATE.md",
+      ".factory-v3/evidence/MISSION_016_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_016_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_016_RECORD.json",
+      "fixtures/mission_016/recovery_gate.json",
+      "scripts/verify_mission_016_recovery.py"
+    ],
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "recovery": {
+      "attempted": true,
+      "authorized_by": ".factory-v3/missions/MISSION_016_FAILED_VERIFICATION_RECOVERY.md",
+      "classification": "authorized_recovery_fixture_issue",
+      "failed_command": "python3 -B scripts/verify_mission_016_recovery.py",
+      "failed_exit_code": 1,
+      "recovery_file": "fixtures/mission_016/recovery_gate.json",
+      "result": "pass"
+    },
+    "standalone_gap": {
+      "description": "",
+      "found": false
+    },
+    "verification": {
+      "commands": [
+        {
+          "command": "python3 -B -m unittest discover -s tests",
+          "result": "pass",
+          "summary": "Baseline: 170 tests ran in 1.924s"
+        },
+        {
+          "command": "python3 -B scripts/verify_mission_016_recovery.py",
+          "exit_code": 1,
+          "result": "fail",
+          "summary": "Expected pre-recovery failure on recovery_gate and recovered_after_failure"
+        },
+        {
+          "command": "python3 -B scripts/verify_mission_016_recovery.py",
+          "result": "pass",
+          "summary": "Verifier passed after authorized fixture correction"
+        },
+        {
+          "command": "python3 -B -m unittest discover -s tests",
+          "result": "pass",
+          "summary": "Final: 170 tests ran in 2.694s"
+        },
+        {
+          "command": "python3 -m json.tool .factory-v3/evidence/MISSION_016_RECORD.json",
+          "result": "pass",
+          "summary": "Mission record parsed successfully"
+        }
+      ],
+      "result": "pass",
+      "summary": "Baseline passed, seeded verifier failed as expected, authorized fixture recovery passed, and final full tests passed."
+    }
+  },
+  "mission": {
+    "branch": "main",
+    "coding_harness": "Codex",
+    "commit_after": "reported_after_commit",
+    "commit_before": "c48dd02ad1262ea74c72fa0f121e56f253f1c4e2",
+    "data_mode": "synthetic",
+    "deployment_target": "not_applicable",
+    "objective": "Produce replayable standalone V3 evidence for authorized failed-verification recovery.",
+    "repository": "V3_POC_App_Creation"
+  },
+  "record": {
+    "closeout_reference": ".factory-v3/evidence/MISSION_016_CLOSEOUT.md",
+    "created_date": "2026-06-08",
+    "decision_state": "complete",
+    "factory_v2_used": false,
+    "live_integrations_used": false,
+    "mission_reference": ".factory-v3/missions/MISSION_016_FAILED_VERIFICATION_RECOVERY.md",
+    "new_dependencies_used": false,
+    "profile_id": "V3-POC-STANDALONE",
+    "real_data_used": false,
+    "record_type": "factory_v3_poc_mission_record",
+    "schema_version": "v0.1-poc-standalone",
+    "synthetic_only": true,
+    "v3_only": true
+  },
+  "reviews": {
+    "evidence_replay": "pass",
+    "mission_015_comparison": "Mission 015 halted because recovery was forbidden; Mission 016 recovered because a new envelope explicitly authorized one bounded recovery path.",
+    "operator_friction_notes": [
+      "Mission 014 draft and .DS_Store were pre-existing untracked items and were left untouched.",
+      "Commit hash is reported after commit because embedding the final commit hash in the same commit is not possible without a follow-up evidence commit."
+    ],
+    "scope_discipline": "pass",
+    "verification_quality": "pass"
+  }
+}

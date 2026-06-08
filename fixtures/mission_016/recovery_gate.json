@@ -1,0 +1,10 @@
+{
+  "mission_id": "MISSION_016_FAILED_VERIFICATION_RECOVERY",
+  "synthetic_only": true,
+  "real_data_used": false,
+  "live_integrations_used": false,
+  "new_dependencies_used": false,
+  "recovery_gate": "pass",
+  "recovered_after_failure": true,
+  "failure_classification": "authorized_recovery_fixture_issue"
+}
