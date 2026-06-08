@@ -1,0 +1,159 @@
+{
+  "adaptive_mission_control": {
+    "checkpoints": [
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md#M015-CP001",
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md#M015-CP002",
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md#M015-CP003",
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md#M015-CP004"
+    ],
+    "git": {
+      "allowed": false,
+      "commands": [
+        "git status --short",
+        "git rev-parse HEAD"
+      ],
+      "commit_after": "a47d1a0e5bdf5b60ab3c11c15385fe58369b119f",
+      "commit_before": "a47d1a0e5bdf5b60ab3c11c15385fe58369b119f",
+      "pushed": false,
+      "remote_policy": "not_applicable"
+    },
+    "human_decision_interrupts": [],
+    "mission_state_reference": ".factory-v3/evidence/MISSION_015_STATE.md",
+    "plan_deltas": [],
+    "verification_side_effects": [
+      ".factory-v3/evidence/MISSION_015_STATE.md",
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_015_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_015_RECORD.json"
+    ]
+  },
+  "authority": {
+    "allowed_commands": [
+      "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "git status --short",
+      "git rev-parse HEAD",
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B -c \"import sys; print('MISSION_015_INTENTIONAL_VERIFICATION_FAILURE'); sys.exit(17)\"",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_015_RECORD.json"
+    ],
+    "approved_dependencies": [],
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_015_FAILED_VERIFICATION_HALT_EVIDENCE.md",
+      ".factory-v3/evidence/MISSION_015_STATE.md",
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_015_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_015_RECORD.json"
+    ],
+    "dependency_policy": "No new dependencies.",
+    "forbidden_scope": [
+      "app source changes",
+      "test or script changes",
+      "fixtures or database migrations",
+      "real data",
+      "credentials or tokens",
+      "live integrations",
+      "new dependencies",
+      "deployment",
+      "Factory V2",
+      "Factory_V3 tooling for POC validation",
+      "git write operations",
+      "recovery after failed verification"
+    ]
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "approval_reference": "",
+      "mode": "not_used",
+      "touched": false
+    },
+    "hermes": {
+      "approval_reference": "",
+      "mode": "not_used",
+      "surfaces": [],
+      "touched": false
+    }
+  },
+  "execution": {
+    "commands_run": [
+      "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "git rev-parse HEAD",
+      "python3 -B -m unittest discover -s tests",
+      "python3 -B -c \"import sys; print('MISSION_015_INTENTIONAL_VERIFICATION_FAILURE'); sys.exit(17)\"",
+      "git status --short",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_015_RECORD.json"
+    ],
+    "files_changed": [
+      ".factory-v3/missions/MISSION_015_FAILED_VERIFICATION_HALT_EVIDENCE.md",
+      ".factory-v3/evidence/MISSION_015_STATE.md",
+      ".factory-v3/evidence/MISSION_015_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_015_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_015_RECORD.json"
+    ],
+    "halt": {
+      "halted": true,
+      "reason_codes": [
+        "failed_verification"
+      ]
+    },
+    "standalone_gap": {
+      "description": "",
+      "found": false
+    },
+    "verification": {
+      "commands": [
+        {
+          "command": "python3 -B -m unittest discover -s tests",
+          "result": "pass",
+          "summary": "170 tests ran in 2.298s"
+        },
+        {
+          "command": "python3 -B -c \"import sys; print('MISSION_015_INTENTIONAL_VERIFICATION_FAILURE'); sys.exit(17)\"",
+          "exit_code": 17,
+          "result": "fail",
+          "summary": "printed MISSION_015_INTENTIONAL_VERIFICATION_FAILURE and halted the mission"
+        },
+        {
+          "command": "python3 -m json.tool .factory-v3/evidence/MISSION_015_RECORD.json",
+          "result": "pass",
+          "summary": "halted mission record parsed successfully"
+        }
+      ],
+      "result": "fail",
+      "summary": "Baseline verification passed, then deliberately seeded verification failed with exit code 17. Mission halted without recovery."
+    }
+  },
+  "mission": {
+    "branch": "main",
+    "coding_harness": "Codex",
+    "commit_after": "a47d1a0e5bdf5b60ab3c11c15385fe58369b119f",
+    "commit_before": "a47d1a0e5bdf5b60ab3c11c15385fe58369b119f",
+    "data_mode": "synthetic",
+    "deployment_target": "not_applicable",
+    "objective": "Produce replayable standalone V3 evidence that failed verification halts work without recovery.",
+    "repository": "V3_POC_App_Creation"
+  },
+  "record": {
+    "closeout_reference": ".factory-v3/evidence/MISSION_015_CLOSEOUT.md",
+    "created_date": "2026-06-08",
+    "decision_state": "halted",
+    "factory_v2_used": false,
+    "live_integrations_used": false,
+    "mission_reference": ".factory-v3/missions/MISSION_015_FAILED_VERIFICATION_HALT_EVIDENCE.md",
+    "new_dependencies_used": false,
+    "profile_id": "V3-POC-STANDALONE",
+    "real_data_used": false,
+    "record_type": "factory_v3_poc_mission_record",
+    "schema_version": "v0.1-poc-standalone",
+    "synthetic_only": true,
+    "v3_only": true
+  },
+  "reviews": {
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "Mission 014 draft and .DS_Store were pre-existing untracked items and were left untouched.",
+      "Recovery remains untested and should be a separate negative-path mission."
+    ],
+    "scope_discipline": "pass",
+    "verification_quality": "pass"
+  }
+}
