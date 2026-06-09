@@ -1,0 +1,164 @@
+{
+  "eval": {
+    "schema_version": "v0.1-poc-eval",
+    "status": "ASSISTANT_RECOMMENDATION_PENDING_SPONSOR_APPROVAL",
+    "scope_note": "Final re-run against repository evidence through Mission 020. This recommends PASS_NAMED_POC for the named synthetic-first internal/private POC, pending sponsor approval. It does not approve real personal data, live Garmin integration, live Telegram bot behavior, public deployment, production infrastructure, required gates, runtime authority, or Factory V2 removal.",
+    "decision": "PASS_NAMED_POC",
+    "evaluated_date": "2026-06-09",
+    "evaluated_at_utc": "2026-06-09T06:38:31Z",
+    "judge": "Codex assistant recommendation; sponsor approval pending",
+    "poc_project": "V3_POC_App_Creation - Personal Performance OS synthetic-first local/private workbench",
+    "commit_or_artifact_reference": "7d87ed2 Record Mission 020 Tailscale private smoke",
+    "approval": {
+      "approved_by": "",
+      "approved_date": "",
+      "decision_confirmed": "",
+      "scores_confirmed_as_drafted": false,
+      "operator_friction_confirmed": null,
+      "approval_channel": "",
+      "approval_pending": true
+    }
+  },
+  "scores": {
+    "v3_only_compliance": 2,
+    "mission_clarity": 2,
+    "scope_discipline": 2,
+    "app_completeness": 1,
+    "verification_quality": 2,
+    "deployment_evidence": 2,
+    "evidence_replay": 2,
+    "halt_behavior": 2,
+    "adaptive_mission_control": 2,
+    "dependency_discipline": 2,
+    "operator_friction": 1
+  },
+  "score_rationale": {
+    "v3_only_compliance": "Missions 002-020 record Factory V2 not used; later missions explicitly forbid V2 fallback and no standalone gap required V2.",
+    "mission_clarity": "Mission envelopes consistently define objective, authority, authorized files, allowed commands, verification, halt rules, and reentry rules where needed.",
+    "scope_discipline": "Executed work maps to mission authority. Real data, credentials, live integrations, public deployment, app dependency changes, and Factory V2 fallback were avoided.",
+    "app_completeness": "The synthetic-first local/private PPOS workbench is substantial and privately deployable, with import, workflow, timeline, evidence, recommendation, review, rollback, and Garmin-shaped synthetic bridge behavior. It remains a first POC rather than product-complete: real-data boundary, live Telegram, live ambient runtime, and production use are still unapproved.",
+    "verification_quality": "The final re-run passed 170 tests, parsed 18 mission records, and rests on per-mission verifiers, QA scripts, audit JSON, Browser notes, and deployment smoke evidence.",
+    "deployment_evidence": "Mission 020 completed private Tailscale Serve smoke through the advertised MagicDNS tailnet route, then reset Serve and removed local deployment artifacts.",
+    "evidence_replay": "Mission records, closeouts, checkpoints, mission state, interrupts, audit JSON, QA notes, deployment evidence, and eval artifacts reconstruct intent, authority, work, verification, failures, recovery, and rollback.",
+    "halt_behavior": "Mission 015 proves failed-verification halt; Mission 016 proves separately authorized recovery; Mission 017 proves stale-reentry halt; Mission 018 proves fallback/no-go without V2 fallback.",
+    "adaptive_mission_control": "Mission 012 proves genuine interrupt lifecycle, fresh-session resume, checkpoint commits, and budget fields. Mission 013 proves remote phone interrupts and another fresh resume. Later negative/deployment missions preserve authored state and checkpoints where needed.",
+    "dependency_discipline": "No app packages were added. Garmin stayed research/synthetic/manual-export design only. Hermes was not used. Tailscale was approved host/private-network infrastructure and Serve config was reset.",
+    "operator_friction": "Usable as a first baseline but still heavy: checkpoint bookkeeping, record schema history, commit hash synchronization, and manual eval review remain meaningful overhead."
+  },
+  "total_score": 20,
+  "max_score": 22,
+  "required_pass_checks": {
+    "factory_v2_not_used": true,
+    "no_dimension_zero": true,
+    "total_score_at_least_18": true,
+    "app_verification_replay_minimum_met": true,
+    "garmin_or_hermes_use_labeled": true,
+    "sponsor_approval_recorded": false
+  },
+  "decision_rationale": "PASS_NAMED_POC is supportable as a recommendation because the POC now clears the rubric bar: 20/22 total, no zero scores, V3-only compliance score 2, appropriate app/verification/replay minimums, negative-path evidence, adaptive mission evidence, and private Tailscale deployment evidence. The decision is scoped to the named synthetic-first internal/private POC and remains pending sponsor approval. Remaining real-data, live Telegram, ambient runtime, and production concerns are separately governed residual limitations, not implicit approvals.",
+  "limitations": [
+    "Real-data boundary remains unexercised; any real Garmin/manual export, blood-test, nutrition image, or personal health data use still requires a separate mission.",
+    "Live Telegram bot behavior, scheduler/ambient runtime, notifications, OCR/vision, voice, production infrastructure, and public deployment remain unapproved.",
+    "Mission 020 raw Tailscale IP smoke returned HTTP 404; replay should use the advertised MagicDNS route.",
+    "Numeric token usage was not measured by a tool-backed token counter; checkpoint budget evidence improved but is not a full usage ledger.",
+    "Historical Mission 007-009 record schema drift remains a tooling-friction fact, even though human replay is possible.",
+    "Operator friction remains non-trivial and should be reduced before broader release."
+  ],
+  "evidence": {
+    "mission_records": [
+      ".factory-v3/evidence/MISSION_002_RECORD.json",
+      ".factory-v3/evidence/MISSION_003_RECORD.json",
+      ".factory-v3/evidence/MISSION_004_RECORD.json",
+      ".factory-v3/evidence/MISSION_005_RECORD.json",
+      ".factory-v3/evidence/MISSION_006_RECORD.json",
+      ".factory-v3/evidence/MISSION_007_RECORD.json",
+      ".factory-v3/evidence/MISSION_008_RECORD.json",
+      ".factory-v3/evidence/MISSION_009_RECORD.json",
+      ".factory-v3/evidence/MISSION_010_RECORD.json",
+      ".factory-v3/evidence/MISSION_011_RECORD.json",
+      ".factory-v3/evidence/MISSION_012_RECORD.json",
+      ".factory-v3/evidence/MISSION_013_RECORD.json",
+      ".factory-v3/evidence/MISSION_015_RECORD.json",
+      ".factory-v3/evidence/MISSION_016_RECORD.json",
+      ".factory-v3/evidence/MISSION_017_RECORD.json",
+      ".factory-v3/evidence/MISSION_018_RECORD.json",
+      ".factory-v3/evidence/MISSION_019_RECORD.json",
+      ".factory-v3/evidence/MISSION_020_RECORD.json"
+    ],
+    "closeouts": [
+      ".factory-v3/evidence/MISSION_002_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_003_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_004_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_005_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_006_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_007_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_008_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_009_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_010_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_011_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_012_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_013_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_015_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_016_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_017_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_018_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_019_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_020_CLOSEOUT.md"
+    ],
+    "verification_outputs": [
+      "python3 -B -m unittest discover -s tests: 170 tests passed during final re-run",
+      "18 mission records parsed during final re-run",
+      "per-mission verifier scripts through Mission 020",
+      ".factory-v3/evidence/MISSION_009_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_010_UI_QA_AUDIT.json",
+      ".factory-v3/evidence/MISSION_011_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_012_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_013_AUDIT_SUMMARY.json",
+      ".factory-v3/evidence/MISSION_010_BROWSER_NOTES.md",
+      ".factory-v3/evidence/MISSION_011_BROWSER_NOTES.md",
+      ".factory-v3/evidence/MISSION_012_BROWSER_NOTES.md",
+      ".factory-v3/evidence/MISSION_013_BROWSER_NOTES.md"
+    ],
+    "deployment_outputs": [
+      ".factory-v3/evidence/MISSION_019_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_020_CLOSEOUT.md",
+      "Mission 020 private MagicDNS endpoint: http://eduardos-macbook-pro-work.tail0aaa7b.ts.net:8771",
+      "Mission 020 Serve reset and rollback evidence"
+    ],
+    "adaptive_control_outputs": [
+      ".factory-v3/evidence/MISSION_012_INTERRUPT_HDI001.json",
+      ".factory-v3/evidence/MISSION_012_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_012_STATE.md",
+      ".factory-v3/evidence/MISSION_013_INTERRUPT_HDI001.json",
+      ".factory-v3/evidence/MISSION_013_INTERRUPT_HDI002.json",
+      ".factory-v3/evidence/MISSION_013_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_013_STATE.md"
+    ],
+    "negative_path_outputs": [
+      ".factory-v3/evidence/MISSION_015_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_016_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_017_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_018_CLOSEOUT.md"
+    ],
+    "dependency_research": [
+      ".factory-v3/evidence/MISSION_002_RESEARCH_NOTES.md",
+      ".factory-v3/evidence/MISSION_004_SOURCE_ADAPTER_RESEARCH.md",
+      ".factory-v3/evidence/MISSION_009_RESEARCH_SPIKES.md",
+      ".factory-v3/canons/DEPENDENCY_RESEARCH.md"
+    ]
+  },
+  "residual_risks": [
+    "PASS_NAMED_POC remains pending sponsor approval.",
+    "Real-data boundary is not exercised and must not be inferred from synthetic Garmin-shaped evidence.",
+    "Live Telegram, scheduler, notification, OCR/vision, voice, and production infrastructure remain unapproved.",
+    "Operator friction remains meaningful for broader release.",
+    "Mission 014 draft and .DS_Store are pre-existing untracked items outside this eval."
+  ],
+  "recommended_next_steps": [
+    "If the sponsor agrees, record sponsor approval of PASS_NAMED_POC and operator-friction score.",
+    "Back-port this final eval result into Factory_V3 README, PROJECT_STATE.md, ROADMAP.md, and ROADMAP_TO_FULL_VISION.md.",
+    "Run a separately approved real-data boundary mission only if the sponsor wants to exercise real data next.",
+    "Make a separately named decision on candidate V3-OP-003 long-running remote-interrupt profile using Mission 012/013 evidence.",
+    "Continue mission-formation live trials and operator-friction reduction work."
+  ]
+}
