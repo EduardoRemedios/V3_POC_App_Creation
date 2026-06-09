@@ -1,0 +1,36 @@
+{
+  "mission_id": "MISSION_019_PRIVATE_TAILSCALE_DEPLOYMENT_SMOKE",
+  "synthetic_only": true,
+  "deployment_target": "tailscale_private_network",
+  "host": "current_mac",
+  "server": {
+    "module": "ppos_core.api",
+    "host": "127.0.0.1",
+    "port": 8770,
+    "db_path": "/tmp/ppos_mission_019_private.sqlite"
+  },
+  "network": {
+    "public_exposure_allowed": false,
+    "tailscale_app_cask": "tailscale-app",
+    "tailscale_version_from_brew_info": "1.98.5",
+    "tailscale_serve": "tailscale serve --http=8771 localhost:8770",
+    "login_required": "user_action_if_not_authenticated",
+    "credentials_stored_in_repo": false
+  },
+  "data": {
+    "real_data_used": false,
+    "synthetic_only": true,
+    "live_integrations_used": false,
+    "new_app_dependencies_used": false
+  },
+  "smoke_checks": [
+    "GET /api/health",
+    "GET /workbench/"
+  ],
+  "rollback": {
+    "stop_server": true,
+    "remove_temp_db": true,
+    "remove_tailscale": false,
+    "reason": "Tailscale remains host infrastructure unless user asks to uninstall it."
+  }
+}

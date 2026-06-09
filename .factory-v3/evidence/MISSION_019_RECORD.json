@@ -1,0 +1,214 @@
+{
+  "adaptive_mission_control": {
+    "checkpoints": [
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md#M019-CP001",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md#M019-CP002",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md#M019-CP003",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md#M019-CP004",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md#M019-CP005"
+    ],
+    "git": {
+      "allowed": true,
+      "commands": [
+        "git status --short",
+        "git rev-parse HEAD",
+        "git log --oneline -n 6",
+        "git add .factory-v3/missions/MISSION_019_PRIVATE_TAILSCALE_DEPLOYMENT_SMOKE.md .factory-v3/evidence/MISSION_019_STATE.md .factory-v3/evidence/MISSION_019_CHECKPOINTS.md .factory-v3/evidence/MISSION_019_CLOSEOUT.md .factory-v3/evidence/MISSION_019_RECORD.json fixtures/mission_019/deployment_plan.json scripts/verify_mission_019_private_deployment.py",
+        "git commit -m \"Record Mission 019 private Tailscale deployment smoke\"",
+        "git push origin main"
+      ],
+      "commit_before": "feb05ead8cb2de050f81a6732fb876a892d08b8e",
+      "commit_after": "reported_after_commit",
+      "pushed": "reported_after_push",
+      "remote_policy": "origin main only"
+    },
+    "human_decision_interrupts": [
+      {
+        "id": "HDI-019-001",
+        "status": "implicit_prior_approval",
+        "summary": "User approved installing Tailscale and using private Tailscale deployment option before Mission 019."
+      }
+    ],
+    "mission_state_reference": ".factory-v3/evidence/MISSION_019_STATE.md",
+    "plan_deltas": [],
+    "verification_side_effects": [
+      ".factory-v3/evidence/MISSION_019_STATE.md",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_019_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_019_RECORD.json"
+    ]
+  },
+  "authority": {
+    "allowed_commands": [
+      "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "git status --short",
+      "git rev-parse HEAD",
+      "git log --oneline -n 6",
+      "python3 -B -m unittest discover -s tests",
+      "brew info --cask tailscale-app",
+      "brew install --cask tailscale-app",
+      "command -v tailscale",
+      "python3 -B -m ppos_core.api --db /tmp/ppos_mission_019_private.sqlite --host 127.0.0.1 --port 8770",
+      "lsof -nP -iTCP:8770 -sTCP:LISTEN",
+      "ls -l /tmp/ppos_mission_019_private.sqlite",
+      "kill <SERVER_PID>",
+      "rm /tmp/ppos_mission_019_private.sqlite",
+      "test ! -e /tmp/ppos_mission_019_private.sqlite",
+      "sed -n '1,180p' workbench/index.html",
+      "rg -n \"bootstrap|workbench|api\" workbench/index.html workbench/app.js",
+      "python3 -B scripts/verify_mission_019_private_deployment.py --base-url http://127.0.0.1:8770 --expect-localhost",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_019_RECORD.json",
+      "git diff --check",
+      "git add .factory-v3/missions/MISSION_019_PRIVATE_TAILSCALE_DEPLOYMENT_SMOKE.md .factory-v3/evidence/MISSION_019_STATE.md .factory-v3/evidence/MISSION_019_CHECKPOINTS.md .factory-v3/evidence/MISSION_019_CLOSEOUT.md .factory-v3/evidence/MISSION_019_RECORD.json fixtures/mission_019/deployment_plan.json scripts/verify_mission_019_private_deployment.py",
+      "git commit -m \"Record Mission 019 private Tailscale deployment smoke\"",
+      "git push origin main"
+    ],
+    "approved_dependencies": [],
+    "approved_host_infrastructure": [
+      "tailscale-app"
+    ],
+    "authorized_files": [
+      ".factory-v3/missions/MISSION_019_PRIVATE_TAILSCALE_DEPLOYMENT_SMOKE.md",
+      ".factory-v3/evidence/MISSION_019_STATE.md",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_019_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_019_RECORD.json",
+      "fixtures/mission_019/deployment_plan.json",
+      "scripts/verify_mission_019_private_deployment.py"
+    ],
+    "dependency_policy": "No app dependencies. Tailscale approved only as host/private-network infrastructure.",
+    "forbidden_scope": [
+      "public deployment",
+      "production infrastructure",
+      "real data",
+      "credentials or tokens in evidence",
+      "live Garmin integration",
+      "Telegram live bot",
+      "app dependency change",
+      "Factory V2"
+    ]
+  },
+  "dependency_evidence": {
+    "garmin": {
+      "approval_reference": "",
+      "mode": "not_used",
+      "touched": false
+    },
+    "hermes": {
+      "approval_reference": "",
+      "mode": "not_used",
+      "surfaces": [],
+      "touched": false
+    },
+    "tailscale": {
+      "approved_as_host_infrastructure": true,
+      "install_attempted": true,
+      "install_result": "blocked_interactive_sudo_required",
+      "installed_after_attempt": false,
+      "version": "1.98.5"
+    }
+  },
+  "execution": {
+    "commands_run": [
+      "git status --short",
+      "git rev-parse HEAD",
+      "git log --oneline -n 6",
+      "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "brew info --cask tailscale-app",
+      "python3 -B -m unittest discover -s tests",
+      "brew install --cask tailscale-app",
+      "command -v tailscale",
+      "brew info --cask tailscale-app",
+      "python3 -B -m ppos_core.api --db /tmp/ppos_mission_019_private.sqlite --host 127.0.0.1 --port 8770",
+      "python3 -B scripts/verify_mission_019_private_deployment.py --base-url http://127.0.0.1:8770 --expect-localhost",
+      "python3 -B scripts/verify_mission_019_private_deployment.py --base-url http://127.0.0.1:8770 --expect-localhost",
+      "kill 38481",
+      "rm /tmp/ppos_mission_019_private.sqlite",
+      "python3 -m json.tool .factory-v3/evidence/MISSION_019_RECORD.json"
+    ],
+    "files_changed": [
+      ".factory-v3/missions/MISSION_019_PRIVATE_TAILSCALE_DEPLOYMENT_SMOKE.md",
+      ".factory-v3/evidence/MISSION_019_STATE.md",
+      ".factory-v3/evidence/MISSION_019_CHECKPOINTS.md",
+      ".factory-v3/evidence/MISSION_019_CLOSEOUT.md",
+      ".factory-v3/evidence/MISSION_019_RECORD.json",
+      "fixtures/mission_019/deployment_plan.json",
+      "scripts/verify_mission_019_private_deployment.py"
+    ],
+    "deployment": {
+      "localhost_smoke": "pass",
+      "private_tailscale_smoke": "blocked",
+      "public_exposure": false,
+      "rollback": "pass",
+      "temp_db_removed": true
+    },
+    "halt": {
+      "halted": false,
+      "reason_codes": []
+    },
+    "standalone_gap": {
+      "description": "Private Tailscale smoke requires user/admin Tailscale install and login outside the non-interactive shell.",
+      "found": true
+    },
+    "verification": {
+      "commands": [
+        {
+          "command": "python3 -B -m unittest discover -s tests",
+          "result": "pass",
+          "summary": "Baseline: 170 tests ran in 2.242s"
+        },
+        {
+          "command": "brew install --cask tailscale-app",
+          "result": "fail",
+          "summary": "Blocked by interactive sudo/admin password requirement"
+        },
+        {
+          "command": "python3 -B scripts/verify_mission_019_private_deployment.py --base-url http://127.0.0.1:8770 --expect-localhost",
+          "result": "pass",
+          "summary": "Localhost smoke passed after mission-owned verifier correction"
+        },
+        {
+          "command": "python3 -m json.tool .factory-v3/evidence/MISSION_019_RECORD.json",
+          "result": "pass",
+          "summary": "Mission record parsed successfully"
+        }
+      ],
+      "result": "partial",
+      "summary": "Baseline and localhost smoke passed; private Tailscale smoke blocked by install/auth requirement."
+    }
+  },
+  "mission": {
+    "branch": "main",
+    "coding_harness": "Codex",
+    "commit_after": "reported_after_commit",
+    "commit_before": "feb05ead8cb2de050f81a6732fb876a892d08b8e",
+    "data_mode": "synthetic",
+    "deployment_target": "tailscale_private_network_partial",
+    "objective": "Produce replayable standalone V3 evidence for private Tailscale deployment smoke.",
+    "repository": "V3_POC_App_Creation"
+  },
+  "record": {
+    "closeout_reference": ".factory-v3/evidence/MISSION_019_CLOSEOUT.md",
+    "created_date": "2026-06-09",
+    "decision_state": "partial_blocked",
+    "factory_v2_used": false,
+    "live_integrations_used": false,
+    "mission_reference": ".factory-v3/missions/MISSION_019_PRIVATE_TAILSCALE_DEPLOYMENT_SMOKE.md",
+    "new_dependencies_used": false,
+    "profile_id": "V3-POC-STANDALONE",
+    "real_data_used": false,
+    "record_type": "factory_v3_poc_mission_record",
+    "schema_version": "v0.1-poc-standalone",
+    "synthetic_only": true,
+    "v3_only": true
+  },
+  "reviews": {
+    "evidence_replay": "pass",
+    "operator_friction_notes": [
+      "Mission 014 draft and .DS_Store were pre-existing untracked items and were left untouched.",
+      "Tailscale install requires interactive macOS admin approval; follow-up mission should start after user installs and logs in."
+    ],
+    "scope_discipline": "pass",
+    "verification_quality": "partial"
+  }
+}
