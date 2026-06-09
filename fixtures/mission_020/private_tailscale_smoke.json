@@ -1,0 +1,48 @@
+{
+  "mission_id": "MISSION_020_TAILSCALE_PRIVATE_SMOKE_COMPLETION",
+  "synthetic_only": true,
+  "deployment_target": "tailscale_private_network",
+  "host": "current_mac",
+  "server": {
+    "module": "ppos_core.api",
+    "host": "127.0.0.1",
+    "port": 8770,
+    "db_path": "/tmp/ppos_mission_020_private.sqlite"
+  },
+  "network": {
+    "public_exposure_allowed": false,
+    "tailscale_funnel_allowed": false,
+    "tailscale_app_path": "/Applications/Tailscale.app/Contents/MacOS/Tailscale",
+    "tailscale_version": "1.98.5",
+    "tailscale_ip": "100.87.19.28",
+    "tailscale_dns_name": "eduardos-macbook-pro-work.tail0aaa7b.ts.net",
+    "tailscale_serve": "tailscale serve --bg --http=8771 localhost:8770",
+    "credentials_stored_in_repo": false
+  },
+  "data": {
+    "real_data_used": false,
+    "synthetic_only": true,
+    "live_integrations_used": false,
+    "new_app_dependencies_used": false
+  },
+  "smoke_checks": [
+    "GET /api/health",
+    "GET /workbench/"
+  ],
+  "observed_result": {
+    "baseline_tests": "pass",
+    "localhost_smoke": "pass",
+    "tailscale_ip_smoke": "fail_http_404",
+    "tailscale_magicdns_smoke": "pass",
+    "serve_reset": "pass",
+    "rollback": "pass",
+    "private_smoke_endpoint": "http://eduardos-macbook-pro-work.tail0aaa7b.ts.net:8771"
+  },
+  "rollback": {
+    "reset_tailscale_serve": true,
+    "stop_server": true,
+    "remove_temp_db": true,
+    "remove_tailscale": false,
+    "reason": "Tailscale remains user-approved host infrastructure."
+  }
+}
