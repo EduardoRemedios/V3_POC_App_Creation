@@ -27,7 +27,7 @@ Most AI tools can generate code. This POC tests whether Factory V3 can deliver a
 
 ## Status
 
-Standalone V3 evidence exists through Mission 020. The final eval re-run recommends `PASS_NAMED_POC` at 20/22, pending sponsor approval, for the named synthetic-first private POC scope. Private Tailscale deployment smoke passed through Tailscale Serve MagicDNS and was cleaned up afterward.
+Standalone V3 evidence exists through Mission 020. The sponsor-approved final eval records `PASS_NAMED_POC` at 20/22 for the named synthetic-first private POC scope. Private Tailscale deployment smoke passed through Tailscale Serve MagicDNS and was cleaned up afterward.
 
 Still not approved by this repo: real personal data, live Garmin integration, live Telegram bot behavior, scheduler/ambient runtime, public deployment, production infrastructure, or Factory V2 fallback.
 

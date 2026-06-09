@@ -1,22 +1,22 @@
 {
   "eval": {
     "schema_version": "v0.1-poc-eval",
-    "status": "ASSISTANT_RECOMMENDATION_PENDING_SPONSOR_APPROVAL",
-    "scope_note": "Final re-run against repository evidence through Mission 020. This recommends PASS_NAMED_POC for the named synthetic-first internal/private POC, pending sponsor approval. It does not approve real personal data, live Garmin integration, live Telegram bot behavior, public deployment, production infrastructure, required gates, runtime authority, or Factory V2 removal.",
+    "status": "APPROVED_BY_SPONSOR",
+    "scope_note": "Final re-run against repository evidence through Mission 020. Sponsor approved PASS_NAMED_POC for the named synthetic-first internal/private POC. It does not approve real personal data, live Garmin integration, live Telegram bot behavior, public deployment, production infrastructure, required gates, runtime authority, or Factory V2 removal.",
     "decision": "PASS_NAMED_POC",
     "evaluated_date": "2026-06-09",
     "evaluated_at_utc": "2026-06-09T06:38:31Z",
-    "judge": "Codex assistant recommendation; sponsor approval pending",
+    "judge": "Eduardo dos Remedios (sponsor)",
     "poc_project": "V3_POC_App_Creation - Personal Performance OS synthetic-first local/private workbench",
     "commit_or_artifact_reference": "7d87ed2 Record Mission 020 Tailscale private smoke",
     "approval": {
-      "approved_by": "",
-      "approved_date": "",
-      "decision_confirmed": "",
-      "scores_confirmed_as_drafted": false,
-      "operator_friction_confirmed": null,
-      "approval_channel": "",
-      "approval_pending": true
+      "approved_by": "Eduardo dos Remedios",
+      "approved_date": "2026-06-09",
+      "decision_confirmed": "PASS_NAMED_POC",
+      "scores_confirmed_as_drafted": true,
+      "operator_friction_confirmed": 1,
+      "approval_channel": "Sponsor statement in Codex thread, 2026-06-09",
+      "approval_pending": false
     }
   },
   "scores": {
@@ -53,9 +53,9 @@
     "total_score_at_least_18": true,
     "app_verification_replay_minimum_met": true,
     "garmin_or_hermes_use_labeled": true,
-    "sponsor_approval_recorded": false
+    "sponsor_approval_recorded": true
   },
-  "decision_rationale": "PASS_NAMED_POC is supportable as a recommendation because the POC now clears the rubric bar: 20/22 total, no zero scores, V3-only compliance score 2, appropriate app/verification/replay minimums, negative-path evidence, adaptive mission evidence, and private Tailscale deployment evidence. The decision is scoped to the named synthetic-first internal/private POC and remains pending sponsor approval. Remaining real-data, live Telegram, ambient runtime, and production concerns are separately governed residual limitations, not implicit approvals.",
+  "decision_rationale": "PASS_NAMED_POC is approved by the sponsor because the POC clears the rubric bar: 20/22 total, no zero scores, V3-only compliance score 2, appropriate app/verification/replay minimums, negative-path evidence, adaptive mission evidence, and private Tailscale deployment evidence. The decision is scoped to the named synthetic-first internal/private POC. Remaining real-data, live Telegram, ambient runtime, and production concerns are separately governed residual limitations, not implicit approvals.",
   "limitations": [
     "Real-data boundary remains unexercised; any real Garmin/manual export, blood-test, nutrition image, or personal health data use still requires a separate mission.",
     "Live Telegram bot behavior, scheduler/ambient runtime, notifications, OCR/vision, voice, production infrastructure, and public deployment remain unapproved.",
@@ -148,15 +148,14 @@
     ]
   },
   "residual_risks": [
-    "PASS_NAMED_POC remains pending sponsor approval.",
+    "Sponsor approved PASS_NAMED_POC on 2026-06-09.",
     "Real-data boundary is not exercised and must not be inferred from synthetic Garmin-shaped evidence.",
     "Live Telegram, scheduler, notification, OCR/vision, voice, and production infrastructure remain unapproved.",
     "Operator friction remains meaningful for broader release.",
     "Mission 014 draft and .DS_Store are pre-existing untracked items outside this eval."
   ],
   "recommended_next_steps": [
-    "If the sponsor agrees, record sponsor approval of PASS_NAMED_POC and operator-friction score.",
-    "Back-port this final eval result into Factory_V3 README, PROJECT_STATE.md, ROADMAP.md, and ROADMAP_TO_FULL_VISION.md.",
+    "Back-port this sponsor-approved final eval result into Factory_V3 README, PROJECT_STATE.md, ROADMAP.md, and ROADMAP_TO_FULL_VISION.md.",
     "Run a separately approved real-data boundary mission only if the sponsor wants to exercise real data next.",
     "Make a separately named decision on candidate V3-OP-003 long-running remote-interrupt profile using Mission 012/013 evidence.",
     "Continue mission-formation live trials and operator-friction reduction work."

@@ -1,17 +1,17 @@
 # V3 POC Eval Adjudication Note (Final Re-Run)
 
 ## Status
-ASSISTANT RECOMMENDATION PENDING SPONSOR APPROVAL. Prepared 2026-06-09 from repository evidence only, using `.factory-v3/evals/V3_POC_EVAL_RUBRIC.md` v0.1. The machine-readable record is `V3_POC_EVAL_RECORD_20260609.json`.
+APPROVED BY SPONSOR. Prepared 2026-06-09 from repository evidence only, using `.factory-v3/evals/V3_POC_EVAL_RUBRIC.md` v0.1. The machine-readable record is `V3_POC_EVAL_RECORD_20260609.json`.
 
-This note is not sponsor sign-off. It records the recommended adjudication after evidence through Mission 020.
+Sponsor approval was recorded in the Codex thread on 2026-06-09. The sponsor approved `PASS_NAMED_POC` at 20/22 with operator-friction score `1`.
 
 ## Scope
 Final re-run of the standalone V3 POC eval against evidence through Mission 020 (commit `7d87ed2`). The evaluated proof is the named internal/private Personal Performance OS POC as a synthetic-first local/private app creation, verification, governance, and private deployment exercise.
 
 This evaluation does not expand approved scope to real personal data, live Garmin integration, Telegram live bot behavior, public deployment, production infrastructure, required gates, runtime authority, or Factory V2 removal.
 
-## Recommended Decision
-`PASS_NAMED_POC` — total 20 of 22, pending sponsor approval.
+## Decision
+`PASS_NAMED_POC` — total 20 of 22, approved by sponsor.
 
 The POC now clears the rubric's minimum pass bar:
 - V3-only compliance scores 2.
@@ -65,7 +65,14 @@ The interim 2026-06-04 eval was `PASS_WITH_LIMITATIONS` at 17/22 through Mission
 | Mission-record parse script over `.factory-v3/evidence/MISSION_*_RECORD.json` | PASS | 18 mission records parsed. |
 
 ## Recommended Next Steps
-1. If the sponsor agrees with this recommendation, record sponsor approval of `PASS_NAMED_POC`.
-2. Back-port the final eval result into `Factory_V3` project state and roadmap.
-3. Treat any real-data boundary exercise as a separately approved mission, not as implicit permission from this pass.
-4. Continue mission-formation live trials and the candidate `V3-OP-003` remote-interrupt profile decision as separate governance questions.
+1. Back-port this sponsor-approved final eval result into `Factory_V3` project state and roadmap.
+2. Treat any real-data boundary exercise as a separately approved mission, not as implicit permission from this pass.
+3. Continue mission-formation live trials and the candidate `V3-OP-003` remote-interrupt profile decision as separate governance questions.
+
+## Sign-Off
+- Sponsor decision: `PASS_NAMED_POC` confirmed.
+- Total score confirmed as: 20 of 22.
+- Operator-friction score confirmed as: 1.
+- Approved by: Eduardo dos Remedios.
+- Date: 2026-06-09.
+- Channel: sponsor statement in Codex thread, 2026-06-09.
