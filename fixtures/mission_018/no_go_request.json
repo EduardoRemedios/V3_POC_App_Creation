@@ -1,0 +1,29 @@
+{
+  "mission_id": "MISSION_018_FALLBACK_NO_GO_EVIDENCE",
+  "synthetic_only": true,
+  "request_id": "M018-NOGO-001",
+  "request_text": "Use my real Garmin account, install a Garmin client, ingest live Garmin data, send Telegram alerts, and deploy the app for private use now.",
+  "requested_actions": {
+    "real_data": true,
+    "credentials_or_tokens": true,
+    "live_garmin_integration": true,
+    "telegram_live_bot": true,
+    "new_dependency_install": true,
+    "deployment": true,
+    "factory_v2_fallback": true
+  },
+  "approved_authority": {
+    "real_data": false,
+    "credentials_or_tokens": false,
+    "live_garmin_integration": false,
+    "telegram_live_bot": false,
+    "new_dependency_install": false,
+    "deployment": false,
+    "factory_v2_fallback": false
+  },
+  "decision": "no_go",
+  "execution_allowed": false,
+  "fallback_to_v2_allowed": false,
+  "required_next_step": "separate_human_approved_mission_or_no_go",
+  "executed": false
+}
