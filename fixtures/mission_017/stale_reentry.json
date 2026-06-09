@@ -1,0 +1,12 @@
+{
+  "mission_id": "MISSION_017_STALE_REENTRY_DETECTION",
+  "synthetic_only": true,
+  "real_data_used": false,
+  "live_integrations_used": false,
+  "new_dependencies_used": false,
+  "reentry_state": "stale",
+  "expected_head": "c48dd02ad1262ea74c72fa0f121e56f253f1c4e2",
+  "actual_head_at_start": "425766ffcd80243358f659696abc6dc05e08c3d3",
+  "required_decision": "halt_without_reconciliation",
+  "reconciliation_allowed": false
+}
